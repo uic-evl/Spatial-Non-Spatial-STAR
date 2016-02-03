@@ -28,7 +28,13 @@ permalink: /:year/:month/:day/:title/
 # Build settings
 markdown: kramdown
 
-# highlight
+lsi: false
+highlighter: rouge
+safe: true
+source: ./
+incremental: false
+gist:
+    noscript: false
 #highlighter: pygments
 # highlighter: rouge
 # highlighter: false
