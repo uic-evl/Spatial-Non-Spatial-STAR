@@ -6,6 +6,10 @@ title: Domains
 <ul class="posts">
 
     {% for post in site.posts %}
-    <li> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a></li>
-    {% endfor %}
+
+        {% if post.categories contains 'Domain'  %}
+            <li><a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a></li>
+        {% endif %}
+
+        {% endfor %}
 </ul>
