@@ -5,19 +5,19 @@ categories: Domain
 ---
 <h1>{{ page.title }}</h1>
 <ul class="posts">
-    
+
     <table>
-        
+
     {% for post in site.posts %}
-    
-        {% if post.categories contains 'Engineering'  %}
+
+        {% if post.categories contains 'Engineering' %}
         <tr>
             <td>{{post.title}}</td>
         </tr>
         {% endif %}
 
     {% endfor %}
-        
+
     </table>
-    
+
 </ul>
