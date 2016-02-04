@@ -11,7 +11,7 @@ description: EuroVis 2015 State of the Art Report
 # url: "http://yourdomain.com" # the base hostname & protocol for your site
 # twitter_username: jekyllrb
 github_username: uic-evl
-permalink: /:year/:month/:day/:title/
+# permalink: /:year/:month/:day/:title/
 # this is the url root of the view source link on the footer page.
 #viewsourceroot: https://github.com/LiXizhi/LiXizhi.github.io/blob/master/
 # this is the url root of the create page link on the footer page.
@@ -31,7 +31,6 @@ markdown: kramdown
 lsi: false
 highlighter: rouge
 safe: true
-source: ./
 incremental: false
 gist:
     noscript: false
