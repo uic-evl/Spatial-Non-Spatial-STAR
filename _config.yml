@@ -25,6 +25,9 @@ github_username: uic-evl
 #disqus_url: "http://lixizhi.github.io"
 #########################################
 
+url: https://http://uic-evl.github.io
+baseurl: /Spatial-Non-Spatial-STAR
+
 # Build settings
 markdown: kramdown
 
