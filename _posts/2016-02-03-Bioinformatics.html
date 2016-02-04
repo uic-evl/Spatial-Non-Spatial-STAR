@@ -1,0 +1,17 @@
+---
+layout: default
+title: Bioinformatics
+---
+<h1>{{ page.title }}</h1>
+<ul class="posts">
+    
+<!--<table style="width:100%">-->
+    {% for paper in site.papers %}
+    <!--<tr>-->
+        <!--<td>{{paper.title}}</td>-->
+    <!--</tr>-->
+    <li> <a href="{{ paper.url }}" title="{{ paper.title }}">{{ paper.title }}</a></li>
+    {% endfor %}
+<!--</table>-->
+
+</ul>

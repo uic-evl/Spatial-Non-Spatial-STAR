@@ -6,6 +6,7 @@ description: EuroVis 2015 State of the Art Report
 # twitter_username: jekyllrb
 github_username: uic-evl
 
+permalink: /domains/:title
 
 url: http://localhost
 baseurl: ""
