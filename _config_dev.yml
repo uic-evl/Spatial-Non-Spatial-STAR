@@ -2,11 +2,13 @@
 title: Spatial Non-Spatial STAR
 #email:
 description: EuroVis 2015 State of the Art Report
+ # the base hostname & protocol for your site
+# twitter_username: jekyllrb
 github_username: uic-evl
 
 
-url: http://uic-evl.github.io
-baseurl: /Spatial-Non-Spatial-STAR
+url: http://localhost
+baseurl: ""
 
 # Build settings
 markdown: kramdown
@@ -17,8 +19,6 @@ safe: true
 incremental: false
 gist:
     noscript: false
-#highlighter: pygments
-# highlighter: rouge
-# highlighter: false
+
 gems:
-  - jekyll-sitemap
+  - jekyll-sgitemap
