@@ -1,23 +1,35 @@
 ---
 layout: default
 title: Engineering
-categories: Domain
+category: Domain
 ---
+
 <h1>{{ page.title }}</h1>
-<ul class="posts">
 
-    <table>
+<div id="index" class="row">
+    <div class="col-lg-9">
+        <div class="post-area ">
+            <div class="post-list-header">
+            <div class="post-list-header">
 
-    {% for post in site.posts %}
+                <!--Posts-->
+            </div>
+            <div class="post-list-body">
 
-        {% if post.categories contains 'Engineering' %}
-        <tr>
-            <td>{{post.title}}</td>
-        </tr>
-        {% endif %}
+                <div class="all-posts" post-cate="All">
+                    {% for post in site.posts %}
+                        {% if post.categories contains 'Engineering' %}
+                            <a class="post-list-item" href="{{ post.url | prepend: site.baseurl }}">
+                                <h2 >
+                                    {{ post.title }}
+                                </h2>
+                                <span class="">{{ post.author }}</span>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
 
-    {% endfor %}
-
-    </table>
-
-</ul>
+            </div>
+        </div>
+    </div>
+</div>

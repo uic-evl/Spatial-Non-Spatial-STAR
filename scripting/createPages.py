@@ -18,4 +18,6 @@ for row in csv:
     out.write("layout: page\n")
     out.write("title: '" + row[3] + "'\n")
     out.write("categories: " + str(domain) + "\n")
+    out.write("author: " + "'" + row[0] + "'\n")
     out.write("---\n")
+    out.write("<h1>{{ page.title }}</h1>\n")
