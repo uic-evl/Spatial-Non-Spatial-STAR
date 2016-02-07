@@ -37,9 +37,13 @@ The following part removes dulpicated typeEnc and invalid typeEnc like blank tag
 The purpose of this snippet is to list all the tags you have in your site.
 =======================
 {% endcomment %}
+<ul class="tags">
 {% for tag in typeEnc %}
-    <a href="#{{ tag | slugify }}"> {{ tag }} </a>
+    <li>
+        <a href="#{{ tag | slugify }}"> {{ tag }} </a>
+    </li>
 {% endfor %}
+</ul>
 
 {% comment %}
 =======================
@@ -58,6 +62,7 @@ The purpose of this snippet is to list all your posts posted with a certain tag.
          <small>{{ post.date | date_to_string }}</small>
          </h3>
          </a>
+         
          {% for tag in post.typeEnc %}
              <a class="tag" href="#{{ tag | slugify }}">{{ tag }}</a>
          {% endfor %}
