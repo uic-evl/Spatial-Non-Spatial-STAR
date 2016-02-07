@@ -4,13 +4,31 @@ title: GeoSpatial
 categories: Domain
 ---
 <h1>{{ page.title }}</h1>
-<ul class="posts">
 
-    {% for post in site.posts %}
+<div id="index" class="row">
+    <div class="col-lg-9">
+        <div class="post-area ">
+            <div class="post-list-header">
+            <div class="post-list-header">
 
-    {% if post.categories contains 'GeoSpatial'  %}
-    <li><a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a></li>
-    {% endif %}
+                <!--Posts-->
+            </div>
+            <div class="post-list-body">
 
-    {% endfor %}
-</ul>
+                <div class="all-posts" post-cate="All">
+                    {% for post in site.posts %}
+                        {% if post.categories contains 'GeoSpatial' %}
+                            <a class="post-list-item" href="{{ post.url | prepend: site.baseurl }}">
+                                <h2 >
+                                    {{ post.title }}
+                                </h2>
+                                <span class="">{{ post.author }}</span>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
