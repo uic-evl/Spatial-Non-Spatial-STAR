@@ -9,7 +9,7 @@ categories: Domain
     {% for post in site.posts %}
 
     {% if post.categories contains 'GeoSpatial'  %}
-    <li><a href="{{ post.baseurl }}" title="{{ post.title }}">{{ post.title }}</a></li>
+    <li><a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a></li>
     {% endif %}
 
     {% endfor %}
