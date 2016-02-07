@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .grow rect {
+        stroke: black;
+        shape-rendering: crispEdges;
+        fill: none;
+    }
+
+
+    .axis text {
+        font: 10px sans-serif;
+    }
+
+    .legend text {
+        font: 12px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .x.axis path,
+    .x.axis line {
+        display: none;
+    }
+
+
+    .y.axis path,
+    .y.axis line {
+        display: none;
+    }
+
+
+</style>
+<svg class="chart"></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+    var totWidth = 1200,
+            totHeight = totWidth * 0.8,
+            margin = {top: 80, right: 30, bottom: 80, left: 200},
+            width = totWidth - (margin.left + margin.right),
+            height = totHeight - (margin.top + margin.bottom);
+
+    var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width]);
+
+    var y = d3.scale.ordinal()
+            .rangeRoundBands([height, 0]);
+
+    var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+    var chart = d3.select(".chart")
+            .attr("width", totWidth)
+            .attr("height", totHeight)
+            .append("g")
+            .attr("transform","translate("+margin.left+",0)")
+
+            ;
+
+    d3.tsv("encodings.tsv"/*, type*/, function(error, data) {
+
+        var grpNames = d3.keys(data[0]).filter(function(key) { return key !== "Encoding"; });
+
+        data.forEach(function(d) {
+            d.groups = grpNames.map(function(name) { return {name: name, value: +d[name]}; });
+        });
+
+        y.domain(data.map(function(d) { return d.Encoding; }));
+        var allcols = Object.keys(data[0]),
+                cols = allcols.slice(1,allcols.length);
+        x.domain(grpNames);
+
+        chart.append("text")
+                .attr("x", (width / 2))
+                .attr("y", (margin.top / 5))
+                .attr("text-anchor", "middle")
+                .style("font-size", "24px")
+                .style("text-decoration", "bold")
+                .style("text-decoration", "underline")
+                .text("Engineering: Spatial vs NonSpatial Encodings");
+
+        chart.append("g")
+                .attr("class","x axis")
+                .attr("transform","translate(0," + (height) + ")")
+                .call(xAxis)
+                .selectAll("text")
+                .style("text-anchor","end")
+                .attr("transform","rotate(-90)")
+                .attr("dx","1.0em")
+                .attr("dy",x.rangeBand()/10-20)
+        ;
+
+        chart.append("g")
+                .attr("class","y axis")
+                .call(yAxis)
+                .selectAll("text")
+                .attr("dx","45px")
+        ;
+
+
+        var grows = chart.selectAll(".grow")
+                .data(data)
+                .enter().append("g")
+                .attr("class","grow")
+                .attr("transform", function(d) { return "translate(0," + y(d.Encoding) + ")"; })
+                ;
+
+        var gcells = grows.selectAll(".gcell")
+                .data(function(d) { return d.groups; })
+                .enter() .append("g")
+                .attr("transform", function(d,i,j) {return "translate(" + i*x.rangeBand() + ",0)" ; } )
+                .attr("class","gcell")
+                ;
+//
+//        gcells
+//                .append("rect")
+//                .attr("x",0)
+//                .attr("y",0)
+//                .attr("height",y.rangeBand())
+//                .attr("width",x.rangeBand())
+//                .style("fill-opacity",1)
+////                .style("fill", function(d,i,j) {
+////                            if ((i % 2 != 0 && j % 2 == 0))
+////                            {return "#dddddd";}
+////                            else if (i % 2 != 0 || j % 2 == 0)
+////                            {return "#eeeeee";}
+////                            else
+////                            {return "#ffffff";}
+////                        }
+////                )
+        ;
+
+        rmax = Math.min(y.rangeBand()/2-4,x.rangeBand()/2-4);
+        //console.log(rmax);
+
+        gcells.append("circle")
+                .attr("cy",y.rangeBand()/2)
+                .attr("cx",x.rangeBand()/2)
+                .attr("r", function(d) {
+                            var rind = d.value;
+                            var rad = rmax / ((-1)*(rind - 10));
+
+                            return rad;//(rad > 0) ? rad : 0;
+                        }
+                )
+                .style("fill", function(d) {
+                            var gbval = 1+Math.floor(255 - (255/4*(d.value)));
+                            return "rgb(" + 255 + "," + gbval + "," + gbval + ")";
+                        }
+                )
+                .style("")
+                //.style("stroke","black")
+        ;
+
+//        var legend = chart
+//                .append("g")
+//                .attr("transform", "translate(0," + (height + 0) + ")")
+//                .attr("class","legend")
+//                .style("font-weight","bold")
+//                ;
+//        var legwidths = [0,55,135,235];
+//        var legsymbols = legend.selectAll(".legsymbols")
+//                .data(["0-500","500-5,000","5,000-50,000",">50,000"])
+//                .enter()
+//                .append("g")
+//                .attr("class","legsymbols")
+//                .attr("transform",function(d,i) {return "translate(" + (150 + legwidths[i]) + ",0)";})
+//                ;
+//
+//        var legendspace = 5;
+
+//        legsymbols.append("circle")
+//                .attr("cx", function(d,i) {return rmax / ((-1)*((i+1) - 5)) ;})
+//                .attr("cy", function(d,i) {return (legendspace+2*rmax) - (rmax / ((-1)*((i+1) - 5))) ;})
+//                .style("fill", function(d,i) {
+//                            var gbval = 1+Math.floor(255 - (255/4*((i+1)-1)));
+//                            return "rgb(" + 255 + "," + gbval + "," + gbval + ")";
+//                        }
+//                )
+//                .style("stroke","black")
+//                .attr("r", function(d,i) {
+//                            return rmax / ((-1)*((i+1) - 5));
+//                        }
+//                )
+//        ;
+//
+//
+//        legsymbols.append("text")
+//                .attr("x", function(d,i) {return 5+2*rmax / ((-1)*((i+1) - 5)) ;})
+//                .attr("y", legendspace + 2*rmax)
+//                .style("text-anchor", "start")
+//                .text(function(d) { return d; });
+
+//        legend
+//                .append("text")
+//                .text("Wisconsin Employment:")
+//                .attr("y", rmax*2+ legendspace)
+//        ;
+
+    });
+
+
+</script>
