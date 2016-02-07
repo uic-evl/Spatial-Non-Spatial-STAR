@@ -21,14 +21,13 @@ for row in csv:
     for col in range(0,len(row)):
         if col < 10 and col > 2 and row[col] == 'X': spatial.append(col)
         elif col > 9 and row[col] == 'X': nonSpatial.append(col)
-        if col == 10:
-            count = count + 1
+
     # combine the encodings into a single matrix of spatial vs nonSpatial
     for s in spatial:
         for n in nonSpatial:
             x = int(s)-3
             y = int(n)-10
-            Matrix[int(s)-3][int(n)-10] += 1
+            Matrix[x][y] += 1
 
 print nonSpatialNames
 for i in range(0,len(Matrix)):
