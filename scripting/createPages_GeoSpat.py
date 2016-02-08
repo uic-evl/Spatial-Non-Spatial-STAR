@@ -56,9 +56,12 @@ for row in file:
     out.write("layout: page\n")
     out.write("title: '" + row[1] + "'\n")
     out.write("categories: " + str(domain) + "\n")
-    out.write("typeEnc: "+ row[9] + "\n")
+    out.write("dataType: "+ row[8] + "\n")
+    out.write("typeEnc: "+ row[11] + "\n")
+    out.write("summary: \""+ str(row[24]) + "\"\n")
     out.write("nOfUsers: "+ evrow[1] + "\n")
     out.write("expertise: "+ evrow[2] + "\n")
+    out.write("typeOfEval: "+ evrow[4] + "\n")
 
     out.write("interactionPattern: ")
     arr = []

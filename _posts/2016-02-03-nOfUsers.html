@@ -1,0 +1,69 @@
+---
+layout: default
+title: Encodings 
+---
+
+{% comment %}
+=======================
+The following part extracts all the nOfUsers from your posts and sort nOfUsers, so that you do not need to manually collect your nOfUsers to a place.
+=======================
+{% endcomment %}
+{% assign rawnOfUsers = "" %}
+{% for post in site.posts %}
+    {% assign tnOfUsers = post.nOfUsers | join:'|' | append:'|' %}
+    {% assign rawnOfUsers = rawnOfUsers | append:tnOfUsers %}
+{% endfor %}
+{% assign rawnOfUsers = rawnOfUsers | split:'|' | sort %}
+
+{% comment %}
+=======================
+The following part removes dulpicated nOfUsers and invalid nOfUsers like blank tag.
+=======================
+{% endcomment %}
+{% assign nOfUsers = "" %}
+{% for tag in rawnOfUsers %}
+    {% if tag != "" %}
+        {% if nOfUsers == "" %}
+            {% assign nOfUsers = tag | split:'|' %}
+        {% endif %}
+        {% unless nOfUsers contains tag %}
+            {% assign nOfUsers = nOfUsers | join:'|' | append:'|' | append:tag | split:'|' %}
+        {% endunless %}
+    {% endif %}
+{% endfor %}
+
+{% comment %}
+=======================
+The purpose of this snippet is to list all the tags you have in your site.
+=======================
+{% endcomment %}
+{% for tag in nOfUsers %}
+    <a href="#{{ tag | slugify }}"> {{ tag }} </a>
+{% endfor %}
+
+{% comment %}
+=======================
+The purpose of this snippet is to list all your posts posted with a certain tag.
+=======================
+{% endcomment %}
+{% for tag in nOfUsers %}
+    <h2 id="{{ tag | slugify }}">{{ tag }}</h2>
+    <ul>
+     {% for post in site.posts %}
+         {% if post.nOfUsers contains tag %}
+         <li>
+         <h3>
+         <a href="{{ post.url | prepend: site.baseurl  }}">
+         {{ post.title }}
+         <small>{{ post.date | date_to_string }}</small>
+         </h3>
+         </a>
+         {% for tag in post.nOfUsers %}
+             <a class="tag" href="#{{ tag | slugify }}">{{ tag }}</a>
+         {% endfor %}
+         
+         </li>
+         {% endif %}
+     {% endfor %}
+    </ul>
+{% endfor %}

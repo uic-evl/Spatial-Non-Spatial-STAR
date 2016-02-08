@@ -1,0 +1,69 @@
+---
+layout: default
+title: Encodings 
+---
+
+{% comment %}
+=======================
+The following part extracts all the testerExpertise from your posts and sort testerExpertise, so that you do not need to manually collect your testerExpertise to a place.
+=======================
+{% endcomment %}
+{% assign rawtesterExpertise = "" %}
+{% for post in site.posts %}
+    {% assign ttesterExpertise = post.testerExpertise | join:'|' | append:'|' %}
+    {% assign rawtesterExpertise = rawtesterExpertise | append:ttesterExpertise %}
+{% endfor %}
+{% assign rawtesterExpertise = rawtesterExpertise | split:'|' | sort %}
+
+{% comment %}
+=======================
+The following part removes dulpicated testerExpertise and invalid testerExpertise like blank tag.
+=======================
+{% endcomment %}
+{% assign testerExpertise = "" %}
+{% for tag in rawtesterExpertise %}
+    {% if tag != "" %}
+        {% if testerExpertise == "" %}
+            {% assign testerExpertise = tag | split:'|' %}
+        {% endif %}
+        {% unless testerExpertise contains tag %}
+            {% assign testerExpertise = testerExpertise | join:'|' | append:'|' | append:tag | split:'|' %}
+        {% endunless %}
+    {% endif %}
+{% endfor %}
+
+{% comment %}
+=======================
+The purpose of this snippet is to list all the tags you have in your site.
+=======================
+{% endcomment %}
+{% for tag in testerExpertise %}
+    <a href="#{{ tag | slugify }}"> {{ tag }} </a>
+{% endfor %}
+
+{% comment %}
+=======================
+The purpose of this snippet is to list all your posts posted with a certain tag.
+=======================
+{% endcomment %}
+{% for tag in testerExpertise %}
+    <h2 id="{{ tag | slugify }}">{{ tag }}</h2>
+    <ul>
+     {% for post in site.posts %}
+         {% if post.testerExpertise contains tag %}
+         <li>
+         <h3>
+         <a href="{{ post.url | prepend: site.baseurl  }}">
+         {{ post.title }}
+         <small>{{ post.date | date_to_string }}</small>
+         </h3>
+         </a>
+         {% for tag in post.testerExpertise %}
+             <a class="tag" href="#{{ tag | slugify }}">{{ tag }}</a>
+         {% endfor %}
+         
+         </li>
+         {% endif %}
+     {% endfor %}
+    </ul>
+{% endfor %}

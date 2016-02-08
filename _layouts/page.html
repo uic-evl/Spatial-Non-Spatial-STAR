@@ -10,6 +10,53 @@ layout: default
             </header>
             <hr>
             <article>
+                <b>Summary: </b> 
+
+                      {{ page.summary }}
+                   
+                
+            </article>
+            <hr>
+            <article>
+                <b>Number Of Users: </b> 
+                <ul class="tags">
+                    <li>
+                      <a class="tag" href= "{{site.baseurl}}/2016/02/03/nOfUsers/#{{ tag | slugify }}">{{ page.nOfUsers }}</a>
+                    </li>
+                </ul>
+            </article>
+            <hr>
+            <article>
+                <b>User Expertise: </b> 
+                <ul class="tags">
+                    <li>
+                      <a class="tag" href= "{{site.baseurl}}/2016/02/03/expertise/#{{ tag | slugify }}">{{ page.expertise }}</a>
+                    </li>
+                </ul>
+            </article>
+            <hr>
+
+            <article>
+                <b>Data Type: </b> 
+                <ul class="tags">
+                    <li>
+                      <a class="tag" href= "{{site.baseurl}}/2016/02/03/dataTypes/#{{ tag | slugify }}">{{ page.dataType }}</a>
+                    </li>
+                </ul>
+            </article>
+            <hr>
+            
+            <article>
+                <b>Type of Evaluation: </b> 
+                <ul class="tags">
+                    <li>
+                      <a class="tag" href= "{{site.baseurl}}/2016/02/03/typeOfEval/#{{ tag | slugify }}">{{ page.typeOfEval }}</a>
+                    </li>
+                </ul>
+            </article>
+            <hr>
+
+            <article>
                 <b>Type of Encodings: </b> 
                 <ul class="tags">
                     <li>
@@ -17,6 +64,48 @@ layout: default
                     </li>
                 </ul>
             </article>
+            <hr>
+            <article>
+
+                <b>Interaction Type: </b> 
+                <ul class="tags">
+                    
+                {% for tag in page.interactionPattern %}
+                    <li>
+                      <a href="{{site.baseurl}}/2016/02/03/interactionPattern/#{{ tag | slugify }}"> {{ tag }} </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </article>
+
+            <hr>
+            <article>
+
+                <b>Testers Expertise: </b> 
+                <ul class="tags">
+                    
+                {% for tag in page.testerExpertise %}
+                    <li>
+                      <a href="{{site.baseurl}}/2016/02/03/testerExpertise/#{{ tag | slugify }}"> {{ tag }} </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </article>
+
+            <hr>
+            <article>
+
+                <b>Tasks: </b> 
+                <ul class="tags">
+                    
+                {% for tag in page.Tasks %}
+                    <li>
+                      <a href="{{site.baseurl}}/2016/02/03/Tasks/#{{ tag | slugify }}"> {{ tag }} </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </article>
+
             <hr>
             <article>
 
