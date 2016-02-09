@@ -1,0 +1,65 @@
+,,Discover,Present,Annotate,Record,Derive,Browse,Locate,Explore,Lookup,Identify,Compare,Summarize
+Andrienko-2007 (published in Journay 2008),Explore,1,,,,,,,1,,,,
+Andrienko-2010(EuroVis),Explore/ Compare,1,,,,,,,1,,,1,
+Andrienko-2010(VAST),Explore/ Identify,1,,,,,1,,1,,1,1,
+Bertini-2007,Compare/ Explore,,1,,,,,,1,,,1,
+Butkiewicz-2008,Explore,1,,,,,,1,1,,,,
+Butkiewicz-2010,Compare,,1,,,,,1,,,,1,
+Eccles-2007 (published in Journay 2008),Produce/ Explore/ Annotate,,1,1,,,,,1,,,,
+Eick-2007,Explore/ Annotate,,1,1,,,,,1,,,,
+Han-2009,Explore/ Compare/ Identify,1,,,,,,1,1,,1,1,
+Kapler-2008,Produce,,1,,1,,,,,,,,
+Maciejewski-2007,Explore,1,,,,,,1,1,,1,,
+Maciejewski-2008,Explore/ Identify,1,,,,,,1,1,,1,,
+Pan-2007,Explore,,1,,,,,,1,,,,
+Quan-2009,Explore,,1,,,,1,,1,,,,
+Wang-2008,Explore,1,,,,,,,1,,1,,
+Weaver-2006,Explore,,1,,,,,,1,,,,1
+Weaver-2008,Explore/ Locate,,1,,,,,1,1,,,,1
+Kothur 2014,Compare,1,,,,,,,,,,1,
+Lu 2015,Explore,1,,,,,,,1,,1,,
+Chen 2011,Explore/ Identify,1,,,,,,,1,,1,,
+Cenydd 2011,Explore,1,,,,,,1,1,,1,,
+Bosch 2011,Explore,1,,,,,,1,1,,1,,
+Boone 2011,Explore,1,,,,,,1,1,,1,,
+Banfi 2011,Explore,1,,,,,,1,1,,1,,
+Rothenberger 2011,Explore,,1,,,,,,1,,,,1
+Peca 2011,Explore,,1,,,,1,,1,,,,1
+Hao 2011,Browse/ Explore,1,,,,,1,,1,,,,1
+MacEachren 2011,Browse/ Explore,,1,,,,1,,1,,,,1
+Alam 2015,Compare/ Explore,,1,,,,1,,1,,,,1
+Cano 2015,Compare/ Explore,,1,,,,1,,1,,,,1
+Diehl 2015,Explore/ Identify,1,,,,,,,1,,1,,
+Mahsa Mirzargar 2014,E1ploration,,1,,,,,,1,,,,1
+Florian Ferstl 2015,Comparison ,,1,,,,,,,,,1,
+Panse-2006,,1,,,,,,,,,,1,1
+Chang-2007,Explore,,1,,,,,,1,,,,1
+eerily similar to above,Compare,1,,,,,,,,,,1,
+Guo-2009,Explore,,1,,,,,,1,,,,1
+Turkay-2014,Explore/ Compare,,1,,,,,,1,,,1,
+Lanir 2014,Summarize/ Identify,,1,,,,,,,,1,,1
+Pike-2008,Explore,,1,,,,,,1,,,,
+Tomaszewski-2010,Explore/ Summarize/ Annotate,1,,1,,,,,1,,,,1
+Mehler-2006,Explore/ Compare,,1,,,,,,1,,,1,1
+Dykes-2007,Explore/ Compare,,1,,,,,,1,,,1,
+Dork-2008,Explore/ Lookup,1,,,,,,,1,1,,,
+Speckman-2010,Compare,,1,,,,,,,,,1,
+Ferreira-2011,Explore/ Identify/ Compare,1,,,,,,,1,,1,1,
+Accorsi 2014,E1ploration,1,,,,,,,1,,1,,
+Afzal-2012,Explore,,1,,,,,,1,,,,
+Lins-2013,Present/Explore/Summarize,,1,,,,,,1,,,,1
+,,23,26,3,1,0,7,10,41,1,15,14,16
+,,,,,,,,,,,,,
+,,Task,Count,,,,,,,,,,
+,,Discover,23,,,,,,,,,,
+,,Present,26,,,,,,,,,,
+,,Annotate,3,,,,,,,,,,
+,,Record,1,,,,,,,,,,
+,,Derive,1,,,,,,,,,,
+,,Browse,7,,,,,,,,,,
+,,Locate,11,,,,,,,,,,
+,,Explore,46,,,,,,,,,,
+,,Lookup,1,,,,,,,,,,
+,,Identify,16,,,,,,,,,,
+,,Compare,14,,,,,,,,,,
+,,Summarize,17,,,,,,,,,,

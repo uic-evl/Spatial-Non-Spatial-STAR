@@ -6,7 +6,7 @@ file = sys.argv[1]
 f = open(file)
 csv = csv.reader(f)
 
-spatialNames = ['Chloropleth Map / Heatmap',	'Volume / Images',	'Isosurface / Streamlines',	'Ball and Stake / Mesh',	'Glyph',	'Animation',	'Other']
+spatialNames = ['Chloropleth Map / Heatmap',	'Ball and Stake / Mesh', 'Isosurface / Streamlines', 'Volume / Images',	'Glyph',	'Animation',	'Other']
 nonSpatialNames = '\t'.join(['Encoding', 'Color',	'Line Chart',	'Histogram',	'Scatterplot',	'Node-link Diagram / Graph',	'Parallel Coordinate Plot',	'Star Coordinates'])
 
 Matrix = [[0 for x in range(7)] for x in range(7)]
