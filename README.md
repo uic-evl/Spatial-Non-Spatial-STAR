@@ -1,1 +1,0 @@
-# Spatial-Non-Spatial-State-of-the-Art-Report

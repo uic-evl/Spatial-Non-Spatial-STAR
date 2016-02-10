@@ -1,0 +1,69 @@
+---
+layout: default
+title: Encodings 
+---
+
+{% comment %}
+=======================
+The following part extracts all the expertise from your posts and sort expertise, so that you do not need to manually collect your expertise to a place.
+=======================
+{% endcomment %}
+{% assign rawexpertise = "" %}
+{% for post in site.posts %}
+    {% assign texpertise = post.expertise | join:'|' | append:'|' %}
+    {% assign rawexpertise = rawexpertise | append:texpertise %}
+{% endfor %}
+{% assign rawexpertise = rawexpertise | split:'|' | sort %}
+
+{% comment %}
+=======================
+The following part removes dulpicated expertise and invalid expertise like blank tag.
+=======================
+{% endcomment %}
+{% assign expertise = "" %}
+{% for tag in rawexpertise %}
+    {% if tag != "" %}
+        {% if expertise == "" %}
+            {% assign expertise = tag | split:'|' %}
+        {% endif %}
+        {% unless expertise contains tag %}
+            {% assign expertise = expertise | join:'|' | append:'|' | append:tag | split:'|' %}
+        {% endunless %}
+    {% endif %}
+{% endfor %}
+
+{% comment %}
+=======================
+The purpose of this snippet is to list all the tags you have in your site.
+=======================
+{% endcomment %}
+{% for tag in expertise %}
+    <a href="#{{ tag | slugify }}"> {{ tag }} </a>
+{% endfor %}
+
+{% comment %}
+=======================
+The purpose of this snippet is to list all your posts posted with a certain tag.
+=======================
+{% endcomment %}
+{% for tag in expertise %}
+    <h2 id="{{ tag | slugify }}">{{ tag }}</h2>
+    <ul>
+     {% for post in site.posts %}
+         {% if post.expertise contains tag %}
+         <li>
+         <h3>
+         <a href="{{ post.url | prepend: site.baseurl  }}">
+         {{ post.title }}
+         <small>{{ post.date | date_to_string }}</small>
+         </h3>
+         </a>
+         {% for tag in post.expertise %}
+             <a class="tag" href="#{{ tag | slugify }}">{{ tag }}</a>
+         {% endfor %}
+         
+         </li>
+         {% endif %}
+     {% endfor %}
+    </ul>
+{% endfor %}

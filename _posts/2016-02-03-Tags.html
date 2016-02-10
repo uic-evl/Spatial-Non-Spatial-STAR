@@ -1,0 +1,69 @@
+---
+layout: default
+title: Encodings 
+---
+
+{% comment %}
+=======================
+The following part extracts all the EncodingUsed from your posts and sort EncodingUsed, so that you do not need to manually collect your EncodingUsed to a place.
+=======================
+{% endcomment %}
+{% assign rawEncodingUsed = "" %}
+{% for post in site.posts %}
+    {% assign tEncodingUsed = post.EncodingUsed | join:'|' | append:'|' %}
+    {% assign rawEncodingUsed = rawEncodingUsed | append:tEncodingUsed %}
+{% endfor %}
+{% assign rawEncodingUsed = rawEncodingUsed | split:'|' | sort %}
+
+{% comment %}
+=======================
+The following part removes dulpicated EncodingUsed and invalid EncodingUsed like blank tag.
+=======================
+{% endcomment %}
+{% assign EncodingUsed = "" %}
+{% for tag in rawEncodingUsed %}
+    {% if tag != "" %}
+        {% if EncodingUsed == "" %}
+            {% assign EncodingUsed = tag | split:'|' %}
+        {% endif %}
+        {% unless EncodingUsed contains tag %}
+            {% assign EncodingUsed = EncodingUsed | join:'|' | append:'|' | append:tag | split:'|' %}
+        {% endunless %}
+    {% endif %}
+{% endfor %}
+
+{% comment %}
+=======================
+The purpose of this snippet is to list all the tags you have in your site.
+=======================
+{% endcomment %}
+{% for tag in EncodingUsed %}
+    <a href="#{{ tag | slugify }}"> {{ tag }} </a>
+{% endfor %}
+
+{% comment %}
+=======================
+The purpose of this snippet is to list all your posts posted with a certain tag.
+=======================
+{% endcomment %}
+{% for tag in EncodingUsed %}
+    <h2 id="{{ tag | slugify }}">{{ tag }}</h2>
+    <ul>
+     {% for post in site.posts %}
+         {% if post.EncodingUsed contains tag %}
+         <li>
+         <h3>
+         <a href="{{ post.url | prepend: site.baseurl  }}">
+         {{ post.title }}
+         <small>{{ post.date | date_to_string }}</small>
+         </h3>
+         </a>
+         {% for tag in post.EncodingUsed %}
+             <a class="tag" href="#{{ tag | slugify }}">{{ tag }}</a>
+         {% endfor %}
+         
+         </li>
+         {% endif %}
+     {% endfor %}
+    </ul>
+{% endfor %}

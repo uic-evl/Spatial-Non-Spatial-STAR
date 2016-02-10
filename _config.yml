@@ -1,0 +1,25 @@
+# Site settings
+title: Spatial Non-Spatial STAR
+#email:
+description: EuroVis 2015 State of the Art Report
+github_username: uic-evl
+
+
+url: http://uic-evl.github.io
+baseurl: /Spatial-Non-Spatial-STAR
+permalink: /:categories/:year/:month/:day/:title/
+
+# Build settings
+markdown: kramdown
+
+lsi: false
+highlighter: rouge
+safe: true
+incremental: false
+gist:
+    noscript: false
+#highlighter: pygments
+# highlighter: rouge
+# highlighter: false
+gems:
+  - jekyll-sitemap
