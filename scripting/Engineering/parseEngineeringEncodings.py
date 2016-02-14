@@ -19,8 +19,12 @@ for row in csv:
     spatial = []
     nonSpatial = []
     for col in range(0,len(row)):
-        if col < 10 and col > 2 and row[col] == 'X': spatial.append(col)
-        elif col > 9 and row[col] == 'X': nonSpatial.append(col)
+        if col < 10 and col > 2 and row[col] == 'X':
+            spatial.append(col)
+        elif col > 9 and row[col] == 'X':
+            nonSpatial.append(col)
+
+    # print nonSpatial
 
     # combine the encodings into a single matrix of spatial vs nonSpatial
     for s in spatial:

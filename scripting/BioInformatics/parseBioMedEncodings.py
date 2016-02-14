@@ -6,11 +6,11 @@ file = sys.argv[1]
 f = open(file)
 csv = csv.reader(f)
 
-spatialNames = ['Chloropleth Map/Heatmap',	'Ball and Stake/Mesh',	'Isosurface/Streamlines' ,'Volume/Images']
-nonSpatialNames = '\t'.join(['Encoding', 'Color', 'Label', 'Line Chart', 'Histogram', 'Scatterplot',
-        'Box Plot',  'Graph-based', 'Dendrogram', 'SPLOM', 'PCP', 'Glyph', 'Star Plot', 'TreeMap'])
+spatialNames = ['Ball and Stake/Mesh',	'Isosurface/Streamlines' ,'Volume/Images', 'Glyph', "Animation"]
+nonSpatialNames = '\t'.join(['Encoding', 'Bar Chart', 'Line Chart', 'Sequence', 'Pie Chart', 'Histogram', 'Scatterplot',
+        'Box Plot',  'Graph-Based', 'Heatmap', 'PCP'])
 
-Matrix = [[0 for x in range(16)] for x in range(4)]
+Matrix = [[0 for x in range(13)] for x in range(5)]
 
 # print Matrix
 count = 0
@@ -20,16 +20,16 @@ for row in csv:
     spatial = []
     nonSpatial = []
     for col in range(0,len(row)):
-        if col < 5 and col > 0 and row[col] == 'X':
+        if col < 6 and col > 0 and row[col] == 'X':
             spatial.append(col)
-        elif col > 4 and row[col] == 'X':
+        elif col > 5 and row[col] == 'X':
             nonSpatial.append(col)
 
     # combine the encodings into a single matrix of spatial vs nonSpatial
     for s in spatial:
         for n in nonSpatial:
             x = int(s)-1
-            y = int(n)-5
+            y = int(n)-6
             Matrix[x][y] += 1
 
 print nonSpatialNames
