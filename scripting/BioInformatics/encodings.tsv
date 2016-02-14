@@ -1,6 +1,7 @@
-Encoding	Bar Chart	Line Chart	Sequence	Pie Chart	Histogram	Scatterplot	Box Plot	Graph-Based	Heatmap	PCP
-Ball and Stake/Mesh	2	1	4	1	1	1	0	3	3	0	0	0	0
-Isosurface/Streamlines	0	0	0	0	0	1	0	0	0	0	0	0	0
-Volume/Images	0	0	0	0	2	2	1	2	0	1	0	0	0
-Glyph	0	2	0	0	0	0	0	2	1	1	0	0	0
-Animation	0	2	0	0	0	0	0	0	0	1	0	0	0
+Encoding	Color	Label with Text	Bar Chart	Line Chart	Sequence	Pie Chart	Histogram	Scatterplot	Box-Plot	Node-Link	SPLOM	PCP	Star-Plot	TreeMap
+Choropleth / Heatmap	0	0	1	0	2	0	1	0	0	1	0	0	0	0
+Ball and Stick / Mesh	0	0	2	1	4	1	1	1	0	3	0	0	0	0
+Isosurface / Streamlines	0	0	0	0	0	0	0	1	0	0	0	0	0	0
+Volume / Images	0	0	0	0	0	0	2	2	1	2	0	1	0	0
+Glyph	0	0	0	2	0	0	0	0	0	2	0	1	0	0
+Animation	0	0	0	2	0	0	0	0	0	0	0	1	0	0
