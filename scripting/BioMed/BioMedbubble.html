@@ -72,7 +72,7 @@
 
     var totWidth = 1600,
             totHeight = totWidth * 0.85,
-            margin = {top: 80, right: 0, bottom: 150, left: 440},
+            margin = {top: 100, right: 0, bottom: 250, left: 500},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
@@ -111,13 +111,13 @@
         x.domain(grpNames);
 
         chart.append("text")
-                .attr("x", (width / 5))
-                .attr("y", (margin.top / 3))
+                .attr("x", (width / 2.5))
+                .attr("y", (height + margin.bottom+ 20))
                 .attr("text-anchor", "start")
-                .style("font-size", "40px")
+                .style("font-size", "60px")
                 .style("text-decoration", "bold")
-                .style("text-decoration", "underline")
-                .text("BioMedical - Spatial vs NonSpatial Encodings");
+//                .style("text-decoration", "underline")
+                .text("BioMedical");
 
 
         chart.append("g")
@@ -128,7 +128,7 @@
                 .style("text-anchor","end")
                 .attr("transform","rotate(-90)")
                 .attr("dx","1.0em")
-                .attr("dy",x.rangeBand()/10-20)
+                .attr("dy",x.rangeBand()/10+20)
         ;
 
         chart.append("g")
@@ -143,7 +143,7 @@
                 .data(data)
                 .enter().append("g")
                 .attr("class","grow")
-                .attr("transform", function(d) { return "translate(0," + y(d.Encoding) + ")"; })
+                .attr("transform", function(d) { return "translate(25," + y(d.Encoding) + ")"; })
                 ;
 
         var gcells = grows.selectAll(".gcell")
