@@ -153,16 +153,17 @@ function graphChart(data, chartDiv, maxValue, grpNames)
         .attr("transform","translate(0," + (height) + ")")
         .call(xAxis)
         .selectAll("text")
-        .style("text-anchor","end")
+        .style({"text-anchor":"end", "font-weight": "bold"})
         .attr("transform","rotate(-90)")
         .attr("dx","1.0em")
-        .attr("dy",x.rangeBand()/10+20)
+        .attr("dy",x.rangeBand()/10)
     ;
 
     chart.append("g")
         .attr("class","y axis")
         .call(yAxis)
         .selectAll("text")
+        .style({"font-weight": "bold"})
         .attr("dx","40px");
 
     var grows = chart.selectAll(".grow")
