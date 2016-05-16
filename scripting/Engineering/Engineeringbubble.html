@@ -175,19 +175,6 @@
                 //.style("stroke","black")
         ;
 
-        var image = new Image;
-        image.src = "Engineering.png";
-
-        image.onload = function() {
-            context.drawImage(image, 0, 0);
-
-            var a = document.createElement("a");
-            a.download = "fallback.png";
-            a.href = canvas.toDataURL("image/png");
-            a.click();
-        };
-
-
     });
 
 

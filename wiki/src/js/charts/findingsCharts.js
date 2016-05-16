@@ -1,4 +1,4 @@
-function parseData(rows, tabletop) {
+function parseEncodingsData(rows, tabletop) {
 
     // get only the rows that have a number corresponding to their entry
     //var rows = _.reject(tabletop.sheets("Encodings").all(), function(o) { return !o.No; });
@@ -11,173 +11,72 @@ function parseData(rows, tabletop) {
         }, { });
         return out;
     });
-    var structures = _.reduce(rows, function(result, value, key) {
 
-        if(value.Primary){
-            if(value.Functionality){
-                result.Primary.Functionality += 1;
-            }
-            if(value.Mutagenesis){
-                result.Primary.Mutagenesis += 1;
-            }
-            if(value.Structure){
-                result.Primary.Structure += 1;
-            }
-            if(value.Interaction){
-                result.Primary.Interaction += 1;
-            }
-        }
+    // spatial columns
+    var spatial = [
+        'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
+    ];
 
-        if(value.Secondary){
-            if(value.Functionality){
-                result.Secondary.Functionality += 1;
-            }
-            if(value.Mutagenesis){
-                result.Secondary.Mutagenesis += 1;
-            }
-            if(value.Structure){
-                result.Secondary.Structure += 1;
-            }
-            if(value.Interaction){
-                result.Secondary.Interaction += 1;
-            }
-        }
-        if(value.Tertiary){
-            if(value.Functionality){
-                result.Tertiary.Functionality += 1;
-            }
-            if(value.Mutagenesis){
-                result.Tertiary.Mutagenesis += 1;
-            }
-            if(value.Structure){
-                result.Tertiary.Structure += 1;
-            }
-            if(value.Interaction){
-                result.Tertiary.Interaction += 1;
-            }
-        }
-        if(value.Quaternary){
-            if(value.Functionality){
-                result.Quaternary.Functionality += 1;
-            }
-            if(value.Mutagenesis){
-                result.Quaternary.Mutagenesis += 1;
-            }
-            if(value.Structure){
-                result.Quaternary.Structure += 1;
-            }
-            if(value.Interaction){
-                result.Quaternary.Interaction += 1;
-            }
-        }
-
-        return result;
-
-    }, { Primary: {Functionality: 0, Mutagenesis: 0, Structure: 0, Interaction: 0},
-        Secondary: {Functionality: 0, Mutagenesis: 0, Structure: 0, Interaction: 0},
-        Tertiary: {Functionality: 0, Mutagenesis: 0, Structure: 0, Interaction: 0},
-        Quaternary: {Functionality: 0, Mutagenesis: 0, Structure: 0, Interaction: 0}
-    });
-
-    // unneeded keys
-    var keys = _.keys(_.omit(rows[0], ['Primary', 'Secondary', 'Tertiary', 'Quaternary', 'No', 'Author']));
+    // non-spatial keys
+    var nonEncodings = _.keys(_.omit(rows[0], _.flatten(['Author and Year','Sub-Domain', spatial])));
 
     // template for the encodings chart
-    var out = _.reduce(_.omit(keys, ['Functionality', 'Structure', 'Mutagenesis', 'Interaction']),
+    var nonSpatial = _.reduce(nonEncodings,
         function(result, value, key){
-
             result[value] = 0;
             return result;
-
     }, {});
-    // map the encodings to each task
+
+    var max = 0;
     var encodings = _.reduce(rows, function(result, value, key) {
 
-        if(value.Functionality){
-            _.keys(out).forEach(function(k, v){
+        // get the rows that are one
+        var enc = _.pickBy(value, _.isNumber);
 
-                if(value[k]){
-                    result.Functionality[k] += 1;
-                }
-            })
-        }
+        var spat = _.pick(enc, spatial);
+        var non = _.omit(enc, spatial);
 
-        if(value.Mutagenesis){
-            _.keys(out).forEach(function(k, v){
+        _.keys(spat).forEach(function(s){
 
-                if(value[k]){
-                    result.Mutagenesis[k] += 1;
-                }
-            })
-        }
+            _.keys(non).forEach(function(n){
+                result[s][n] += 1;
+            });
 
-        if(value.Structure ){
-            _.keys(out).forEach(function(k, v){
-
-                if(value[k]){
-                    result.Structure[k] += 1;
-                }
-            })
-        }
-
-        if(value.Interaction ){
-            _.keys(out).forEach(function(k, v){
-
-                if(value[k]){
-                    result.Interaction[k] += 1;
-                }
-            })
-        }
+        });
 
         return result;
 
-    }, { Functionality:  _.cloneDeep(out),
-        Mutagenesis: _.cloneDeep(out),
-        Structure: _.cloneDeep(out),
-        Interaction: _.cloneDeep(out)
+    }, {
+        'Chloropleth / Heatmap': _.cloneDeep(nonSpatial),
+        'Ball and Stick / Mesh': _.cloneDeep(nonSpatial),
+        'Isosurface / Streamlines': _.cloneDeep(nonSpatial),
+        'Volume / Images': _.cloneDeep(nonSpatial),
+        'Glyph': _.cloneDeep(nonSpatial),
+        'Animation': _.cloneDeep(nonSpatial)
     });
 
-    var maxValue = 0;
-    structures = _.map(structures, function(d, k, o)
+    // Finally, map to the format needed for the chart
+    encodings = _.map(encodings, function(d, k, o)
     {
+        // console.log(d);
         var localMax = _.max(_.values(d));
-        maxValue = Math.max(maxValue, Math.log(localMax) );
+        max = Math.max(max, localMax);
 
         var obj = {};
         obj.groups = [];
-        obj.Structure = k;
+        obj.Spatial = k;
 
         var pairs = _.toPairs(d);
         pairs.forEach(function(arr){
-            obj.groups.push({name: arr[0], value: Math.log(arr[1] + 1)});
+            obj.groups.push({name: arr[0], value: parseInt(arr[1])});
         });
 
         return obj;
     });
-    chartGraph(structures, "#structure", maxValue,["Functionality", "Mutagenesis", "Structure", "Interaction"]);
-    //
-    // maxValue = 0;
-    // encodings = _.map(encodings, function(d, k, o)
-    // {
-    //     // console.log(d);
-    //     var localMax = _.max(_.values(d));
-    //     maxValue = Math.max(maxValue, Math.log(localMax) );
-    //
-    //     var obj = {};
-    //     obj.groups = [];
-    //     obj.Structure = k;
-    //
-    //     var pairs = _.toPairs(_.omit(d, ['Functionality', 'Structure', 'Mutagenesis', 'Interaction']));
-    //     pairs.forEach(function(arr){
-    //         if(arr[0] !== "Color")
-    //             obj.groups.push({name: arr[0], value: Math.log(parseInt(arr[1]) + 1)});
-    //     });
-    //
-    //     return obj;
-    // });
-    //
-    // chartGraph(encodings, "#encoding", maxValue, _.slice(keys,5));
 
+    console.log(encodings);
+
+    return {encodings: encodings, max: max, groups: nonEncodings};
 }
 
 function wrap(text, width) {
@@ -209,7 +108,7 @@ function wrap(text, width) {
     });
 }
 
-function chartGraph(data, chartDiv, maxValue, grpNames)
+function graphChart(data, chartDiv, maxValue, grpNames)
 {
     var totWidth = d3.select(chartDiv).node().parentNode.clientWidth,
         totHeight = totWidth * 0.85,
@@ -235,59 +134,42 @@ function chartGraph(data, chartDiv, maxValue, grpNames)
         .attr("width", totWidth)
         .attr("height", totHeight)
         .append("g")
-        .attr("transform","translate("+margin.left+",0)")
-        ;
+        .attr("transform","translate("+margin.left+",0)");
 
     x.domain(grpNames);
-    y.domain(data.map(function(d) { return d.Structure; }));
+    y.domain(data.map(function(d) { return d.Spatial; }));
 
     chart.append("text")
-        .attr("x", (width / 4))
+        .attr("x", (width / 2.5))
         .attr("y", (height + margin.bottom+ 20))
         .attr("text-anchor", "start")
-        .style("font-size", "30px")
-        .style("font-weight", "bold")
-        //                .style("text-decoration", "underline")
-        .text(
-            function(d)
-            {
-                if(this.farthestViewportElement.id == 'structure')
-                   return "Structure vs Task Analysis";
-                else
-                    return 'Task Analysis vs Visual Encoding'
-            });
+        .style("font-size", "60px")
+        .style("text-decoration", "bold")
+        .text("Engineering");
 
 
     chart.append("g")
         .attr("class","x axis")
-        .attr("transform",
-        function() {
-            console.log(this.farthestViewportElement.id);
-            if(this.farthestViewportElement.id == 'encoding')
-                return "translate(0," + (height - margin.bottom/7) + ")";
-            else
-                return "translate(0," + (height) + ")";
-        })
+        .attr("transform","translate(0," + (height) + ")")
         .call(xAxis)
         .selectAll("text")
         .style("text-anchor","end")
-        .attr("transform","rotate(-45)")
-        // .attr("dx","1.0em")
+        .attr("transform","rotate(-90)")
+        .attr("dx","1.0em")
         .attr("dy",x.rangeBand()/10+20)
     ;
 
     chart.append("g")
         .attr("class","y axis")
-        // .attr("transform","translate(" + margin.left +  ",0)")
         .call(yAxis)
         .selectAll("text")
-        .attr("dx","10px");
+        .attr("dx","40px");
 
     var grows = chart.selectAll(".grow")
         .data(data)
         .enter().append("g")
         .attr("class","grow")
-        .attr("transform", function(d) { return "translate(25," + y(d.Structure) + ")"; })
+        .attr("transform", function(d) { return "translate(25," + y(d.Spatial) + ")"; })
         ;
 
     var gcells = grows.selectAll(".gcell")
@@ -316,17 +198,6 @@ function chartGraph(data, chartDiv, maxValue, grpNames)
             })
         .style("")
     ;
-
-    // chart.append("text")
-    //     .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-    //     .attr("transform", "translate("+ (width/2) +","+(height+(margin.bottom - 100))+")")  // centre below axis
-    //     .style("font-weight", "bold")
-    //     .text("Comparative Task");
-
-    // chart.append("text")
-    //     .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-    //     .attr("transform", "translate("+ 0 +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
-    //     .text("Value");
 
     d3.selectAll('.container').style("visibility", "visible");
 }

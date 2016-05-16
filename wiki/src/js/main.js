@@ -1,16 +1,23 @@
-
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1oIxumn3O9Bu7y-yyHY-gJsf_9c-pk5PbEMsw5apmTf8/pubhtml';
+var final_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1oIxumn3O9Bu7y-yyHY-gJsf_9c-pk5PbEMsw5apmTf8/pubhtml';
+var engineering_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1b5_Yy_cGvcL6Uec3rYaEgT4NSi29OgP8tU1mV43DcFE/pubhtml';
 
 function init() {
     Tabletop.init({
-        key: public_spreadsheet_url,
-        callback: showInfo,
+        key: final_spreadsheet_url,
+        callback: setupTable,
         wanted: ["Engineering", "Tasks"],
+        debug: true
+    });
+
+    Tabletop.init({
+        key: engineering_spreadsheet_url,
+        callback: setupCharts,
+        wanted: ["Tasks", "Encodings"],
         debug: true
     });
 }
 
-function showInfo(data, tabletop) {
+function setupTable(data, tabletop) {
 
     // get only the rows that have a number corresponding to their entry
     var rows = tabletop.sheets("Engineering").all();
@@ -40,12 +47,15 @@ function showInfo(data, tabletop) {
             order: [[1, 'asc'], [0, 'asc']]
         });
     });
-
-
-    // var encodings = _.reject(tabletop.sheets("Encodings").all(), function (o) {
-    //     return !o.No;
-    // });
-    //parseData(encodings, tabletop);
-
 }
 
+function setupCharts(data, tabletop){
+
+    var encodings = tabletop.sheets("Encodings").all();
+
+    // get the parsed encodings
+    var chartData = parseEncodingsData(encodings, tabletop);
+
+    graphChart(chartData.encodings, "#encodings", chartData.max, chartData.groups)
+
+}
