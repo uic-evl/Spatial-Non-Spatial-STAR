@@ -50,12 +50,28 @@ function setupTable(data, tabletop) {
 }
 
 function setupCharts(data, tabletop){
-
+    
+    // get the data from the table sheet
     var encodings = tabletop.sheets("Encodings").all();
 
-    // get the parsed encodings
-    var chartData = parseEncodingsData(encodings, tabletop);
+    // extract natural science
+    var natural = _.filter(encodings, function(o) {
+        return o['Sub-Domain'] === "Natural Science" || o['Sub-Domain'] === "Both";
+    });
 
-    graphChart(chartData.encodings, "#encodings", chartData.max, chartData.groups)
+    // extract physical science
+    var physical = _.filter(encodings, function(o) {
+        return o['Sub-Domain'] === "Physical Science" || o['Sub-Domain'] === "Both";
+    });
+
+    // get the parsed encodings
+    var engineeringData = parseEncodingsData(encodings, tabletop);
+    var naturalData = parseEncodingsData(natural, tabletop);
+    var physicalData = parseEncodingsData(physical, tabletop);
+
+    // plot the bubble scatter plots
+    graphChart(engineeringData.encodings, "#engineering", engineeringData.max, engineeringData.groups);
+    graphChart(naturalData.encodings, "#natural", naturalData.max, naturalData.groups);
+    graphChart(physicalData.encodings, "#physical", physicalData.max, physicalData.groups);
 
 }

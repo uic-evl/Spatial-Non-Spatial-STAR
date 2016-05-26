@@ -2,7 +2,6 @@ function parseEncodingsData(rows, tabletop) {
 
     // get only the rows that have a number corresponding to their entry
     //var rows = _.reject(tabletop.sheets("Encodings").all(), function(o) { return !o.No; });
-
     rows = _.map(rows, function(d){
         var out =_.reduce(d, function(result, value, key) {
 
@@ -74,45 +73,13 @@ function parseEncodingsData(rows, tabletop) {
         return obj;
     });
 
-    console.log(encodings);
-
     return {encodings: encodings, max: max, groups: nonEncodings};
 }
 
-function wrap(text, width) {
-    text.each(function() {
-        var text = d3.select(this),
-            words = text.text().split(/\s+/).reverse(),
-            word,
-            line = [],
-            lineNumber = 0,
-            lineHeight = 1.1, // ems
-            y = text.attr("y"),
-            dy = parseFloat(text.attr("dy")),
-            tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-
-        console.log(words);
-
-        while (word = words.pop()) {
-
-            line.push(word);
-            tspan.text(line.join(" "));
-
-            if (tspan.node().getComputedTextLength() > width) {
-                line.pop();
-                tspan.text(line.join(" "));
-                line = [word];
-                tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-            }
-        }
-    });
-}
-
-function graphChart(data, chartDiv, maxValue, grpNames)
-{
-    var totWidth = d3.select(chartDiv).node().parentNode.clientWidth,
+function graphChart(data, chartDiv, maxValue, grpNames) {
+    var totWidth = d3.select('.col-md-4').node().clientWidth * 0.9,
         totHeight = totWidth * 0.85,
-        margin = {top: 100, right: 20, bottom: 250, left: 150},
+        margin = {top: 100, right: 20, bottom: 25, left: 100},
         width = totWidth - (margin.left + margin.right),
         height = totHeight - (margin.top + margin.bottom);
 
@@ -131,74 +98,135 @@ function graphChart(data, chartDiv, maxValue, grpNames)
         .orient("left");
 
     var chart = d3.select(chartDiv)
+        .append("svg")
         .attr("width", totWidth)
         .attr("height", totHeight)
         .append("g")
-        .attr("transform","translate("+margin.left+",0)");
+        .attr("width", totWidth)
+        .attr("height", totHeight)
+        .attr("transform", "translate(" + margin.left + ",0)");
 
     x.domain(grpNames);
-    y.domain(data.map(function(d) { return d.Spatial; }));
+    y.domain(data.map(function (d) {
+        return d.Spatial;
+    }));
 
-    chart.append("text")
-        .attr("x", (width / 2.5))
-        .attr("y", (height + margin.bottom+ 20))
-        .attr("text-anchor", "start")
-        .style("font-size", "60px")
-        .style("text-decoration", "bold")
-        .text("Engineering");
-
+    // chart.append("text")
+    //     .attr("x", (width / 2.5))
+    //     .attr("y", (height + margin.bottom+ 20))
+    //     .attr("text-anchor", "start")
+    //     .style("font-size", "20px")
+    //     .style("font-weight", "bold")
+    //     .text("Engineering");
 
     chart.append("g")
-        .attr("class","x axis")
-        .attr("transform","translate(0," + (height) + ")")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (height) + ")")
         .call(xAxis)
         .selectAll("text")
-        .style({"text-anchor":"end", "font-weight": "bold"})
-        .attr("transform","rotate(-90)")
-        .attr("dx","1.0em")
-        .attr("dy",x.rangeBand()/10)
+        .style({"text-anchor": "end", "font-weight": "bold"})
+        .attr("transform", "rotate(-45)")
+        .attr("dx", "0.0em")
+        .attr("dy", x.rangeBand()/10 + 20)
     ;
 
-    chart.append("g")
-        .attr("class","y axis")
+    chart
+        .append("g")
+        .attr("class", "y axis")
         .call(yAxis)
-        .selectAll("text")
-        .style({"font-weight": "bold"})
-        .attr("dx","40px");
+        .selectAll(".tick text")
+        .call(wrap, y.rangeBand())
+        .style({"text-anchor":"end", "font-weight": "bold", "text-align": "center"})
+
+    ;
 
     var grows = chart.selectAll(".grow")
-        .data(data)
-        .enter().append("g")
-        .attr("class","grow")
-        .attr("transform", function(d) { return "translate(25," + y(d.Spatial) + ")"; })
+            .data(data)
+            .enter().append("g")
+            .attr("class", "grow")
+            .attr("transform", function (d) {
+                return "translate(25," + y(d.Spatial) + ")";
+            })
         ;
 
     var gcells = grows.selectAll(".gcell")
-        .data(function(d) { return d.groups; })
-        .enter() .append("g")
-        .attr("transform", function(d,i,j) {return "translate(" + (i*x.rangeBand()) + ",0)" ; } )
-        .attr("class","gcell")
+            .data(function (d) {
+                return d.groups;
+            })
+            .enter().append("g")
+            .attr("transform", function (d, i, j) {
+                return "translate(" + (i * x.rangeBand()) + ",0)";
+            })
+            .attr("class", "gcell")
         ;
 
-    rmax = Math.min(y.rangeBand()/2-4,x.rangeBand()/1.5);
+    rmax = Math.min(y.rangeBand() / 2 - 4, x.rangeBand() / 1.5);
 
     gcells.append("circle")
-        .attr("cy",y.rangeBand()/2)
-        .attr("cx",x.rangeBand()/2)
+        .attr("cy", y.rangeBand() / 2)
+        .attr("cx", x.rangeBand() / 2)
         .attr("r",
-            function(d) {
+            function (d) {
                 var rind = d.value;
-                var rad = rmax / ((-1)*(rind - (maxValue + 1) ));
+                var rad = rmax / ((-1) * (rind - (maxValue + 1) ));
 
                 return rad;//(rad > 0) ? rad : 0;
             })
         .style("fill",
-            function(d) {
-                var gbval = 1+Math.floor(255 - (255/4*(d.value)));
+            function (d) {
+                var gbval = 1 + Math.floor(255 - (255 / 4 * (d.value)));
                 return "rgb(" + 255 + "," + gbval + "," + gbval + ")";
             })
         .style("")
     ;
 
     d3.selectAll('.container').style("visibility", "visible");
+}
+
+function wrap(text, width) {
+
+    text.each(function() {
+        var text = d3.select(this),
+            words = text.text().split(/\//).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = text.attr("y"),
+            dy = parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                .append("tspan")
+                .attr("x", -15).attr("y", y).attr("dy", dy + "em")
+                .attr("text-anchor", "middle");
+
+        var flag = false;
+
+        while (word = words.pop()) {
+
+            line.push(word);
+            tspan.text(line.join(" "));
+
+            if (tspan.node().getComputedTextLength() > width) {
+
+                line.pop();
+                tspan.text(line.join(" "));
+
+                if(line.length > 0 && !flag){
+                    lineNumber++;
+                    flag = true;
+                }
+
+                line = [word];
+                tspan = text.append("tspan")
+                    .attr("x", -15).attr("y", y).attr("dy", lineNumber * lineHeight + dy + "em")
+                    .attr('text-anchor', "middle")
+                    .text(word);
+
+                if(words.length > 0 && !flag){
+                    lineNumber++;
+                    flag = true;
+                }
+            }
+        }
+    });
 }
