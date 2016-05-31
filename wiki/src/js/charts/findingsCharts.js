@@ -26,6 +26,15 @@ function parseEncodingsData(rows, tabletop) {
             return result;
     }, {});
 
+    var authors = {
+        'Chloropleth / Heatmap': {},
+        'Ball and Stick / Mesh': {},
+        'Isosurface / Streamlines': {},
+        'Volume / Images': {},
+        'Glyph': {},
+        'Animation': {}
+    };
+
     var max = 0;
     var encodings = _.reduce(rows, function(result, value, key) {
 
@@ -35,23 +44,29 @@ function parseEncodingsData(rows, tabletop) {
         var spat = _.pick(enc, spatial);
         var non = _.omit(enc, spatial);
 
+
         _.keys(spat).forEach(function(s){
 
             _.keys(non).forEach(function(n){
-                result[s][n] += 1;
-            });
 
+                // increment the result
+                result[s][n] += 1;
+
+                // store the corresponding authors in another array
+                authors[s][n] = authors[s][n] || [];
+                authors[s][n].push(value['Author and Year']);
+            });
         });
 
         return result;
 
     }, {
-        'Chloropleth / Heatmap': _.cloneDeep(nonSpatial),
-        'Ball and Stick / Mesh': _.cloneDeep(nonSpatial),
-        'Isosurface / Streamlines': _.cloneDeep(nonSpatial),
-        'Volume / Images': _.cloneDeep(nonSpatial),
-        'Glyph': _.cloneDeep(nonSpatial),
-        'Animation': _.cloneDeep(nonSpatial)
+        'Chloropleth / Heatmap': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+        'Ball and Stick / Mesh': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+        'Isosurface / Streamlines': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+        'Volume / Images': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+        'Glyph': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+        'Animation': _.cloneDeep(nonSpatial)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
     });
 
     // Finally, map to the format needed for the chart
@@ -73,15 +88,23 @@ function parseEncodingsData(rows, tabletop) {
         return obj;
     });
 
-    return {encodings: encodings, max: max, groups: nonEncodings};
+    return {encodings: encodings, authors: authors, max: max, groups: nonEncodings};
 }
 
-function graphChart(data, chartDiv, maxValue, grpNames) {
+function graphChart(data, chartDiv, maxValue, grpNames, authors) {
+
     var totWidth = d3.select('.col-md-4').node().clientWidth * 0.9,
         totHeight = totWidth * 0.85,
         margin = {top: 100, right: 20, bottom: 25, left: 100},
         width = totWidth - (margin.left + margin.right),
         height = totHeight - (margin.top + margin.bottom);
+
+    /* Initialize tooltip */
+    var tip = d3.tip().attr('class', 'd3-tip').html(
+        function(obj, col, row) {
+            console.log(arguments);
+            return d;
+        });
 
     var x = d3.scale.ordinal()
         .rangeRoundBands([0, width]);
@@ -111,14 +134,6 @@ function graphChart(data, chartDiv, maxValue, grpNames) {
         return d.Spatial;
     }));
 
-    // chart.append("text")
-    //     .attr("x", (width / 2.5))
-    //     .attr("y", (height + margin.bottom+ 20))
-    //     .attr("text-anchor", "start")
-    //     .style("font-size", "20px")
-    //     .style("font-weight", "bold")
-    //     .text("Engineering");
-
     chart.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + (height) + ")")
@@ -137,8 +152,8 @@ function graphChart(data, chartDiv, maxValue, grpNames) {
         .selectAll(".tick text")
         .call(wrap, y.rangeBand())
         .style({"text-anchor":"end", "font-weight": "bold", "text-align": "center"})
-
     ;
+
 
     var grows = chart.selectAll(".grow")
             .data(data)
@@ -148,6 +163,8 @@ function graphChart(data, chartDiv, maxValue, grpNames) {
                 return "translate(25," + y(d.Spatial) + ")";
             })
         ;
+
+    grows.call(tip);
 
     var gcells = grows.selectAll(".gcell")
             .data(function (d) {
@@ -172,6 +189,8 @@ function graphChart(data, chartDiv, maxValue, grpNames) {
 
                 return rad;//(rad > 0) ? rad : 0;
             })
+        .on('mouseover', tip.show.apply(null, authors))
+        .on('mouseout', tip.hide)
         .style("fill",
             function (d) {
                 var gbval = 1 + Math.floor(255 - (255 / 4 * (d.value)));

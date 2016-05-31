@@ -69,9 +69,11 @@ function setupCharts(data, tabletop){
     var naturalData = parseEncodingsData(natural, tabletop);
     var physicalData = parseEncodingsData(physical, tabletop);
 
+    console.log(_.values(engineeringData.authors));
+
     // plot the bubble scatter plots
-    graphChart(engineeringData.encodings, "#engineering", engineeringData.max, engineeringData.groups);
-    graphChart(naturalData.encodings, "#natural", naturalData.max, naturalData.groups);
-    graphChart(physicalData.encodings, "#physical", physicalData.max, physicalData.groups);
+    graphChart(engineeringData.encodings, "#engineering", engineeringData.max, engineeringData.groups, _.values(engineeringData.authors));
+    graphChart(naturalData.encodings, "#natural", naturalData.max, naturalData.groups), _.values(naturalData.authors);
+    graphChart(physicalData.encodings, "#physical", physicalData.max, physicalData.groups, _.values(physicalData.authors));
 
 }
