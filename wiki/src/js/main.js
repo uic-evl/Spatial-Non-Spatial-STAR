@@ -2,6 +2,7 @@ var final_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1oIxumn3O9Bu
 var engineering_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1b5_Yy_cGvcL6Uec3rYaEgT4NSi29OgP8tU1mV43DcFE/pubhtml';
 
 var table = null;
+var rows = null;
 
 function init() {
     Tabletop.init({
@@ -22,7 +23,7 @@ function init() {
 function setupTable(data, tabletop) {
 
     // get only the rows that have a number corresponding to their entry
-    var rows = tabletop.sheets("Engineering").all();
+    rows = tabletop.sheets("Engineering").all();
 
     // Reference : https://datatables.net/reference/index
     $(document).ready(function () {
@@ -46,7 +47,8 @@ function setupTable(data, tabletop) {
                 {title: "Number of Overlays", data: "Number of Overlays"},
                 {title: "Evaluation type", data: "Evaluation type"}
             ],
-            order: [[1, 'asc'], [0, 'asc']]
+            order: [[1, 'asc'], [0, 'asc']],
+            stateSave: true
         });
     });
 }

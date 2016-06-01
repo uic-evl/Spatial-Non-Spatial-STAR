@@ -3,97 +3,6 @@ var Graph = function() {
 
     var self = this;
 
-    self.parseEncodingsData = function(rows){
-
-        // get only the rows that have a number corresponding to their entry
-        //var rows = _.reject(tabletop.sheets("Encodings").all(), function(o) { return !o.No; });
-        rows = _.map(rows, function(d){
-            var out =_.reduce(d, function(result, value, key) {
-
-                result[key] = +value || value;
-                return result;
-            }, { });
-            return out;
-        });
-
-        // spatial columns
-        var spatial = [
-            'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
-        ];
-
-        // non-spatial keys
-        var nonEncodings = _.keys(_.omit(rows[0], _.flatten(['Author','Sub-Domain', spatial])));
-
-        // template for the encodings chart
-        var nonSpatial = _.reduce(nonEncodings,
-            function(result, value, key){
-                result[value] = 0;
-                return result;
-            }, {});
-
-        var authors = {
-            'Chloropleth / Heatmap': {},
-            'Ball and Stick / Mesh': {},
-            'Isosurface / Streamlines': {},
-            'Volume / Images': {},
-            'Glyph': {},
-            'Animation': {}
-        };
-
-        var max = 0;
-        var encodings = _.reduce(rows, function(result, value, key) {
-
-            // get the rows that are one
-            var enc = _.pickBy(value, _.isNumber);
-
-            var spat = _.pick(enc, spatial);
-            var non = _.omit(enc, spatial);
-
-            _.keys(spat).forEach(function(s){
-
-                _.keys(non).forEach(function(n){
-
-                    // increment the result
-                    result[s][n] += 1;
-
-                    // store the corresponding authors in another array
-                    authors[s][n] = authors[s][n] || [];
-                    authors[s][n].push(value['Author']);
-                });
-            });
-
-            return result;
-
-        }, {
-            'Chloropleth / Heatmap': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Ball and Stick / Mesh': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Isosurface / Streamlines': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Volume / Images': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Glyph': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Animation': _.cloneDeep(nonSpatial)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
-        });
-
-        // Finally, map to the format needed for the chart
-        encodings = _.map(encodings, function(d, k, o)
-        {
-            // console.log(d);
-            var localMax = _.max(_.values(d));
-            max = Math.max(max, localMax);
-
-            var obj = {};
-            obj.groups = [];
-            obj.Spatial = k;
-
-            var pairs = _.toPairs(d);
-            pairs.forEach(function(arr){
-                obj.groups.push({name: arr[0], value: parseInt(arr[1])});
-            });
-
-            return obj;
-        });
-
-        return {encodings: encodings, authors: authors, max: max, groups: nonEncodings};
-    };
 
     // the hover callback to be used when the user
     // hovers over one of the circles
@@ -119,27 +28,29 @@ var Graph = function() {
             .data()
             .eq( 0 );
 
+        console.log(authors);
+
         // see if there is something to select
-        var current = _.intersection(authors, table_ids);
+        var current  = _.filter(table_ids, function(o) { return o });
 
-        // nothing to select
-        if(current.length === 0){
-            $("#papers tbody tr")
-                .removeClass( 'row_selected' );
-            return;
-        }
-
-        //find the indices of the rows that contain the evt_id's of the
-        //current rows that are highlighted
-        var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
-            return current.indexOf(table.cell( rowIdx, 0 ).data()) > -1;
-        } );
-
-        // Add a class to those rows using an index selector
-        table.rows( indexes )
-            .nodes()
-            .to$()
-            .addClass( 'row_selected' );
+        // // nothing to select
+        // if(current.length === 0){
+        //     $("#papers tbody tr")
+        //         .removeClass( 'row_selected' );
+        //     return;
+        // }
+        //
+        // //find the indices of the rows that contain the evt_id's of the
+        // //current rows that are highlighted
+        // var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
+        //     return current.indexOf(table.cell( rowIdx, 0 ).data()) > -1;
+        // } );
+        //
+        // // Add a class to those rows using an index selector
+        // table.rows( indexes )
+        //     .nodes()
+        //     .to$()
+        //     .addClass( 'row_selected' );
     };
 
     // the hover callback to be used when the user
@@ -154,13 +65,40 @@ var Graph = function() {
             .removeClass( 'row_selected' );
     };
 
-    var clickCB = function(obj, row, col)
+    var clickCB = function(obj, col, row)
     {
         // if the circle is hidden, no tooltip should be shown
         if(obj.value === 0) return;
 
-        hoveringCB(this.authors[row][obj.name]);
+        var authors = self.authors[row][obj.name].name;
+
         self.clicked = true;
+
+        // remove the previous selection
+        self.chart.selectAll('circle')
+            .classed("unSelected", false);
+
+        // grey out the circles that are not selected
+        self.chart.selectAll('circle')
+            .filter(
+                function(d) {
+                    if(d !== obj)
+                        return d;
+                })
+            .classed("unSelected", true);
+
+        /** modify the table to only show the entries related to the selected bubble **/
+
+        // select the rows associated with the selected bubble
+        var currentSelection  = _.filter(rows, function(o) {return _.indexOf(authors, o.Author) >= 0; });
+
+        // clear the old rows
+        table.clear();
+        //add the selection to the table
+        table.rows.add(currentSelection);
+        //render the table
+        table.draw();
+
     };
 
     function wrap(text, width) {
@@ -211,6 +149,98 @@ var Graph = function() {
         });
     }
 
+    self.parseEncodingsData = function(rows){
+
+        // get only the rows that have a number corresponding to their entry
+        //var rows = _.reject(tabletop.sheets("Encodings").all(), function(o) { return !o.No; });
+        rows = _.map(rows, function(d){
+            var out =_.reduce(d, function(result, value, key) {
+
+                result[key] = +value || value;
+                return result;
+            }, { });
+            return out;
+        });
+        console.log(rows);
+        // spatial columns
+        var spatial = [
+            'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
+        ];
+
+        // non-spatial keys
+        var nonEncodings = _.keys(_.omit(rows[0], _.flatten(['Author','Sub-Domain', 'Year', spatial])));
+
+        // template for the encodings chart
+        var nonSpatial = _.reduce(nonEncodings,
+            function(result, value, key){
+                result[value] = 0;
+                return result;
+            }, {});
+
+        var authors = {
+            'Chloropleth / Heatmap': {},
+            'Ball and Stick / Mesh': {},
+            'Isosurface / Streamlines': {},
+            'Volume / Images': {},
+            'Glyph': {},
+            'Animation': {}
+        };
+
+        var max = 0;
+        var encodings = _.reduce(rows, function(result, value, key) {
+
+            // get the rows that are one
+            var enc = _.pickBy(value, _.isNumber);
+
+            var spat = _.pick(enc, spatial);
+            var non = _.omit(enc, spatial);
+
+            _.keys(spat).forEach(function(s){
+
+                _.keys(non).forEach(function(n){
+
+                    // increment the result
+                    result[s][n] += 1;
+
+                    // store the corresponding authors in another array
+                    authors[s][n] = authors[s][n] || [];
+                    authors[s][n].push({name: value['Author'], year: value['Year']});
+                });
+            });
+
+            return result;
+
+        }, {
+            'Chloropleth / Heatmap': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Ball and Stick / Mesh': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Isosurface / Streamlines': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Volume / Images': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Glyph': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Animation': _.cloneDeep(nonSpatial)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
+        });
+
+        // Finally, map to the format needed for the chart
+        encodings = _.map(encodings, function(d, k, o)
+        {
+            // console.log(d);
+            var localMax = _.max(_.values(d));
+            max = Math.max(max, localMax);
+
+            var obj = {};
+            obj.groups = [];
+            obj.Spatial = k;
+
+            var pairs = _.toPairs(d);
+            pairs.forEach(function(arr){
+                obj.groups.push({name: arr[0], value: parseInt(arr[1])});
+            });
+
+            return obj;
+        });
+
+        return {encodings: encodings, authors: authors, max: max, groups: nonEncodings};
+    };
+
     /**
      * Creates and plots the Bubble Scatter Plot
      *
@@ -234,19 +264,19 @@ var Graph = function() {
         // attach the list of authors to the chart closure
         self.authors = authors;
 
+        // flag to indicate if the bubble was selected or not
         self.clicked = false;
 
         /* Initialize tooltip */
         self.tip = d3.tip().attr('class', 'd3-tip').html(
             function(obj, col, row) {
 
-                var authors = this.authors[row][obj.name];
-
+                var authors = self.authors[row][obj.name];
                 var html = "";
 
                 authors.forEach(function(a)
                 {
-                    html += "<span style='color:red'>" + String(a) + "</span>"+ "</br>";
+                    html += "<span style='color:red'>" + String(a.name) + "</span>"+ "</br>";
                 });
 
                 return html;
@@ -267,7 +297,7 @@ var Graph = function() {
             .scale(y)
             .orient("left");
 
-        var chart = d3.select(chartDiv)
+        self.chart = d3.select(chartDiv)
             .append("svg")
             .attr("width", totWidth)
             .attr("height", totHeight)
@@ -281,7 +311,7 @@ var Graph = function() {
             return d.Spatial;
         }));
 
-        chart.append("g")
+        self.chart.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + (height) + ")")
             .call(xAxis)
@@ -292,7 +322,7 @@ var Graph = function() {
                 .attr("dy", x.rangeBand()/10 + 20)
         ;
 
-        chart
+        self.chart
             .append("g")
             .attr("class", "y axis")
             .call(yAxis)
@@ -301,7 +331,7 @@ var Graph = function() {
             .style({"text-anchor":"end", "font-weight": "bold", "text-align": "center"})
         ;
 
-        var grows = chart.selectAll(".grow")
+        var grows = self.chart.selectAll(".grow")
                 .data(data)
                 .enter().append("g")
                 .attr("class", "grow")

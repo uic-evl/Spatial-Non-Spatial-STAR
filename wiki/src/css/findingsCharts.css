@@ -44,3 +44,7 @@ tr.row_selected td {
     font-weight: bold;
     color:black;
 }
+
+.unSelected {
+    fill: #f0f0f0 !important;
+}
