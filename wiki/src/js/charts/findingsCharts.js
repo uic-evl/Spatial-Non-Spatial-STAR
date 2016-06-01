@@ -97,10 +97,18 @@ var Graph = function() {
 
     // the hover callback to be used when the user
     // hovers over one of the circles
-    var hoveringCB = function(highlighted){
+    var hoveringCB = function(obj, col, row){
+
+        // show the tooptip if the circle is visible
+        if(obj.value === 0)
+            return;
+
+        self.tip.show(obj, col, row);
+
+        var authors = self.authors[row][obj.name];
 
         // remove the highlighting class if the selection is empty
-        if(highlighted.length == 0){
+        if(authors.length == 0){
             $("#papers tbody tr")
                 .removeClass( 'row_selected' );
             return;
@@ -112,7 +120,7 @@ var Graph = function() {
             .eq( 0 );
 
         // see if there is something to select
-        var current = _.intersection(highlighted, table_ids);
+        var current = _.intersection(authors, table_ids);
 
         // nothing to select
         if(current.length === 0){
@@ -146,9 +154,13 @@ var Graph = function() {
             .removeClass( 'row_selected' );
     };
 
-    var clickCB = function()
+    var clickCB = function(obj, row, col)
     {
-        console.log(arguments);
+        // if the circle is hidden, no tooltip should be shown
+        if(obj.value === 0) return;
+
+        hoveringCB(this.authors[row][obj.name]);
+        self.clicked = true;
     };
 
     function wrap(text, width) {
@@ -219,7 +231,10 @@ var Graph = function() {
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
+        // attach the list of authors to the chart closure
         self.authors = authors;
+
+        self.clicked = false;
 
         /* Initialize tooltip */
         self.tip = d3.tip().attr('class', 'd3-tip').html(
@@ -234,9 +249,8 @@ var Graph = function() {
                     html += "<span style='color:red'>" + String(a) + "</span>"+ "</br>";
                 });
 
-                hoveringCB(authors);
-
                 return html;
+
             }.bind(self) );
 
         var x = d3.scale.ordinal()
@@ -319,7 +333,7 @@ var Graph = function() {
                     var rind = d.value;
                     return rmax / ((-1) * (rind - (maxValue + 1) ));
                 })
-            .on('mouseover', self.tip.show)
+            .on('mouseover', hoveringCB)
             .on('mouseout', endCB)
             .on('click', clickCB)
             .style("fill",
@@ -332,8 +346,6 @@ var Graph = function() {
 
         d3.selectAll('.container').style("visibility", "visible");
     };
-
-
 
     return self;
 
