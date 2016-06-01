@@ -1,6 +1,8 @@
 var final_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1oIxumn3O9Bu7y-yyHY-gJsf_9c-pk5PbEMsw5apmTf8/pubhtml';
 var engineering_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1b5_Yy_cGvcL6Uec3rYaEgT4NSi29OgP8tU1mV43DcFE/pubhtml';
 
+var table = null;
+
 function init() {
     Tabletop.init({
         key: final_spreadsheet_url,
@@ -24,7 +26,7 @@ function setupTable(data, tabletop) {
 
     // Reference : https://datatables.net/reference/index
     $(document).ready(function () {
-        $('#papers').DataTable({
+        table = $('#papers').DataTable({
             data: rows,
             scrollY:        '50vh',
             scrollX:        false,

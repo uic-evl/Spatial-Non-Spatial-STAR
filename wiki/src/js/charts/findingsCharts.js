@@ -22,7 +22,7 @@ var Graph = function() {
         ];
 
         // non-spatial keys
-        var nonEncodings = _.keys(_.omit(rows[0], _.flatten(['Author and Year','Sub-Domain', spatial])));
+        var nonEncodings = _.keys(_.omit(rows[0], _.flatten(['Author','Sub-Domain', spatial])));
 
         // template for the encodings chart
         var nonSpatial = _.reduce(nonEncodings,
@@ -39,8 +39,6 @@ var Graph = function() {
             'Glyph': {},
             'Animation': {}
         };
-
-        console.log(rows);
 
         var max = 0;
         var encodings = _.reduce(rows, function(result, value, key) {
@@ -60,7 +58,7 @@ var Graph = function() {
 
                     // store the corresponding authors in another array
                     authors[s][n] = authors[s][n] || [];
-                    authors[s][n].push(value['Author and Year']);
+                    authors[s][n].push(value['Author']);
                 });
             });
 
@@ -97,123 +95,60 @@ var Graph = function() {
         return {encodings: encodings, authors: authors, max: max, groups: nonEncodings};
     };
 
-    self.graphChart = function(data, chartDiv, maxValue, grpNames, authors) {
+    // the hover callback to be used when the user
+    // hovers over one of the circles
+    var hoveringCB = function(highlighted){
 
-        var totWidth = d3.select('.col-md-4').node().clientWidth * 0.9,
-            totHeight = totWidth * 0.85,
-            margin = {top: 100, right: 20, bottom: 25, left: 100},
-            width = totWidth - (margin.left + margin.right),
-            height = totHeight - (margin.top + margin.bottom);
+        // remove the highlighting class if the selection is empty
+        if(highlighted.length == 0){
+            $("#papers tbody tr")
+                .removeClass( 'row_selected' );
+            return;
+        }
 
-        self.authors = authors;
+        var table_ids = table
+            .columns( 0,  {page:'current'} )
+            .data()
+            .eq( 0 );
 
-        /* Initialize tooltip */
-        var tip = d3.tip().attr('class', 'd3-tip').html(
-            function(obj, col, row) {
+        // see if there is something to select
+        var current = _.intersection(highlighted, table_ids);
 
-                var authors = this.authors[row][obj.name];
+        // nothing to select
+        if(current.length === 0){
+            $("#papers tbody tr")
+                .removeClass( 'row_selected' );
+            return;
+        }
 
-                var html = "";
+        //find the indices of the rows that contain the evt_id's of the
+        //current rows that are highlighted
+        var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
+            return current.indexOf(table.cell( rowIdx, 0 ).data()) > -1;
+        } );
 
-                authors.forEach(function(a)
-                {
-                    html += String(a) + "</br>";
-                });
+        // Add a class to those rows using an index selector
+        table.rows( indexes )
+            .nodes()
+            .to$()
+            .addClass( 'row_selected' );
+    };
 
-                return html;
-            }.bind(self) );
+    // the hover callback to be used when the user
+    // finishes their hover
+    var endCB = function()
+    {
+        // hide the tooltip
+        self.tip.hide();
 
-        var x = d3.scale.ordinal()
-            .rangeRoundBands([0, width]);
+        // deselect the table rows
+        $("#papers tbody tr")
+            .removeClass( 'row_selected' );
+    };
 
-        var y = d3.scale.ordinal()
-            .rangeRoundBands([height, 0]);
-
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom");
-
-        var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient("left");
-
-        var chart = d3.select(chartDiv)
-            .append("svg")
-            .attr("width", totWidth)
-            .attr("height", totHeight)
-            .append("g")
-            .attr("width", totWidth)
-            .attr("height", totHeight)
-            .attr("transform", "translate(" + margin.left + ",0)");
-
-        x.domain(grpNames);
-        y.domain(data.map(function (d) {
-            return d.Spatial;
-        }));
-
-        chart.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + (height) + ")")
-            .call(xAxis)
-            .selectAll("text")
-            .style({"text-anchor": "end", "font-weight": "bold"})
-            .attr("transform", "rotate(-45)")
-            .attr("dx", "0.0em")
-            .attr("dy", x.rangeBand()/10 + 20)
-        ;
-
-        chart
-            .append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
-            .selectAll(".tick text")
-            .call(wrap, y.rangeBand())
-            .style({"text-anchor":"end", "font-weight": "bold", "text-align": "center"})
-        ;
-
-        var grows = chart.selectAll(".grow")
-                .data(data)
-                .enter().append("g")
-                .attr("class", "grow")
-                .attr("transform", function (d) {
-                    return "translate(25," + y(d.Spatial) + ")";
-                })
-            ;
-
-        grows.call(tip);
-
-        var gcells = grows.selectAll(".gcell")
-                .data(function (d) {
-                    return d.groups;
-                })
-                .enter().append("g")
-                .attr("transform", function (d, i, j) {
-                    return "translate(" + (i * x.rangeBand()) + ",0)";
-                })
-                .attr("class", "gcell")
-            ;
-
-        var rmax = Math.min(y.rangeBand() / 2 - 4, x.rangeBand() / 1.5);
-
-        gcells.append("circle")
-            .attr("cy", y.rangeBand() / 2)
-            .attr("cx", x.rangeBand() / 2)
-            .attr("r",
-                function (d) {
-                    var rind = d.value;
-                    return rmax / ((-1) * (rind - (maxValue + 1) ));
-                })
-            .on('mouseover', tip.show)
-            .on('mouseout', tip.hide)
-            .style("fill",
-                function (d) {
-                    var gbval = 1 + Math.floor(255 - (255 / 4 * (d.value)));
-                    return "rgb(" + 255 + "," + gbval + "," + gbval + ")";
-                })
-            .style("")
-        ;
-
-        d3.selectAll('.container').style("visibility", "visible");
+    var clickCB = function()
+    {
+        console.log(arguments);
     };
 
     function wrap(text, width) {
@@ -263,6 +198,142 @@ var Graph = function() {
             }
         });
     }
+
+    /**
+     * Creates and plots the Bubble Scatter Plot
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} data The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} authors The authors corresponding to the data
+     */
+
+    self.graphChart = function(data, chartDiv, maxValue, grpNames, authors) {
+
+        var totWidth = d3.select('.col-md-4').node().clientWidth * 0.9,
+            totHeight = totWidth * 0.85,
+            margin = {top: 100, right: 20, bottom: 25, left: 100},
+            width = totWidth - (margin.left + margin.right),
+            height = totHeight - (margin.top + margin.bottom);
+
+        self.authors = authors;
+
+        /* Initialize tooltip */
+        self.tip = d3.tip().attr('class', 'd3-tip').html(
+            function(obj, col, row) {
+
+                var authors = this.authors[row][obj.name];
+
+                var html = "";
+
+                authors.forEach(function(a)
+                {
+                    html += "<span style='color:red'>" + String(a) + "</span>"+ "</br>";
+                });
+
+                hoveringCB(authors);
+
+                return html;
+            }.bind(self) );
+
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width]);
+
+        var y = d3.scale.ordinal()
+            .rangeRoundBands([height, 0]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        var chart = d3.select(chartDiv)
+            .append("svg")
+            .attr("width", totWidth)
+            .attr("height", totHeight)
+            .append("g")
+                .attr("width", totWidth)
+                .attr("height", totHeight)
+                .attr("transform", "translate(" + margin.left + ",0)");
+
+        x.domain(grpNames);
+        y.domain(data.map(function (d) {
+            return d.Spatial;
+        }));
+
+        chart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + (height) + ")")
+            .call(xAxis)
+            .selectAll("text")
+                .style({"text-anchor": "end", "font-weight": "bold"})
+                .attr("transform", "rotate(-45)")
+                .attr("dx", "0.0em")
+                .attr("dy", x.rangeBand()/10 + 20)
+        ;
+
+        chart
+            .append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .selectAll(".tick text")
+            .call(wrap, y.rangeBand())
+            .style({"text-anchor":"end", "font-weight": "bold", "text-align": "center"})
+        ;
+
+        var grows = chart.selectAll(".grow")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "grow")
+                .attr("transform", function (d) {
+                    return "translate(25," + y(d.Spatial) + ")";
+                })
+            ;
+
+        grows.call(self.tip);
+
+        var gcells = grows.selectAll(".gcell")
+                .data(function (d) {
+                    return d.groups;
+                })
+                .enter().append("g")
+                .attr("transform", function (d, i, j) {
+                    return "translate(" + (i * x.rangeBand()) + ",0)";
+                })
+                .attr("class", "gcell")
+            ;
+
+        var rmax = Math.min(y.rangeBand() / 2 - 4, x.rangeBand() / 1.5);
+
+        gcells.append("circle")
+            .attr("cy", y.rangeBand() / 2)
+            .attr("cx", x.rangeBand() / 2)
+            .attr("r",
+                function (d) {
+                    var rind = d.value;
+                    return rmax / ((-1) * (rind - (maxValue + 1) ));
+                })
+            .on('mouseover', self.tip.show)
+            .on('mouseout', endCB)
+            .on('click', clickCB)
+            .style("fill",
+                function (d) {
+                    var gbval = 1 + Math.floor(255 - (255 / 4 * (d.value)));
+                    return "rgb(" + 255 + "," + gbval + "," + gbval + ")";
+                })
+            .style("")
+        ;
+
+        d3.selectAll('.container').style("visibility", "visible");
+    };
+
+
 
     return self;
 

@@ -28,3 +28,19 @@
 .y.axis line {
     display: none;
 }
+
+.row {
+    margin-top: 10px;
+}
+
+tr.row_selected td {
+    background-color: #fee0d2 !important;
+    font-weight: bold !important;
+}
+
+#tooltip{
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color:black;
+}
