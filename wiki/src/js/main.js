@@ -64,16 +64,18 @@ function setupCharts(data, tabletop){
         return o['Sub-Domain'] === "Physical Science" || o['Sub-Domain'] === "Both";
     });
 
-    // get the parsed encodings
-    var engineeringData = parseEncodingsData(encodings, tabletop);
-    var naturalData = parseEncodingsData(natural, tabletop);
-    var physicalData = parseEncodingsData(physical, tabletop);
+    var engGraph = new Graph();
+    var natGraph = new Graph();
+    var phyGraph = new Graph();
 
-    console.log(_.values(engineeringData.authors));
+    // get the parsed encodings
+    var engineeringData = engGraph.parseEncodingsData(encodings);
+    var naturalData = natGraph.parseEncodingsData(natural);
+    var physicalData = phyGraph.parseEncodingsData(physical);
 
     // plot the bubble scatter plots
-    graphChart(engineeringData.encodings, "#engineering", engineeringData.max, engineeringData.groups, _.values(engineeringData.authors));
-    graphChart(naturalData.encodings, "#natural", naturalData.max, naturalData.groups), _.values(naturalData.authors);
-    graphChart(physicalData.encodings, "#physical", physicalData.max, physicalData.groups, _.values(physicalData.authors));
+    engGraph.graphChart(engineeringData.encodings, "#engineering", engineeringData.max, engineeringData.groups, _.values(engineeringData.authors));
+    natGraph.graphChart(naturalData.encodings, "#natural", naturalData.max, naturalData.groups, _.values(naturalData.authors));
+    phyGraph.graphChart(physicalData.encodings, "#physical", physicalData.max, physicalData.groups, _.values(physicalData.authors));
 
 }

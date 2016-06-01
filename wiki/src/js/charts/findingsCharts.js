@@ -1,251 +1,270 @@
-function parseEncodingsData(rows, tabletop) {
+'use strict';
+var Graph = function() {
 
-    // get only the rows that have a number corresponding to their entry
-    //var rows = _.reject(tabletop.sheets("Encodings").all(), function(o) { return !o.No; });
-    rows = _.map(rows, function(d){
-        var out =_.reduce(d, function(result, value, key) {
+    var self = this;
 
-            result[key] = +value || value;
+    self.parseEncodingsData = function(rows){
+
+        // get only the rows that have a number corresponding to their entry
+        //var rows = _.reject(tabletop.sheets("Encodings").all(), function(o) { return !o.No; });
+        rows = _.map(rows, function(d){
+            var out =_.reduce(d, function(result, value, key) {
+
+                result[key] = +value || value;
+                return result;
+            }, { });
+            return out;
+        });
+
+        // spatial columns
+        var spatial = [
+            'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
+        ];
+
+        // non-spatial keys
+        var nonEncodings = _.keys(_.omit(rows[0], _.flatten(['Author and Year','Sub-Domain', spatial])));
+
+        // template for the encodings chart
+        var nonSpatial = _.reduce(nonEncodings,
+            function(result, value, key){
+                result[value] = 0;
+                return result;
+            }, {});
+
+        var authors = {
+            'Chloropleth / Heatmap': {},
+            'Ball and Stick / Mesh': {},
+            'Isosurface / Streamlines': {},
+            'Volume / Images': {},
+            'Glyph': {},
+            'Animation': {}
+        };
+
+        console.log(rows);
+
+        var max = 0;
+        var encodings = _.reduce(rows, function(result, value, key) {
+
+            // get the rows that are one
+            var enc = _.pickBy(value, _.isNumber);
+
+            var spat = _.pick(enc, spatial);
+            var non = _.omit(enc, spatial);
+
+            _.keys(spat).forEach(function(s){
+
+                _.keys(non).forEach(function(n){
+
+                    // increment the result
+                    result[s][n] += 1;
+
+                    // store the corresponding authors in another array
+                    authors[s][n] = authors[s][n] || [];
+                    authors[s][n].push(value['Author and Year']);
+                });
+            });
+
             return result;
-        }, { });
-        return out;
-    });
 
-    // spatial columns
-    var spatial = [
-        'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
-    ];
+        }, {
+            'Chloropleth / Heatmap': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Ball and Stick / Mesh': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Isosurface / Streamlines': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Volume / Images': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Glyph': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Animation': _.cloneDeep(nonSpatial)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
+        });
 
-    // non-spatial keys
-    var nonEncodings = _.keys(_.omit(rows[0], _.flatten(['Author and Year','Sub-Domain', spatial])));
+        // Finally, map to the format needed for the chart
+        encodings = _.map(encodings, function(d, k, o)
+        {
+            // console.log(d);
+            var localMax = _.max(_.values(d));
+            max = Math.max(max, localMax);
 
-    // template for the encodings chart
-    var nonSpatial = _.reduce(nonEncodings,
-        function(result, value, key){
-            result[value] = 0;
-            return result;
-    }, {});
+            var obj = {};
+            obj.groups = [];
+            obj.Spatial = k;
 
-    var authors = {
-        'Chloropleth / Heatmap': {},
-        'Ball and Stick / Mesh': {},
-        'Isosurface / Streamlines': {},
-        'Volume / Images': {},
-        'Glyph': {},
-        'Animation': {}
+            var pairs = _.toPairs(d);
+            pairs.forEach(function(arr){
+                obj.groups.push({name: arr[0], value: parseInt(arr[1])});
+            });
+
+            return obj;
+        });
+
+        return {encodings: encodings, authors: authors, max: max, groups: nonEncodings};
     };
 
-    var max = 0;
-    var encodings = _.reduce(rows, function(result, value, key) {
+    self.graphChart = function(data, chartDiv, maxValue, grpNames, authors) {
 
-        // get the rows that are one
-        var enc = _.pickBy(value, _.isNumber);
+        var totWidth = d3.select('.col-md-4').node().clientWidth * 0.9,
+            totHeight = totWidth * 0.85,
+            margin = {top: 100, right: 20, bottom: 25, left: 100},
+            width = totWidth - (margin.left + margin.right),
+            height = totHeight - (margin.top + margin.bottom);
 
-        var spat = _.pick(enc, spatial);
-        var non = _.omit(enc, spatial);
+        self.authors = authors;
 
+        /* Initialize tooltip */
+        var tip = d3.tip().attr('class', 'd3-tip').html(
+            function(obj, col, row) {
 
-        _.keys(spat).forEach(function(s){
+                var authors = this.authors[row][obj.name];
 
-            _.keys(non).forEach(function(n){
+                var html = "";
 
-                // increment the result
-                result[s][n] += 1;
+                authors.forEach(function(a)
+                {
+                    html += String(a) + "</br>";
+                });
 
-                // store the corresponding authors in another array
-                authors[s][n] = authors[s][n] || [];
-                authors[s][n].push(value['Author and Year']);
-            });
-        });
+                return html;
+            }.bind(self) );
 
-        return result;
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width]);
 
-    }, {
-        'Chloropleth / Heatmap': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-        'Ball and Stick / Mesh': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-        'Isosurface / Streamlines': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-        'Volume / Images': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-        'Glyph': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-        'Animation': _.cloneDeep(nonSpatial)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
-    });
+        var y = d3.scale.ordinal()
+            .rangeRoundBands([height, 0]);
 
-    // Finally, map to the format needed for the chart
-    encodings = _.map(encodings, function(d, k, o)
-    {
-        // console.log(d);
-        var localMax = _.max(_.values(d));
-        max = Math.max(max, localMax);
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
 
-        var obj = {};
-        obj.groups = [];
-        obj.Spatial = k;
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
 
-        var pairs = _.toPairs(d);
-        pairs.forEach(function(arr){
-            obj.groups.push({name: arr[0], value: parseInt(arr[1])});
-        });
+        var chart = d3.select(chartDiv)
+            .append("svg")
+            .attr("width", totWidth)
+            .attr("height", totHeight)
+            .append("g")
+            .attr("width", totWidth)
+            .attr("height", totHeight)
+            .attr("transform", "translate(" + margin.left + ",0)");
 
-        return obj;
-    });
+        x.domain(grpNames);
+        y.domain(data.map(function (d) {
+            return d.Spatial;
+        }));
 
-    return {encodings: encodings, authors: authors, max: max, groups: nonEncodings};
-}
-
-function graphChart(data, chartDiv, maxValue, grpNames, authors) {
-
-    var totWidth = d3.select('.col-md-4').node().clientWidth * 0.9,
-        totHeight = totWidth * 0.85,
-        margin = {top: 100, right: 20, bottom: 25, left: 100},
-        width = totWidth - (margin.left + margin.right),
-        height = totHeight - (margin.top + margin.bottom);
-
-    /* Initialize tooltip */
-    var tip = d3.tip().attr('class', 'd3-tip').html(
-        function(obj, col, row) {
-            console.log(arguments);
-            return d;
-        });
-
-    var x = d3.scale.ordinal()
-        .rangeRoundBands([0, width]);
-
-    var y = d3.scale.ordinal()
-        .rangeRoundBands([height, 0]);
-
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left");
-
-    var chart = d3.select(chartDiv)
-        .append("svg")
-        .attr("width", totWidth)
-        .attr("height", totHeight)
-        .append("g")
-        .attr("width", totWidth)
-        .attr("height", totHeight)
-        .attr("transform", "translate(" + margin.left + ",0)");
-
-    x.domain(grpNames);
-    y.domain(data.map(function (d) {
-        return d.Spatial;
-    }));
-
-    chart.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + (height) + ")")
-        .call(xAxis)
-        .selectAll("text")
-        .style({"text-anchor": "end", "font-weight": "bold"})
-        .attr("transform", "rotate(-45)")
-        .attr("dx", "0.0em")
-        .attr("dy", x.rangeBand()/10 + 20)
-    ;
-
-    chart
-        .append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-        .selectAll(".tick text")
-        .call(wrap, y.rangeBand())
-        .style({"text-anchor":"end", "font-weight": "bold", "text-align": "center"})
-    ;
-
-
-    var grows = chart.selectAll(".grow")
-            .data(data)
-            .enter().append("g")
-            .attr("class", "grow")
-            .attr("transform", function (d) {
-                return "translate(25," + y(d.Spatial) + ")";
-            })
+        chart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + (height) + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .style({"text-anchor": "end", "font-weight": "bold"})
+            .attr("transform", "rotate(-45)")
+            .attr("dx", "0.0em")
+            .attr("dy", x.rangeBand()/10 + 20)
         ;
 
-    grows.call(tip);
-
-    var gcells = grows.selectAll(".gcell")
-            .data(function (d) {
-                return d.groups;
-            })
-            .enter().append("g")
-            .attr("transform", function (d, i, j) {
-                return "translate(" + (i * x.rangeBand()) + ",0)";
-            })
-            .attr("class", "gcell")
+        chart
+            .append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .selectAll(".tick text")
+            .call(wrap, y.rangeBand())
+            .style({"text-anchor":"end", "font-weight": "bold", "text-align": "center"})
         ;
 
-    rmax = Math.min(y.rangeBand() / 2 - 4, x.rangeBand() / 1.5);
+        var grows = chart.selectAll(".grow")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "grow")
+                .attr("transform", function (d) {
+                    return "translate(25," + y(d.Spatial) + ")";
+                })
+            ;
 
-    gcells.append("circle")
-        .attr("cy", y.rangeBand() / 2)
-        .attr("cx", x.rangeBand() / 2)
-        .attr("r",
-            function (d) {
-                var rind = d.value;
-                var rad = rmax / ((-1) * (rind - (maxValue + 1) ));
+        grows.call(tip);
 
-                return rad;//(rad > 0) ? rad : 0;
-            })
-        .on('mouseover', tip.show.apply(null, authors))
-        .on('mouseout', tip.hide)
-        .style("fill",
-            function (d) {
-                var gbval = 1 + Math.floor(255 - (255 / 4 * (d.value)));
-                return "rgb(" + 255 + "," + gbval + "," + gbval + ")";
-            })
-        .style("")
-    ;
+        var gcells = grows.selectAll(".gcell")
+                .data(function (d) {
+                    return d.groups;
+                })
+                .enter().append("g")
+                .attr("transform", function (d, i, j) {
+                    return "translate(" + (i * x.rangeBand()) + ",0)";
+                })
+                .attr("class", "gcell")
+            ;
 
-    d3.selectAll('.container').style("visibility", "visible");
-}
+        var rmax = Math.min(y.rangeBand() / 2 - 4, x.rangeBand() / 1.5);
 
-function wrap(text, width) {
+        gcells.append("circle")
+            .attr("cy", y.rangeBand() / 2)
+            .attr("cx", x.rangeBand() / 2)
+            .attr("r",
+                function (d) {
+                    var rind = d.value;
+                    return rmax / ((-1) * (rind - (maxValue + 1) ));
+                })
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide)
+            .style("fill",
+                function (d) {
+                    var gbval = 1 + Math.floor(255 - (255 / 4 * (d.value)));
+                    return "rgb(" + 255 + "," + gbval + "," + gbval + ")";
+                })
+            .style("")
+        ;
 
-    text.each(function() {
-        var text = d3.select(this),
-            words = text.text().split(/\//).reverse(),
-            word,
-            line = [],
-            lineNumber = 0,
-            lineHeight = 1.1, // ems
-            y = text.attr("y"),
-            dy = parseFloat(text.attr("dy")),
-            tspan = text.text(null)
-                .append("tspan")
-                .attr("x", -15).attr("y", y).attr("dy", dy + "em")
-                .attr("text-anchor", "middle");
+        d3.selectAll('.container').style("visibility", "visible");
+    };
 
-        var flag = false;
+    function wrap(text, width) {
 
-        while (word = words.pop()) {
+        text.each(function() {
+            var text = d3.select(this),
+                words = text.text().split(/\//).reverse(),
+                word,
+                line = [],
+                lineNumber = 0,
+                lineHeight = 1.1, // ems
+                y = text.attr("y"),
+                dy = parseFloat(text.attr("dy")),
+                tspan = text.text(null)
+                    .append("tspan")
+                    .attr("x", -15).attr("y", y).attr("dy", dy + "em")
+                    .attr("text-anchor", "middle");
 
-            line.push(word);
-            tspan.text(line.join(" "));
+            var flag = false;
 
-            if (tspan.node().getComputedTextLength() > width) {
+            while (word = words.pop()) {
 
-                line.pop();
+                line.push(word);
                 tspan.text(line.join(" "));
 
-                if(line.length > 0 && !flag){
-                    lineNumber++;
-                    flag = true;
-                }
+                if (tspan.node().getComputedTextLength() > width) {
 
-                line = [word];
-                tspan = text.append("tspan")
-                    .attr("x", -15).attr("y", y).attr("dy", lineNumber * lineHeight + dy + "em")
-                    .attr('text-anchor', "middle")
-                    .text(word);
+                    line.pop();
+                    tspan.text(line.join(" "));
 
-                if(words.length > 0 && !flag){
-                    lineNumber++;
-                    flag = true;
+                    if(line.length > 0 && !flag){
+                        lineNumber++;
+                        flag = true;
+                    }
+
+                    line = [word];
+                    tspan = text.append("tspan")
+                        .attr("x", -15).attr("y", y).attr("dy", lineNumber * lineHeight + dy + "em")
+                        .attr('text-anchor', "middle")
+                        .text(word);
+
+                    if(words.length > 0 && !flag){
+                        lineNumber++;
+                        flag = true;
+                    }
                 }
             }
-        }
-    });
-}
+        });
+    }
+
+    return self;
+
+};
+
