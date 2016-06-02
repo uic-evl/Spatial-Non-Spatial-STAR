@@ -28,29 +28,33 @@ var Graph = function() {
             .data()
             .eq( 0 );
 
-        console.log(authors);
+        // console.log(table_ids);
 
         // see if there is something to select
         var current  = _.filter(table_ids, function(o) { return o });
 
-        // // nothing to select
-        // if(current.length === 0){
-        //     $("#papers tbody tr")
-        //         .removeClass( 'row_selected' );
-        //     return;
-        // }
-        //
-        // //find the indices of the rows that contain the evt_id's of the
-        // //current rows that are highlighted
-        // var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
-        //     return current.indexOf(table.cell( rowIdx, 0 ).data()) > -1;
-        // } );
-        //
-        // // Add a class to those rows using an index selector
-        // table.rows( indexes )
-        //     .nodes()
-        //     .to$()
-        //     .addClass( 'row_selected' );
+        // nothing to select
+        if(current.length === 0){
+            $("#papers tbody tr")
+                .removeClass( 'row_selected' );
+            return;
+        }
+
+        //find the indices of the rows that contain the evt_id's of the
+        //current rows that are highlighted
+        var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
+
+            var author = table.cell( rowIdx, 0 ).data();
+            var year = table.cell( rowIdx, 1 ).data();
+
+            return _.find(authors, function(r) {return r.name === author && parseInt(r.year) == year }) ;
+        } );
+
+        // Add a class to those rows using an index selector
+        table.rows( indexes )
+            .nodes()
+            .to$()
+            .addClass( 'row_selected' );
     };
 
     // the hover callback to be used when the user
@@ -70,7 +74,7 @@ var Graph = function() {
         // if the circle is hidden, no tooltip should be shown
         if(obj.value === 0) return;
 
-        var authors = self.authors[row][obj.name].name;
+        var authors = self.authors[row][obj.name];
 
         self.clicked = true;
 
@@ -87,10 +91,18 @@ var Graph = function() {
                 })
             .classed("unSelected", true);
 
+        var names = _.map(authors, 'name');
+        var years = _.map(authors, 'year');
+
         /** modify the table to only show the entries related to the selected bubble **/
 
         // select the rows associated with the selected bubble
-        var currentSelection  = _.filter(rows, function(o) {return _.indexOf(authors, o.Author) >= 0; });
+        var currentSelection  = [];
+
+        _.forEach(authors, function(a)
+        {
+            currentSelection.push(_.find(rows, function(r) {return r.Author == a.name && parseInt(r.Year) == a.year }));
+        });
 
         // clear the old rows
         table.clear();
@@ -98,7 +110,6 @@ var Graph = function() {
         table.rows.add(currentSelection);
         //render the table
         table.draw();
-
     };
 
     function wrap(text, width) {
@@ -151,6 +162,8 @@ var Graph = function() {
 
     self.parseEncodingsData = function(rows){
 
+        // console.log(rows);
+
         // get only the rows that have a number corresponding to their entry
         //var rows = _.reject(tabletop.sheets("Encodings").all(), function(o) { return !o.No; });
         rows = _.map(rows, function(d){
@@ -161,7 +174,7 @@ var Graph = function() {
             }, { });
             return out;
         });
-        console.log(rows);
+
         // spatial columns
         var spatial = [
             'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
@@ -191,6 +204,7 @@ var Graph = function() {
 
             // get the rows that are one
             var enc = _.pickBy(value, _.isNumber);
+            enc = _.omit(enc, ['Year']);
 
             var spat = _.pick(enc, spatial);
             var non = _.omit(enc, spatial);

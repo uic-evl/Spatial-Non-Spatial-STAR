@@ -29,8 +29,8 @@ function setupTable(data, tabletop) {
     $(document).ready(function () {
         table = $('#papers').DataTable({
             data: rows,
-            scrollY:        '50vh',
-            scrollX:        false,
+            scrollY:  '50vh',
+            scrollX:  false,
             sScrollY: null,
             columns: [
                 {title: "Author", data: "Author"},
