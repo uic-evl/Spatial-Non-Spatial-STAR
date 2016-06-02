@@ -1,8 +1,12 @@
+var App = App || {};
+
 var final_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1oIxumn3O9Bu7y-yyHY-gJsf_9c-pk5PbEMsw5apmTf8/pubhtml';
 var engineering_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1b5_Yy_cGvcL6Uec3rYaEgT4NSi29OgP8tU1mV43DcFE/pubhtml';
 
-var table = null;
-var rows = null;
+App.table = null;
+App.rows = null;
+App.curreltSelection = null;
+
 
 function init() {
     Tabletop.init({
@@ -23,12 +27,12 @@ function init() {
 function setupTable(data, tabletop) {
 
     // get only the rows that have a number corresponding to their entry
-    rows = tabletop.sheets("Engineering").all();
+    App.curreltSelection = App.rows = tabletop.sheets("Engineering").all();
 
     // Reference : https://datatables.net/reference/index
     $(document).ready(function () {
-        table = $('#papers').DataTable({
-            data: rows,
+        App.table = $('#papers').DataTable({
+            data: App.rows,
             scrollY:  '50vh',
             scrollX:  false,
             sScrollY: null,
@@ -68,18 +72,18 @@ function setupCharts(data, tabletop){
         return o['Sub-Domain'] === "Physical Science" || o['Sub-Domain'] === "Both";
     });
 
-    var engGraph = new Graph();
-    var natGraph = new Graph();
-    var phyGraph = new Graph();
+    App.engGraph = new Graph();
+    App.natGraph = new Graph();
+    App.phyGraph = new Graph();
 
     // get the parsed encodings
-    var engineeringData = engGraph.parseEncodingsData(encodings);
-    var naturalData = natGraph.parseEncodingsData(natural);
-    var physicalData = phyGraph.parseEncodingsData(physical);
+    var engineeringData = App.engGraph.parseEncodingsData(encodings);
+    var naturalData = App.natGraph.parseEncodingsData(natural);
+    var physicalData = App.phyGraph.parseEncodingsData(physical);
 
     // plot the bubble scatter plots
-    engGraph.graphChart(engineeringData.encodings, "#engineering", engineeringData.max, engineeringData.groups, _.values(engineeringData.authors));
-    natGraph.graphChart(naturalData.encodings, "#natural", naturalData.max, naturalData.groups, _.values(naturalData.authors));
-    phyGraph.graphChart(physicalData.encodings, "#physical", physicalData.max, physicalData.groups, _.values(physicalData.authors));
+    App.engGraph.graphChart(engineeringData.encodings, "#engineering", engineeringData.max, engineeringData.groups, _.values(engineeringData.authors));
+    App.natGraph.graphChart(naturalData.encodings, "#natural", naturalData.max, naturalData.groups, _.values(naturalData.authors));
+    App.phyGraph.graphChart(physicalData.encodings, "#physical", physicalData.max, physicalData.groups, _.values(physicalData.authors));
 
 }

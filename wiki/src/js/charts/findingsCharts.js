@@ -3,7 +3,6 @@ var Graph = function() {
 
     var self = this;
 
-
     // the hover callback to be used when the user
     // hovers over one of the circles
     var hoveringCB = function(obj, col, row){
@@ -23,7 +22,7 @@ var Graph = function() {
             return;
         }
 
-        var table_ids = table
+        var table_ids = App.table
             .columns( 0,  {page:'current'} )
             .data()
             .eq( 0 );
@@ -42,16 +41,16 @@ var Graph = function() {
 
         //find the indices of the rows that contain the evt_id's of the
         //current rows that are highlighted
-        var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
+        var indexes = App.table.rows().eq( 0 ).filter( function (rowIdx) {
 
-            var author = table.cell( rowIdx, 0 ).data();
-            var year = table.cell( rowIdx, 1 ).data();
+            var author = App.table.cell( rowIdx, 0 ).data();
+            var year = App.table.cell( rowIdx, 1 ).data();
 
             return _.find(authors, function(r) {return r.name === author && parseInt(r.year) == year }) ;
         } );
 
         // Add a class to those rows using an index selector
-        table.rows( indexes )
+        App.table.rows( indexes )
             .nodes()
             .to$()
             .addClass( 'row_selected' );
@@ -80,7 +79,7 @@ var Graph = function() {
         var newRows = [];
         _.forEach(authors, function(a)
         {
-            newRows.push(_.find(rows, function(r) {return r.Author.trim() == a.name.trim() && parseInt(r.Year) == a.year }));
+            newRows.push(_.find(App.rows, function(r) {return r.Author.trim() == a.name.trim() && parseInt(r.Year) == a.year }));
         });
 
         if(_.indexOf(self.selected, obj) < 0)
@@ -102,7 +101,7 @@ var Graph = function() {
 
             self.clicked = true;
 
-            self.currentSelection = _.union(self.currentSelection, newRows);
+            App.currentSelection = _.union(App.currentSelection, newRows);
         }
         else
         {
@@ -114,7 +113,7 @@ var Graph = function() {
             d3.select(this)
                 .classed("unSelected", true);
 
-            self.currentSelection = _.difference(self.currentSelection, newRows);
+            App.currentSelection = _.difference(App.currentSelection, newRows);
         }
 
         if(self.selected.length === 0)
@@ -127,17 +126,17 @@ var Graph = function() {
                 .classed("unSelected", false);
 
             // reset the table
-            self.currentSelection = rows;
+            App.currentSelection = App.rows;
         }
 
         /** modify the table to only show the entries related to the selected bubble **/
 
         // clear the old rows
-        table.clear();
+        App.table.clear();
         //add the selection to the table
-        table.rows.add(self.currentSelection);
+        App.table.rows.add(App.currentSelection);
         //render the table
-        table.draw();
+        App.table.draw();
     };
 
     function wrap(text, width) {
@@ -311,8 +310,6 @@ var Graph = function() {
 
         // list of the selected nodes
         self.selected = [];
-
-        self.curreltSelection = [];
 
         /* Initialize tooltip */
         self.tip = d3.tip().attr('class', 'd3-tip').html(
