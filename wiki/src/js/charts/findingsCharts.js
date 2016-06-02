@@ -76,38 +76,66 @@ var Graph = function() {
 
         var authors = self.authors[row][obj.name];
 
-        self.clicked = true;
-
-        // remove the previous selection
-        self.chart.selectAll('circle')
-            .classed("unSelected", false);
-
-        // grey out the circles that are not selected
-        self.chart.selectAll('circle')
-            .filter(
-                function(d) {
-                    if(d !== obj)
-                        return d;
-                })
-            .classed("unSelected", true);
-
-        var names = _.map(authors, 'name');
-        var years = _.map(authors, 'year');
-
-        /** modify the table to only show the entries related to the selected bubble **/
-
         // select the rows associated with the selected bubble
-        var currentSelection  = [];
-
+        var newRows = [];
         _.forEach(authors, function(a)
         {
-            currentSelection.push(_.find(rows, function(r) {return r.Author == a.name && parseInt(r.Year) == a.year }));
+            newRows.push(_.find(rows, function(r) {return r.Author.trim() == a.name.trim() && parseInt(r.Year) == a.year }));
         });
+
+        if(_.indexOf(self.selected, obj) < 0)
+        {
+            // remove the previous selection
+            d3.select(this)
+                .classed("unSelected", false);
+
+            self.selected.push(obj);
+
+            // grey out the circles that are not selected
+            self.chart.selectAll('circle')
+                .filter(
+                    function(d) {
+                        if(_.indexOf(self.selected, d) < 0)
+                            return d;
+                    })
+                .classed("unSelected", true);
+
+            self.clicked = true;
+
+            self.currentSelection = _.union(self.currentSelection, newRows);
+        }
+        else
+        {
+            // remove the bubble from the array
+            var idx = self.selected.indexOf(obj);
+            self.selected.splice(idx, 1);
+
+            // remove the previous selection
+            d3.select(this)
+                .classed("unSelected", true);
+
+            self.currentSelection = _.difference(self.currentSelection, newRows);
+        }
+
+        if(self.selected.length === 0)
+        {
+            // there is no click interaction
+            self.clicked = false;
+
+            // make all of the circle their original color
+            self.chart.selectAll('circle')
+                .classed("unSelected", false);
+
+            // reset the table
+            self.currentSelection = rows;
+        }
+
+        /** modify the table to only show the entries related to the selected bubble **/
 
         // clear the old rows
         table.clear();
         //add the selection to the table
-        table.rows.add(currentSelection);
+        table.rows.add(self.currentSelection);
         //render the table
         table.draw();
     };
@@ -280,6 +308,11 @@ var Graph = function() {
 
         // flag to indicate if the bubble was selected or not
         self.clicked = false;
+
+        // list of the selected nodes
+        self.selected = [];
+
+        self.curreltSelection = [];
 
         /* Initialize tooltip */
         self.tip = d3.tip().attr('class', 'd3-tip').html(
