@@ -72,7 +72,7 @@
 
     var totWidth = 1600,
             totHeight = totWidth * 0.85,
-            margin = {top: 100, right: 0, bottom: 250, left: 500},
+            margin = {top: 50, right: 0, bottom: 250, left: 500},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
@@ -111,13 +111,13 @@
         x.domain(grpNames);
 
         chart.append("text")
-                .attr("x", (width / 2.5))
-                .attr("y", (height + margin.bottom+ 20))
+                .attr("x", (width/2.5))
+                .attr("y", (height + margin.bottom+ 20 ))
                 .attr("text-anchor", "start")
                 .style("font-size", "60px")
                 .style("text-decoration", "bold")
 //                .style("text-decoration", "underline")
-                .text("BioMedical");
+                .text("Bioinformatics");
 
 
         chart.append("g")
@@ -135,8 +135,9 @@
                 .attr("class","y axis")
                 .call(yAxis)
                 .selectAll("text")
-                .attr("dx","40px");
-//                .selectAll(".tick text")
+                .attr("dx","40px")
+                .selectAll(".tick text")
+        ;
 //                .call(wrap, y.rangeBand());
 
         var grows = chart.selectAll(".grow")

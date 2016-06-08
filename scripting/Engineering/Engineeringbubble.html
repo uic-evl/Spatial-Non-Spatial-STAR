@@ -10,11 +10,11 @@
 
 
     .axis text {
-        font: 10px sans-serif;
+        font: 40px sans-serif;
     }
 
     .legend text {
-        font: 12px sans-serif;
+        font: 40px sans-serif;
     }
 
     .axis path,
@@ -41,10 +41,38 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
+    function wrap(text, width) {
+        text.each(function() {
+            var text = d3.select(this),
+                    words = text.text().split(/\s+/).reverse(),
+                    word,
+                    line = [],
+                    lineNumber = 0,
+                    lineHeight = 1.1, // ems
+                    y = text.attr("y"),
+                    dy = parseFloat(text.attr("dy")),
+                    tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
 
-    var totWidth = 1200,
-            totHeight = totWidth * 0.8,
-            margin = {top: 80, right: 30, bottom: 80, left: 200},
+            console.log(words);
+
+            while (word = words.pop()) {
+
+                line.push(word);
+                tspan.text(line.join(" "));
+
+                if (tspan.node().getComputedTextLength() > width) {
+                    line.pop();
+                    tspan.text(line.join(" "));
+                    line = [word];
+                    tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                }
+            }
+        });
+    }
+
+    var totWidth = 1600,
+            totHeight = totWidth * 0.85,
+            margin = {top: 100, right: 20, bottom: 250, left: 500},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
@@ -67,7 +95,6 @@
             .attr("height", totHeight)
             .append("g")
             .attr("transform","translate("+margin.left+",0)")
-
             ;
 
     d3.tsv("encodings.tsv"/*, type*/, function(error, data) {
@@ -84,74 +111,57 @@
         x.domain(grpNames);
 
         chart.append("text")
-                .attr("x", (width / 2))
-                .attr("y", (margin.top / 5))
-                .attr("text-anchor", "middle")
-                .style("font-size", "24px")
+                .attr("x", (width / 2.5))
+                .attr("y", (height + margin.bottom+ 20))
+                .attr("text-anchor", "start")
+                .style("font-size", "60px")
                 .style("text-decoration", "bold")
-                .style("text-decoration", "underline")
-                .text("Engineering: Spatial vs NonSpatial Encodings");
+//                .style("text-decoration", "underline")
+                .text("Engineering");
+
 
         chart.append("g")
                 .attr("class","x axis")
                 .attr("transform","translate(0," + (height) + ")")
                 .call(xAxis)
-                .selectAll("text")
+            .selectAll("text")
                 .style("text-anchor","end")
                 .attr("transform","rotate(-90)")
                 .attr("dx","1.0em")
-                .attr("dy",x.rangeBand()/10-20)
+                .attr("dy",x.rangeBand()/10+20)
         ;
 
         chart.append("g")
                 .attr("class","y axis")
                 .call(yAxis)
                 .selectAll("text")
-                .attr("dx","30px")
-        ;
-
+                .attr("dx","40px");
+//                .selectAll(".tick text")
+//                .call(wrap, y.rangeBand());
 
         var grows = chart.selectAll(".grow")
                 .data(data)
                 .enter().append("g")
                 .attr("class","grow")
-                .attr("transform", function(d) { return "translate(0," + y(d.Encoding) + ")"; })
+                .attr("transform", function(d) { return "translate(25," + y(d.Encoding) + ")"; })
                 ;
 
         var gcells = grows.selectAll(".gcell")
                 .data(function(d) { return d.groups; })
                 .enter() .append("g")
-                .attr("transform", function(d,i,j) {return "translate(" + i*x.rangeBand() + ",0)" ; } )
+                .attr("transform", function(d,i,j) {return "translate(" + (i*x.rangeBand()) + ",0)" ; } )
                 .attr("class","gcell")
                 ;
 
-//        gcells
-//                .append("rect")
-//                .attr("x",0)
-//                .attr("y",0)
-//                .attr("height",y.rangeBand())
-//                .attr("width",x.rangeBand())
-//                .style("fill-opacity",1)
-////                .style("fill", function(d,i,j) {
-////                            if ((i % 2 != 0 && j % 2 == 0))
-////                            {return "#dddddd";}
-////                            else if (i % 2 != 0 || j % 2 == 0)
-////                            {return "#eeeeee";}
-////                            else
-////                            {return "#ffffff";}
-////                        }
-////                )
-        ;
 
-        rmax = Math.min(y.rangeBand()/2-4,x.rangeBand()/2-4);
-        //console.log(rmax);
+        rmax = Math.min(y.rangeBand()/2-4,x.rangeBand()/1.5);
 
         gcells.append("circle")
                 .attr("cy",y.rangeBand()/2)
                 .attr("cx",x.rangeBand()/2)
                 .attr("r", function(d) {
                             var rind = d.value;
-                            var rad = rmax / ((-1)*(rind - 10));
+                            var rad = rmax / ((-1)*(rind - 8));
 
                             return rad;//(rad > 0) ? rad : 0;
                         }
@@ -164,51 +174,6 @@
                 .style("")
                 //.style("stroke","black")
         ;
-
-//        var legend = chart
-//                .append("g")
-//                .attr("transform", "translate(0," + (height + 0) + ")")
-//                .attr("class","legend")
-//                .style("font-weight","bold")
-//                ;
-//        var legwidths = [0,55,135,235];
-//        var legsymbols = legend.selectAll(".legsymbols")
-//                .data(["0-500","500-5,000","5,000-50,000",">50,000"])
-//                .enter()
-//                .append("g")
-//                .attr("class","legsymbols")
-//                .attr("transform",function(d,i) {return "translate(" + (150 + legwidths[i]) + ",0)";})
-//                ;
-//
-//        var legendspace = 5;
-
-//        legsymbols.append("circle")
-//                .attr("cx", function(d,i) {return rmax / ((-1)*((i+1) - 5)) ;})
-//                .attr("cy", function(d,i) {return (legendspace+2*rmax) - (rmax / ((-1)*((i+1) - 5))) ;})
-//                .style("fill", function(d,i) {
-//                            var gbval = 1+Math.floor(255 - (255/4*((i+1)-1)));
-//                            return "rgb(" + 255 + "," + gbval + "," + gbval + ")";
-//                        }
-//                )
-//                .style("stroke","black")
-//                .attr("r", function(d,i) {
-//                            return rmax / ((-1)*((i+1) - 5));
-//                        }
-//                )
-//        ;
-//
-//
-//        legsymbols.append("text")
-//                .attr("x", function(d,i) {return 5+2*rmax / ((-1)*((i+1) - 5)) ;})
-//                .attr("y", legendspace + 2*rmax)
-//                .style("text-anchor", "start")
-//                .text(function(d) { return d; });
-
-//        legend
-//                .append("text")
-//                .text("Wisconsin Employment:")
-//                .attr("y", rmax*2+ legendspace)
-//        ;
 
     });
 

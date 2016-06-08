@@ -1,0 +1,50 @@
+.grow rect {
+    stroke: black;
+    shape-rendering: crispEdges;
+    fill: none;
+}
+
+.axis text {
+    font: 15px sans-serif;
+}
+
+.legend text {
+    font: 40px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path,
+.x.axis line {
+    display: none;
+}
+
+.y.axis path,
+.y.axis line {
+    display: none;
+}
+
+.row {
+    margin-top: 10px;
+}
+
+tr.row_selected td {
+    background-color: #fee0d2 !important;
+    font-weight: bold !important;
+}
+
+#tooltip{
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color:black;
+}
+
+.unSelected {
+    fill: #f0f0f0 !important;
+}

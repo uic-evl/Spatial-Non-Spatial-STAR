@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, maximum-scale=1">
+    <title>S.T.A.R Engineering</title>
+
+    <!---- CSS Libraries ---->
+    
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,800italic,700italic,600italic,400italic,300italic,800,700,600'
+          rel='stylesheet' type='text/css'>
+    <link href="http://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+
+    <link href="lib/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="lib/css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
+
+    <!---- CSS Source ---->
+    <link href="src/css/findingsCharts.css" rel="stylesheet" type="text/css">
+    <link href="src/css/custom.css" rel="stylesheet" type="text/css">
+
+    <!---- JS Libraries ---->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.1/lodash.js"></script>
+
+    <script type="text/javascript" src="lib/js/bootstrap.js"></script>
+    <script type="text/javascript" src="lib/js/tabletop.js"></script>
+    <script type="text/javascript" src="lib/js/d3-tip.js"></script>
+
+    <!---- JS Source ---->
+    <script type="text/javascript" src="src/js/main.js"></script>
+    <script type="text/javascript" src="src/js/charts/findingsCharts.js"></script>
+
+</head>
+
+<body onload="init();">
+
+<div>
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h3>Engineering: All</h3>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="chart" id="engineering"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h3>Engineering: Natural Science</h3>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="chart" id="natural"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h3>Engineering: Physical Science</h3>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="chart" id="physical"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h3>Engineering: Papers</h3>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
