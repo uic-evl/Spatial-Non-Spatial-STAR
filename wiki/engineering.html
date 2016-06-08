@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xml:lang="en" lang="en">
 <head>
 
     <meta charset="UTF-8">
@@ -16,13 +16,19 @@
     <link href="lib/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="lib/css/font-awesome.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
-
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="lib/js/external/datepicker/css/datepicker-min.css" />
     <!---- CSS Source ---->
     <link href="src/css/findingsCharts.css" rel="stylesheet" type="text/css">
     <link href="src/css/custom.css" rel="stylesheet" type="text/css">
 
     <!---- JS Libraries ---->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="lib/js/external/datepicker/js/datepicker-min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="lib/js/wowsearchform-min.js" charset="utf-8"></script>
+
+    <!-- you can localize wowsearchform plugin -->
+    <script type="text/javascript" src="lib/js/languages/wowsearchform_lang_en.js" charset="utf-8" ></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
@@ -39,62 +45,84 @@
 
 </head>
 
-<body onload="init();">
-
+<body>
+        <!--onload="init();">-->
 <div>
     <div class="container-fluid">
-        <div class="row">
 
-            <div class="col-md-4">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Engineering: All</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="chart" id="engineering"></div>
-                    </div>
-                </div>
-            </div>
+        <!--  Set class "wowsearchform" to start wowsearchform plugin -->
+        <form id="myform" class="wowsearchform form-inline"  method="post">
 
-            <div class="col-md-4">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Engineering: Natural Science</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="chart" id="natural"></div>
-                    </div>
-                </div>
-            </div>
+            <!--   It must be a SELECT of all fields to search (the class identify is "wowFields" and the name must be an array)  -->
+            <select class="wowFields form-control" name="my_field[]">
+                <!--  NB: the class name identify the field type (text, number, date) -->
+                <option class="text" value="username">Name</option>
+                <option class="number" value="age">Age</option>
+                <option class="date" value="subscription">Subscription date</option>
+            </select>
 
-            <div class="col-md-4">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Engineering: Physical Science</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="chart" id="physical"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <!--   It must be a INPUT TEXT (the name must be an array)  -->
+            <input type="text" class="form-control" name="my_value[]">
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Engineering: Papers</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <!--  You can use class identify "wowNoClone" for others html element   -->
+            <button type="submit" class="wowNoClone btn btn-primary"><i class="glyphicon glyphicon-search"></i> Search</button>
+            <!--  wowsearchform reset button has the class identify "wowReset"   -->
+            <a class="wowReset btn btn-default">Reset </a>
+
+        </form>
+
+        <!--<div class="row">-->
+
+            <!--<div class="col-md-4">-->
+                <!--<div class="x_panel tile">-->
+                    <!--<div class="x_title">-->
+                        <!--<h3>Engineering: All</h3>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<div class="x_content">-->
+                        <!--<div class="chart" id="engineering"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="col-md-4">-->
+                <!--<div class="x_panel tile">-->
+                    <!--<div class="x_title">-->
+                        <!--<h3>Engineering: Natural Science</h3>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<div class="x_content">-->
+                        <!--<div class="chart" id="natural"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="col-md-4">-->
+                <!--<div class="x_panel tile">-->
+                    <!--<div class="x_title">-->
+                        <!--<h3>Engineering: Physical Science</h3>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<div class="x_content">-->
+                        <!--<div class="chart" id="physical"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="row">-->
+            <!--<div class="col-md-12">-->
+                <!--<div class="x_panel tile">-->
+                    <!--<div class="x_title">-->
+                        <!--<h3>Engineering: Papers</h3>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<div class="x_content">-->
+                        <!--<table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
     </div>
 
