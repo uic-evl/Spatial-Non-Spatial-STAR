@@ -19,11 +19,13 @@
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="lib/js/external/datepicker/css/datepicker-min.css"/>
 
-    <link rel="stylesheet" type="text/css" href="lib/css/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="lib/css/style.css">
 
     <!---- CSS Source ---->
     <link  href="src/css/findingsCharts.css" rel="stylesheet" type="text/css">
-    <link href="src/css/custom.css" rel="stylesheet" type="text/css">
+    <link href="src/css/custom.css"          rel="stylesheet" type="text/css">
+    <link href="src/css/accordian.css"       rel="stylesheet" type="text/css" >
+
 
     <!---- JS Libraries ---->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -50,327 +52,351 @@
 
 <body class="pushmenu-push" onload="init();">
 
-<nav class="pushmenu pushmenu-left">
+<div class="main">
 
-    <form class="form-horizontal">
-        <fieldset>
+    <section class="buttonset">
 
-            <!-- Form Name -->
-            <legend>Filter Papers</legend>
+        <div class="container-fluid">
 
-            <div class="container-fluid">
-
-                <div class="row">
-                    <!-- Multiple Checkboxes -->
-                    <div class="form-group col-md-12">
-                            <label class="control-label col-md-3" for="domain">Domain</label>
-                        <div class="col-md-8">
-                            <div class="checkbox">
-                                <label for="domain-0">
-                                    <input type="checkbox" name="domain" id="domain-0" value="biomed">
-                                    Bio-Medical
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="domain-1">
-                                    <input type="checkbox" name="domain" id="domain-1" value="bioinformatics">
-                                    Bioinformatics
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="domain-2">
-                                    <input type="checkbox" name="domain" id="domain-2" value="neuro">
-                                    NeuroScience
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <div class="row">
-                    <!-- Multiple Checkboxes -->
-                    <div class="form-group col-md-12">
-                        <label class="col-md-3 control-label" for="datatype">DataTypes</label>
-                        <div class="col-md-8">
-                            <div class="checkbox">
-                                <label for="datatype-0">
-                                    <input type="checkbox" name="datatype" id="datatype-0" value="table">
-                                    Table
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="datatype-1">
-                                    <input type="checkbox" name="datatype" id="datatype-1" value="network">
-                                    Network
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="datatype-2">
-                                    <input type="checkbox" name="datatype" id="datatype-2" value="field">
-                                    Field
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="datatype-3">
-                                    <input type="checkbox" name="datatype" id="datatype-3" value="geometry">
-                                    Geometry
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-
-                    <!-- Multiple Checkboxes -->
-                    <div class="form-group col-md-12">
-                        <label class="col-md-3 control-label" for="paradigms">Paradigms</label>
-                        <div class="col-md-8">
-                            <div class="checkbox">
-                                <label for="paradigms-0">
-                                    <input type="checkbox" name="paradigms" id="paradigms-0" value="linkedViews">
-                                    Linked Views
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="paradigms-1">
-                                    <input type="checkbox" name="paradigms" id="paradigms-1" value="overlays">
-                                    Overlays
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="paradigms-2">
-                                    <input type="checkbox" name="paradigms" id="paradigms-2" value="hybrid">
-                                    Hybrid
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="paradigms-3">
-                                    <input type="checkbox" name="paradigms" id="paradigms-3" value="spatialNesting">
-                                    Spatial Nesting
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="paradigms-4">
-                                    <input type="checkbox" name="paradigms" id="paradigms-4" value="nonSpatialNesting">
-                                    Non-Spatial Nesting
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row">
-
-                    <!-- Multiple Checkboxes -->
-                    <div class="form-group col-md-12">
-                        <label class="col-md-3 control-label" for="spatial">Spatial Encodings</label>
-                        <div class="col-md-8">
-                            <div class="checkbox">
-                                <label for="spatial-0">
-                                    <input type="checkbox" name="spatial" id="spatial-0" value="heatmap">
-                                    Chloropheth / Heatmap
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="spatial-1">
-                                    <input type="checkbox" name="spatial" id="spatial-1" value="mesh">
-                                    Ball and Stick / Mesh
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="spatial-2">
-                                    <input type="checkbox" name="spatial" id="spatial-2" value="isosurface">
-                                    Isosurface / Streamlines
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="spatial-3">
-                                    <input type="checkbox" name="spatial" id="spatial-3" value="volume">
-                                    Volume / Images
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="spatial-4">
-                                    <input type="checkbox" name="spatial" id="spatial-4" value="glyphs">
-                                    Glyphs
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="spatial-5">
-                                    <input type="checkbox" name="spatial" id="spatial-5" value="animation">
-                                    Animation
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-
-                    <!-- Multiple Checkboxes -->
-                    <div class="form-group col-md-12">
-                        <label class="col-md-3 control-label" for="nonSpatial">Non-Spatial Encodings</label>
-                        <div class="col-md-8">
-                            <div class="checkbox">
-                                <label for="nonSpatial-0">
-                                    <input type="checkbox" name="nonSpatial" id="nonSpatial-0" value="color">
-                                    Color
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="nonSpatial-1">
-                                    <input type="checkbox" name="nonSpatial" id="nonSpatial-1" value="line Chart">
-                                    Line Chart
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="nonSpatial-2">
-                                    <input type="checkbox" name="nonSpatial" id="nonSpatial-2" value="histogram">
-                                    Histogram
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="nonSpatial-3">
-                                    <input type="checkbox" name="nonSpatial" id="nonSpatial-3" value="scatterplot">
-                                    Scatterplot
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="nonSpatial-4">
-                                    <input type="checkbox" name="nonSpatial" id="nonSpatial-4" value="node">
-                                    Node-Link
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="nonSpatial-5">
-                                    <input type="checkbox" name="nonSpatial" id="nonSpatial-5" value="pcp">
-                                    Parallel Coordinates
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="nonSpatial-6">
-                                    <input type="checkbox" name="nonSpatial" id="nonSpatial-6" value="star">
-                                    Star-Plot
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <br><br>
-            <!-- Button (Double) -->
-            <div class="form-group">
-                <label class="col-md-3 control-label" for="button1id"></label>
-                <div class="col-md-8">
-                    <button id="button1id" name="button1id" class="btn btn-success">Good Button</button>
-                    <button id="Submit" name="Submit" class="btn btn-danger">Reset</button>
-                </div>
-            </div>
-
-        </fieldset>
-    </form>
-
-</nav>
-
-<div>
-    <div class="main">
-
-        <section class="buttonset">
-            <div id="nav_list"></div>
-        </section>
-<div class="container-fluid">
-        <div class="row">
-
-            <div class="col-md-4">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Engineering: All</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="chart" id="engineering"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Engineering: Natural Science</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="chart" id="natural"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Engineering: Physical Science</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="chart" id="physical"></div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div id="header_logo">
+                        <a href="https://www.evl.uic.edu">
+                            <img src="lib/css/logo.png" onmouseover="this.src='lib/css/logo_on.png';"
+                                 onmouseout="this.src='lib/css/logo.png'" alt="evl" title="evl" height="104" width="254">
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Engineering: Papers</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>
-                    </div>
+    </section>
+
+    <div class="vcenter">
+        <div id="searchContainer" class="container" >
+            <div class="row">
+                <div class="col-md-8 col-md-offset-4">
+                    <!--Set class "wowsearchform" to start wowsearchform plugin-->
+                    <form id="myform" class="wowsearchform form-inline"  method="post">
+
+                        <!--   It must be a SELECT of all fields to search (the class identify is "wowFields" and the name must be an array)  -->
+                        <select class="wowFields form-control" name="my_field[]">
+                            <!--  NB: the class name identify the field type (text, number, date) -->
+                            <option class="text" value="title">Publication Title</option>
+                            <option class="text" value="author">Author</option>
+                            <option class="date" value="subscription">Publication date</option>
+                        </select>
+
+                        <!--   It must be a INPUT TEXT (the name must be an array)  -->
+                        <input type="text" class="form-control" name="my_value[]">
+
+                        <!--  You can use class identify "wowNoClone" for others html element   -->
+                        <button type="submit" class="wowNoClone btn btn-primary"><i class="glyphicon glyphicon-search"></i> Search</button>
+                        <!--  wowsearchform reset button has the class identify "wowReset"   -->
+                        <a class="wowReset btn btn-default">Reset</a>
+
+                    </form>
                 </div>
             </div>
-        </div>
-</div>
 
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <ul id="accordion" class="accordion">
+                        <li>
+                            <div class="link"><i class="fa fa-database"></i>Advanced<i class="fa fa-chevron-down"></i></div>
+                            <ul class="submenu">
+                                <li><div class="container-fluid">
+
+                                    <div class="row">
+                                        <!-- Multiple Checkboxes -->
+                                        <div class="form-group col-md-4">
+                                            <div class="row">
+                                                <label class="control-label col-md-12" for="domain">Domain</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="checkbox">
+                                                        <label for="domain-0">
+                                                            <input type="checkbox" name="domain" id="domain-0" value="biomed">
+                                                            Bio-Medical
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="domain-1">
+                                                            <input type="checkbox" name="domain" id="domain-1" value="bioinformatics">
+                                                            Bioinformatics
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="domain-2">
+                                                            <input type="checkbox" name="domain" id="domain-2" value="neuro">
+                                                            NeuroScience
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Multiple Checkboxes -->
+                                        <div class="form-group col-md-4">
+                                            <div class="row">
+                                                <label class="col-md-12 control-label" for="datatype">DataTypes</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="checkbox">
+                                                        <label for="datatype-0">
+                                                            <input type="checkbox" name="datatype" id="datatype-0" value="table">
+                                                            Table
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="datatype-1">
+                                                            <input type="checkbox" name="datatype" id="datatype-1" value="network">
+                                                            Network
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="datatype-2">
+                                                            <input type="checkbox" name="datatype" id="datatype-2" value="field">
+                                                            Field
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="datatype-3">
+                                                            <input type="checkbox" name="datatype" id="datatype-3" value="geometry">
+                                                            Geometry
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <div class="row">
+                                                <label class="col-md-12 control-label" for="paradigms">Paradigms</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="checkbox">
+                                                        <label for="paradigms-0">
+                                                            <input type="checkbox" name="paradigms" id="paradigms-0" value="linkedViews">
+                                                            Linked Views
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="paradigms-1">
+                                                            <input type="checkbox" name="paradigms" id="paradigms-1" value="overlays">
+                                                            Overlays
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="paradigms-2">
+                                                            <input type="checkbox" name="paradigms" id="paradigms-2" value="hybrid">
+                                                            Hybrid
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="paradigms-3">
+                                                            <input type="checkbox" name="paradigms" id="paradigms-3" value="spatialNesting">
+                                                            Spatial Nesting
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="paradigms-4">
+                                                            <input type="checkbox" name="paradigms" id="paradigms-4" value="nonSpatialNesting">
+                                                            Non-Spatial Nesting
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row">
+
+                                        <!-- Multiple Checkboxes -->
+
+                                        <!-- Multiple Checkboxes -->
+                                        <div class="form-group col-md-4">
+
+                                            <div class="row">
+                                                <label class="col-md-12 control-label" for="spatial">Spatial Encodings</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="checkbox">
+                                                        <label for="spatial-0">
+                                                            <input type="checkbox" name="spatial" id="spatial-0" value="heatmap">
+                                                            Chloropheth / Heatmap
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="spatial-1">
+                                                            <input type="checkbox" name="spatial" id="spatial-1" value="mesh">
+                                                            Ball and Stick / Mesh
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="spatial-2">
+                                                            <input type="checkbox" name="spatial" id="spatial-2" value="isosurface">
+                                                            Isosurface / Streamlines
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="spatial-3">
+                                                            <input type="checkbox" name="spatial" id="spatial-3" value="volume">
+                                                            Volume / Images
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="spatial-4">
+                                                            <input type="checkbox" name="spatial" id="spatial-4" value="glyphs">
+                                                            Glyphs
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="spatial-5">
+                                                            <input type="checkbox" name="spatial" id="spatial-5" value="animation">
+                                                            Animation
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <!-- Multiple Checkboxes -->
+                                        <div class="form-group col-md-4">
+
+                                            <div class="row">
+                                                <label class="col-md-12 control-label" for="nonSpatial">Non-Spatial Encodings</label>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="checkbox">
+                                                        <label for="nonSpatial-0">
+                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-0" value="color">
+                                                            Color
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="nonSpatial-1">
+                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-1" value="line Chart">
+                                                            Line Chart
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="nonSpatial-2">
+                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-2" value="histogram">
+                                                            Histogram
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="nonSpatial-3">
+                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-3" value="scatterplot">
+                                                            Scatterplot
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="nonSpatial-4">
+                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-4" value="node">
+                                                            Node-Link
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="nonSpatial-5">
+                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-5" value="pcp">
+                                                            Parallel Coordinates
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label for="nonSpatial-6">
+                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-6" value="star">
+                                                            Star-Plot
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
     </div>
 
-    </div><!-- End Main -->
-<!--</div>&lt;!&ndash; End Container &ndash;&gt;-->
 
-<!--onload="init();">-->
-<!--<div>-->
-<!--<div class="container-fluid">-->
-<!---->
-<!--  Set class "wowsearchform" to start wowsearchform plugin -->
-<!--<form id="myform" class="wowsearchform form-inline"  method="post">-->
+    <!--</section>-->
+    <!--<div class="container-fluid">-->
+    <!--<div class="row">-->
 
-<!--&lt;!&ndash;   It must be a SELECT of all fields to search (the class identify is "wowFields" and the name must be an array)  &ndash;&gt;-->
-<!--<select class="wowFields form-control" name="my_field[]">-->
-<!--&lt;!&ndash;  NB: the class name identify the field type (text, number, date) &ndash;&gt;-->
-<!--<option class="text" value="username">Title</option>-->
-<!--<option class="number" value="age">Age</option>-->
-<!--<option class="date" value="subscription">Publication date</option>-->
-<!--</select>-->
+    <!--<div class="col-md-4">-->
+    <!--<div class="x_panel tile">-->
+    <!--<div class="x_title">-->
+    <!--<h3>Engineering: All</h3>-->
+    <!--<div class="clearfix"></div>-->
+    <!--</div>-->
+    <!--<div class="x_content">-->
+    <!--<div class="chart" id="engineerisng"></div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
-<!--&lt;!&ndash;   It must be a INPUT TEXT (the name must be an array)  &ndash;&gt;-->
-<!--<input type="text" class="form-control" name="my_value[]">-->
+    <!--<div class="col-md-4">-->
+    <!--<div class="x_panel tile">-->
+    <!--<div class="x_title">-->
+    <!--<h3>Engineering: Natural Science</h3>-->
+    <!--<div class="clearfix"></div>-->
+    <!--</div>-->
+    <!--<div class="x_content">-->
+    <!--<div class="chart" id="natural"></div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
-<!--&lt;!&ndash;  You can use class identify "wowNoClone" for others html element   &ndash;&gt;-->
-<!--<button type="submit" class="wowNoClone btn btn-primary"><i class="glyphicon glyphicon-search"></i> Search</button>-->
-<!--&lt;!&ndash;  wowsearchform reset button has the class identify "wowReset"   &ndash;&gt;-->
-<!--<a class="wowReset btn btn-default">Reset </a>-->
+    <!--<div class="col-md-4">-->
+    <!--<div class="x_panel tile">-->
+    <!--<div class="x_title">-->
+    <!--<h3>Engineering: Physical Science</h3>-->
+    <!--<div class="clearfix"></div>-->
+    <!--</div>-->
+    <!--<div class="x_content">-->
+    <!--<div class="chart" id="physical"></div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
-<!--</form>-->
+    <!--<div class="row">-->
+    <!--<div class="col-md-12">-->
+    <!--<div class="x_panel tile">-->
+    <!--<div class="x_title">-->
+    <!--<h3>Engineering: Papers</h3>-->
+    <!--<div class="clearfix"></div>-->
+    <!--</div>-->
+    <!--<div class="x_content">-->
+    <!--<table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
-
-
-<!--</div>-->
+</div>
 
 </body>
 

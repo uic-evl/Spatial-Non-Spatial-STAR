@@ -7,16 +7,16 @@ App.table = null;
 App.rows = null;
 App.curreltSelection = null;
 
-$(document).ready(function() {
-    $menuLeft = $('.pushmenu-left');
-    $nav_list = $('#nav_list');
-
-    $nav_list.click(function() {
-        $(this).toggleClass('active');
-        $('.pushmenu-push').toggleClass('pushmenu-push-toright');
-        $menuLeft.toggleClass('pushmenu-open');
-    });
-});
+// $(document).ready(function() {
+//     $menuLeft = $('.pushmenu-left');
+//     $nav_list = $('#nav_list');
+//
+//     $nav_list.click(function() {
+//         $(this).toggleClass('active');
+//         $('.pushmenu-push').toggleClass('pushmenu-push-toright');
+//         $menuLeft.toggleClass('pushmenu-open');
+//     });
+// });
 
 d3.selection.prototype.first = function() {
     return d3.select(this[0][0]);
@@ -25,6 +25,33 @@ d3.selection.prototype.last = function() {
     var last = this.size() - 1;
     return d3.select(this[0][last]);
 };
+
+$(function() {
+    var Accordion = function(el, multiple) {
+        this.el = el || {};
+        this.multiple = multiple || false;
+
+        // Variables privadas
+        var links = this.el.find('.link');
+        // Evento
+        links.on('click', {el: this.el, multiple: this.multiple}, this.dropdown)
+    }
+
+    Accordion.prototype.dropdown = function(e) {
+        var $el = e.data.el;
+        $this = $(this),
+            $next = $this.next();
+
+        $next.slideToggle();
+        $this.parent().toggleClass('open');
+
+        if (!e.data.multiple) {
+            $el.find('.submenu').not($next).slideUp().parent().removeClass('open');
+        };
+    }
+
+    var accordion = new Accordion($('#accordion'), false);
+});
 
 function init() {
     Tabletop.init({

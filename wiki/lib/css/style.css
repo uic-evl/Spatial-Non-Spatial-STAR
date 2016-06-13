@@ -1,4 +1,17 @@
 
+html, body{
+    height: 100%;
+}
+
+.main {
+    height: 25%;
+}
+
+#searchContainer {
+    height: 25%;
+    /*background: #9d9ea0;*/
+}
+
 body { margin: 0; background-color:#fafafa; font-family:'Roboto';}
 
 .pushmenu { /*this is the nav*/
@@ -90,11 +103,42 @@ body { margin: 0; background-color:#fafafa; font-family:'Roboto';}
 #nav-list.active { background-position: -331px top; }
 
 .buttonset {
-  background: #00A287;
-  height: 16px;
-  padding: 10px 20px 20px;
+  background: #9d9ea0;
+  height: 124px;
+  padding: 0px 20px 20px;
 }
 
 section.content {
   padding: 10px 20px;
 }
+
+#header_logo {
+  height: 104px;
+  width: 254px;
+  background: #404040;
+}
+
+.vcenter {
+    height:100%;
+    width:100%;
+}
+
+.vcenter:before {    /* create a full-height inline block pseudo=element */
+    content: ' ';
+    display: inline-block;
+    vertical-align: middle;  /* vertical alignment of the inline element */
+    height: 100%;
+}
+
+.vertical-center > .container {
+    max-width: 100%;
+
+    display: inline-block;
+    vertical-align: middle;  /* vertical alignment of the inline element */
+    font: 16px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;        /* <-- reset the font property */
+}
+
+#myform {
+    width: 100%;
+}
+
