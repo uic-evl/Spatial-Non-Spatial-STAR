@@ -80,7 +80,7 @@ $(function() {
 
         /** add the rows to the database  **/
         DB.addRecords(App.rows);
-
+        
         // Reference : https://datatables.net/reference/index
         // $(document).ready(function () {
         //     App.table = $('#papers').DataTable({
