@@ -75,12 +75,32 @@ $(function() {
 
     function setupTable(data, tabletop) {
 
-        // get only the rows that have a number corresponding to their entry
-        App.curreltSelection = App.rows = tabletop.sheets("Engineering").all();
-
         /** add the rows to the database  **/
-        DB.addRecords(App.rows);
-        
+        App.curreltSelection = App.rows = tabletop.sheets("Papers").all();
+
+        /** Parse the data before inserting it into the database **/
+        _.map(App.rows, function(o, i, a) {
+
+            // delete the bibtex entry attribute
+            delete o["Bibtex Entry"];
+
+            // split the fields that are lists
+            o["Data Types"] = o["Data Types"].split(" / ");
+            _.map(o["Data Types"], _.trimEnd);
+
+            o["Encodings"] = o["Encodings"].split(", ");
+            _.map(o["Encodings"], _.trimEnd);
+
+            o["Tasks"] = o["Tasks"].split(", ");
+            _.map(o["Tasks"], _.trimEnd);
+
+        });
+
+        /** create the new database for the session **/
+        App.db = DB.initializeDB('BioMed', App.rows);
+
+        DB.queryPapersByDataType(null, null);
+
         // Reference : https://datatables.net/reference/index
         // $(document).ready(function () {
         //     App.table = $('#papers').DataTable({
@@ -111,22 +131,19 @@ $(function() {
 
     App.init = function() {
 
-        /** create the new database for the session **/
-        App.db = DB.initializeDB('BioMed', function(){});
-
-        Tabletop.init({
-            key: final_spreadsheet_url,
-            callback: setupTable,
-            wanted: ["Engineering", "Tasks"],
-            debug: true
-        });
-
         Tabletop.init({
             key: engineering_spreadsheet_url,
-            callback: setupCharts,
-            wanted: ["Tasks", "Encodings"],
+            callback: setupTable,
+            wanted: ["Papers", "Tasks"],
             debug: true
         });
+
+        // Tabletop.init({
+        //     key: engineering_spreadsheet_url,
+        //     callback: setupCharts,
+        //     wanted: ["Tasks", "Encodings"],
+        //     debug: true
+        // });
     }
 
 })();
