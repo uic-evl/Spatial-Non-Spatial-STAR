@@ -43,6 +43,32 @@ $(function() {
 
     App.db = null;
 
+    function setupDB(data, tabletop) {
+
+        /** add the rows to the database  **/
+        App.curreltSelection = App.rows = tabletop.sheets("Papers").all();
+
+        /** Parse the data before inserting it into the database **/
+        _.map(App.rows, function (o, i, a) {
+
+            // delete the bibtex entry attribute
+            delete o["Bibtex Entry"];
+
+            // split the fields that are lists
+            o["Data Types"] = o["Data Types"].split(" / ");
+            _.map(o["Data Types"], _.trimEnd);
+
+            o["Encodings"] = o["Encodings"].split(", ");
+            _.map(o["Encodings"], _.trimEnd);
+
+            o["Tasks"] = o["Tasks"].split(", ");
+            _.map(o["Tasks"], _.trimEnd);
+        });
+
+        /** create the new database for the session **/
+        App.db = DB.initializeDB('BioMed', App.rows);
+    }
+
     function setupCharts(data, tabletop){
 
         // get the data from the table sheet
@@ -75,32 +101,6 @@ $(function() {
 
     function setupTable(data, tabletop) {
 
-        /** add the rows to the database  **/
-        App.curreltSelection = App.rows = tabletop.sheets("Papers").all();
-
-        /** Parse the data before inserting it into the database **/
-        _.map(App.rows, function(o, i, a) {
-
-            // delete the bibtex entry attribute
-            delete o["Bibtex Entry"];
-
-            // split the fields that are lists
-            o["Data Types"] = o["Data Types"].split(" / ");
-            _.map(o["Data Types"], _.trimEnd);
-
-            o["Encodings"] = o["Encodings"].split(", ");
-            _.map(o["Encodings"], _.trimEnd);
-
-            o["Tasks"] = o["Tasks"].split(", ");
-            _.map(o["Tasks"], _.trimEnd);
-
-        });
-
-        /** create the new database for the session **/
-        App.db = DB.initializeDB('BioMed', App.rows);
-
-        DB.queryPapersByDataType(null, null);
-
         // Reference : https://datatables.net/reference/index
         // $(document).ready(function () {
         //     App.table = $('#papers').DataTable({
@@ -129,11 +129,11 @@ $(function() {
         // });
     }
 
-    App.init = function() {
+    App.initDB = function() {
 
         Tabletop.init({
             key: engineering_spreadsheet_url,
-            callback: setupTable,
+            callback: setupDB,
             wanted: ["Papers", "Tasks"],
             debug: true
         });
@@ -144,7 +144,49 @@ $(function() {
         //     wanted: ["Tasks", "Encodings"],
         //     debug: true
         // });
-    }
+    };
+
+    App.getResults = function(e) {
+
+        //DB.queryPapersByDataType(["Table", "Field"]);
+
+        var input = [], operator = [], values = [],
+            advanced = {
+                domain: [],
+                dataTypes: [],
+                paradigms: [],
+                spatial: [],
+                nonSpatial: []
+            };
+
+        /** Get the search values **/
+
+        // search variable
+        $('[name="my_fields[]"]').each(function(index){
+            input.push($(this).val().split()[0]);
+        });
+
+        // operator
+        $('[name="operator[]"]').each(function(index){
+            operator.push($(this).val().split()[0]);
+        });
+
+        // value
+        $('[name="my_value[]"]').each(function(index){
+            values.push($(this).val().split()[0]);
+        });
+
+        /** Get the advanced values **/
+        $('#accordion input:checked').each(function() {
+            advanced[ $(this).attr('name')].push( $(this).attr('value'));
+        });
+
+        console.log(advanced);
+
+        // we don't want the page to reload
+        return false;
+
+    };
 
 })();
 

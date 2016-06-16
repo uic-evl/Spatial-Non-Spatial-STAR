@@ -2,43 +2,39 @@ var DB = DB || {};
 
 (function() {
 
-    // This works on all devices/browsers, and uses IndexedDBShim as a final fallback
-    App.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
-    var self = this;
-
-    var deferred = Q.defer()
+    var deferred = Q.defer();
     var opened = deferred.promise;
+
+    var self = this;
 
     DB = {
 
-        initializeDB : function(name, records)
-        {
-            /** create the scheme **/
-            open = indexedDB.open("BioMed");
+        initializeDB: function (name, records) {
 
-            open.onerror = function(e)
-            {
-                alert("Database error: " + e.target.errorCode);
-                console.log(e.target);
-            };
+            Dexie.exists(name).then(function(exists) {
 
-            open.onupgradeneeded = function(event) {
+                self.db = new Dexie(name);
 
-                /** get the database instance **/
-                self.db = event.target.result;
+                // Define your database schema
+                self.db.version(1).stores({
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks'
+                });
 
-                var store = self.db.createObjectStore("papers", {keyPath: "title"});
+                // Open the DB
+                self.db.open()
+                    .then(function(e) {
+                        // DB is open and ready to use
+                        deferred.resolve();
+                    })
+                    .catch(function (e) {
+                        console.log("Open failed: " + e);
+                });
 
-                // Create an index to search papers by title.
-                store.createIndex("title", "title", { unique: true });
-
-                // Create an index to search papers by dataTypes, encodings, and tasks
-                var advancedKeyPath = ['dataTypes', 'encodings', 'tasks'];
-                store.createIndex("advanced", advancedKeyPath, {multiEntry:true});
-
-                store.transaction.oncomplete  = function(event)
+                // if the DB doesn't exist, populate it
+                if (!exists)
                 {
-                    var paperObjStore = self.db.transaction("papers", "readwrite").objectStore("papers");
+                    // Populate the DB with data
+                    var items = [];
                     records.forEach(function(record, idx)
                     {
                         var item = {
@@ -49,129 +45,52 @@ var DB = DB || {};
                             tasks:      record["Tasks"]
                         };
 
-                        paperObjStore.add(item);
+                        items.push(item);
                     });
-                };
 
-                store.transaction.onerror = function()
-                {
-                    window.indexedDB.deleteDatabase('BioMed');
-                };
-            };
+                    /** bulk insert the items in the db **/
+                    self.db.papers.bulkPut(items)
+                        .catch(function(error) {
+                            //
+                            // Finally don't forget to catch any error
+                            // that could have happened anywhere in the
+                            // code blocks above.
+                            //
+                            console.log("Oops: " + error);
+                        });
+                }
 
-            /** The DB is open and ready to use **/
-            open.onsuccess = function(event)
-            {
-                /** get the database instance **/
-                self.db = event.target.result;
-
-                var transaction = event.target.result.transaction("papers");
-                var objectStore = transaction.objectStore("papers");
-
-                /* get the indexes to search on */
-                self.titleIndex = objectStore.index("title");
-
-                /* resolve the promise that the DB is open */
-                deferred.resolve();
-            };
-
-            /** when the page exits, clsoe the DB **/
-            window.onbeforeunload = function (e)
-            {
-                self.db.close();
-            };
-
-            return self.open;
+            }).catch(function (error) {
+                console.error("Oops, an error occurred when trying to check database existance");
+            });
         },
 
+        /** Query for the paper by title **/
         queryPapersByTitle: function(query)
         {
             opened.then(function(){
 
-                var trans = self.db.transaction('papers', IDBTransaction.READ_ONLY);
-                var store = trans.objectStore('papers');
-
-                var request = store.get(query);
-
-                request.onerror = function(event) {
-                    console.log(event.target.errorCode);
-                };
-
-                request.onsuccess = function(event) {
-                    console.log(event.target.result);
-                };
+                self.db.papers
+                    .where("title")
+                    .equalsIgnoreCase(query)
+                    .toArray(function(paper) {
+                        console.log(paper);
+                    });
             });
         },
 
-        queryPapersByDataType: function(query, callback) {
-
-            opened.then(function(){
-
-                var trans = self.db.transaction('papers', IDBTransaction.READ_ONLY);
-                var store = trans.objectStore('papers');
-                var index = store.index('advanced');
-
-                var items = [];
-
-                trans.oncomplete = function(evt) {
-                    console.log(items);
-                    //callback(items);
-                };
-
-                var request = index.openCursor(IDBKeyRange.only(['Field', 'Line Chart', 'Explore']));
-
-                request.onerror = function(event) {
-                    console.log(event.target.errorCode);
-                };
-
-                request.onsuccess = function(event) {
-
-                    var cursor = event.target.result;
-
-                    if (cursor) {
-                        items.push(cursor.value);
-                        cursor.continue();
-                    }
-                };
-
-            });
-
-        },
-
-        /** Helper function to get all the records **/
-        getAllItems : function (callback) {
-
-            opened.then(function(){
-
-                var trans = self.db.transaction('papers', IDBTransaction.READ_ONLY);
-                var store = trans.objectStore('papers');
-                var items = [];
-
-                trans.oncomplete = function(evt) {
-                    console.log(items);
-                    //callback(items);
-                };
-
-                var cursorRequest = store.openCursor();
-
-                cursorRequest.onerror = function(error) {
-                    console.log(error);
-                };
-
-                cursorRequest.onsuccess = function(evt) {
-                    var cursor = evt.target.result;
-                    if (cursor) {
-                        items.push(cursor.value);
-                        cursor.continue();
-                    }
-                };
-            });
-
-        },
-
-        closeDB : function()
+        queryPapersByDataType : function(query)
         {
-            self.db.close();
+            opened.then(function(){
+
+                self.db.papers
+                    .where("dataTypes")
+                    .anyOf(query)
+                    .toArray(function(paper) {
+                        console.log(paper);
+                    });
+            });
+
         }
     };
 
