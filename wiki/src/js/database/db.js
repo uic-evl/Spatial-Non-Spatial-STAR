@@ -46,8 +46,8 @@ var DB = DB || {};
                             paradigms:  record["Paradigm"],
                             domain:     record["SubDomain"],
                             evaluators: record["Evaluators"],
-                            evaluation: record["Evaluation"],
-                            expertise: record["Single/Mixed Expertise"],
+                            evaluation: record["Evaluation Type"],
+                            expertise:  record["Single/Mixed Expertise"],
                             year:       record["Year"],
                             url:        record["URL"]
 

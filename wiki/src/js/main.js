@@ -99,14 +99,9 @@ $(function() {
 
     function setupTable(data) {
 
-        // Map data into DataTables format
-        // _.map(data, function(obj){
-        //
-        // });
-
         console.log(data);
 
-        Reference : https://datatables.net/reference/index
+        //Reference : https://datatables.net/reference/index
         $(document).ready(function () {
             App.table = $('#papers').DataTable({
                 data: data,
@@ -117,7 +112,7 @@ $(function() {
                     {title: "Author", data: "author"},
                     {title: "Year", data: "year"},
                     {title: "Paper Title", data: "title"},
-                    {title: "Url", data: "uRL"},
+                    {title: "Url", data: "url"},
                     // {title: "Domain", data: "domain"},
                     {title: "Sub-Domain", data: "domain"},
                     // {title: "No. of Users", data: "# of Users"},
@@ -129,8 +124,8 @@ $(function() {
                     {title: "Evaluation type", data: "evaluation"},
                     {title: "Evaluators", data: "evaluators"}
                 ],
-                order: [[1, 'asc'], [0, 'asc']],
-                stateSave: true
+                order: [[1, 'asc'], [0, 'asc']]
+                // stateSave: true
             });
         });
     }
