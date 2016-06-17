@@ -148,8 +148,6 @@ $(function() {
 
     App.getResults = function(e) {
 
-        //DB.queryPapersByDataType(["Table", "Field"]);
-
         var input = [], operator = [], values = [],
             advanced = {
                 domain: [],
@@ -181,7 +179,7 @@ $(function() {
             advanced[ $(this).attr('name')].push( $(this).attr('value'));
         });
 
-        console.log(advanced);
+        DB.queryPapers(advanced);
 
         // we don't want the page to reload
         return false;

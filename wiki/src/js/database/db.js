@@ -38,11 +38,14 @@ var DB = DB || {};
                     records.forEach(function(record, idx)
                     {
                         var item = {
-                            title:      record['Paper'],
-                            author :    record['Author'],
+                            title:      record["Paper"],
+                            author :    record["Author"],
                             dataTypes:  record["Data Types"],
                             encodings:  record["Encodings"],
-                            tasks:      record["Tasks"]
+                            tasks:      record["Tasks"],
+                            paradigms:  record["Paradigm"],
+                            domain:     record["SubDomain"],
+                            evaluators:     record["Evaluators"]
                         };
 
                         items.push(item);
@@ -66,7 +69,7 @@ var DB = DB || {};
         },
 
         /** Query for the paper by title **/
-        queryPapersByTitle: function(query)
+        queryPapersByTitle : function(query)
         {
             opened.then(function(){
 
@@ -90,8 +93,27 @@ var DB = DB || {};
                         console.log(paper);
                     });
             });
+        },
 
+        queryPapers : function(query) {
+
+            opened.then(function(){
+
+                self.db.papers
+                    .where("dataTypes")
+                        .anyOf(query.dataTypes)
+                    .or('encodings')
+                        .anyOf(_.union(query.spatial,query.nonSpatial))
+                    .or('paradigms')
+                        .anyOf(query.paradigms)
+                    .or('domain')
+                        .anyOf(query.domain)
+                    .toArray(function(paper) {
+                        console.log(paper);
+                    });
+            });
         }
+
     };
 
 })();
