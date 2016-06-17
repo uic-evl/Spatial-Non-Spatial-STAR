@@ -28,8 +28,6 @@ $(function() {
     var accordion = new Accordion($('#accordion'), false);
 });
 
-
-
 (function() {
 
     var final_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1oIxumn3O9Bu7y-yyHY-gJsf_9c-pk5PbEMsw5apmTf8/pubhtml';
