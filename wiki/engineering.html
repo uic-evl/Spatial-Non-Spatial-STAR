@@ -46,7 +46,7 @@
     <script type="text/javascript"
             src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.min.js"></script>
     <script type="text/javascript" src="lib/js/tabletop.js"></script>
-    <script src="https://npmcdn.com/dexie@latest/dist/dexie.js"></script>
+    <script type="text/javascript" src="lib/js/dexie.js"></script>
 
     <!-- JS Utilities-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.1/lodash.js"></script>
@@ -240,37 +240,37 @@
                                                 <div class="col-md-12">
                                                     <div class="checkbox">
                                                         <label for="spatial-0">
-                                                            <input type="checkbox" name="spatial" id="spatial-0" value="Chloropheth / Heatmap">
+                                                            <input type="checkbox" name="encodings" id="spatial-0" value="Chloropheth / Heatmap">
                                                             Chloropheth / Heatmap
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="spatial-1">
-                                                            <input type="checkbox" name="spatial" id="spatial-1" value="Ball and Stick / Mesh">
+                                                            <input type="checkbox" name="encodings" id="spatial-1" value="Ball and Stick / Mesh">
                                                             Ball and Stick / Mesh
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="spatial-2">
-                                                            <input type="checkbox" name="spatial" id="spatial-2" value="Isosurface / Streamlines">
+                                                            <input type="checkbox" name="encodings" id="spatial-2" value="Isosurface / Streamlines">
                                                             Isosurface / Streamlines
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="spatial-3">
-                                                            <input type="checkbox" name="spatial" id="spatial-3" value="Volume / Images">
+                                                            <input type="checkbox" name="encodings" id="spatial-3" value="Volume / Images">
                                                             Volume / Images
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="spatial-4">
-                                                            <input type="checkbox" name="spatial" id="spatial-4" value="Glyphs">
+                                                            <input type="checkbox" name="encodings" id="spatial-4" value="Glyphs">
                                                             Glyphs
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="spatial-5">
-                                                            <input type="checkbox" name="spatial" id="spatial-5" value="Animation">
+                                                            <input type="checkbox" name="encodings" id="spatial-5" value="Animation">
                                                             Animation
                                                         </label>
                                                     </div>
@@ -290,43 +290,42 @@
                                                 <div class="col-md-12">
                                                     <div class="checkbox">
                                                         <label for="nonSpatial-0">
-                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-0" value="color">
-                                                            Color
+                                                            encodings                                                            Color
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="nonSpatial-1">
-                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-1" value="line Chart">
+                                                            <input type="checkbox" name="encodings" id="nonSpatial-1" value="line Chart">
                                                             Line Chart
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="nonSpatial-2">
-                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-2" value="histogram">
+                                                            <input type="checkbox" name="encodings" id="nonSpatial-2" value="histogram">
                                                             Histogram
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="nonSpatial-3">
-                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-3" value="scatterplot">
+                                                            <input type="checkbox" name="encodings" id="nonSpatial-3" value="scatterplot">
                                                             Scatterplot
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="nonSpatial-4">
-                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-4" value="node">
+                                                            <input type="checkbox" name="encodings" id="nonSpatial-4" value="node">
                                                             Node-Link
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="nonSpatial-5">
-                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-5" value="pcp">
+                                                            <input type="checkbox" name="encodings" id="nonSpatial-5" value="pcp">
                                                             Parallel Coordinates
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label for="nonSpatial-6">
-                                                            <input type="checkbox" name="nonSpatial" id="nonSpatial-6" value="star">
+                                                            <input type="checkbox" name="encodings" id="nonSpatial-6" value="star">
                                                             Star-Plot
                                                         </label>
                                                     </div>
@@ -374,61 +373,60 @@
         </div>
     </div>
 
-    <!--</section>-->
-    <!--<div class="container-fluid">-->
-    <!--<div class="row">-->
+    <div class="container-fluid">
+        <!--<div class="row">-->
 
-    <!--<div class="col-md-4">-->
-    <!--<div class="x_panel tile">-->
-    <!--<div class="x_title">-->
-    <!--<h3>Engineering: All</h3>-->
-    <!--<div class="clearfix"></div>-->
-    <!--</div>-->
-    <!--<div class="x_content">-->
-    <!--<div class="chart" id="engineerisng"></div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
+            <!--<div class="col-md-4">-->
+                <!--<div class="x_panel tile">-->
+                    <!--<div class="x_title">-->
+                        <!--<h3>Engineering: All</h3>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<div class="x_content">-->
+                        <!--<div class="chart" id="engineerisng"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
 
-    <!--<div class="col-md-4">-->
-    <!--<div class="x_panel tile">-->
-    <!--<div class="x_title">-->
-    <!--<h3>Engineering: Natural Science</h3>-->
-    <!--<div class="clearfix"></div>-->
-    <!--</div>-->
-    <!--<div class="x_content">-->
-    <!--<div class="chart" id="natural"></div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
+            <!--<div class="col-md-4">-->
+                <!--<div class="x_panel tile">-->
+                    <!--<div class="x_title">-->
+                        <!--<h3>Engineering: Natural Science</h3>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<div class="x_content">-->
+                        <!--<div class="chart" id="natural"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
 
-    <!--<div class="col-md-4">-->
-    <!--<div class="x_panel tile">-->
-    <!--<div class="x_title">-->
-    <!--<h3>Engineering: Physical Science</h3>-->
-    <!--<div class="clearfix"></div>-->
-    <!--</div>-->
-    <!--<div class="x_content">-->
-    <!--<div class="chart" id="physical"></div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
+            <!--<div class="col-md-4">-->
+                <!--<div class="x_panel tile">-->
+                    <!--<div class="x_title">-->
+                        <!--<h3>Engineering: Physical Science</h3>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<div class="x_content">-->
+                        <!--<div class="chart" id="physical"></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
-    <!--<div class="row">-->
-    <!--<div class="col-md-12">-->
-    <!--<div class="x_panel tile">-->
-    <!--<div class="x_title">-->
-    <!--<h3>Engineering: Papers</h3>-->
-    <!--<div class="clearfix"></div>-->
-    <!--</div>-->
-    <!--<div class="x_content">-->
-    <!--<table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h3>Engineering: Papers</h3>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 

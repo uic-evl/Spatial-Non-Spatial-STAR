@@ -17,7 +17,7 @@ var DB = DB || {};
 
                 // Define your database schema
                 self.db.version(1).stores({
-                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks'
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
                 });
 
                 // Open the DB
@@ -45,7 +45,12 @@ var DB = DB || {};
                             tasks:      record["Tasks"],
                             paradigms:  record["Paradigm"],
                             domain:     record["SubDomain"],
-                            evaluators:     record["Evaluators"]
+                            evaluators: record["Evaluators"],
+                            evaluation: record["Evaluation"],
+                            expertise: record["Single/Mixed Expertise"],
+                            year:       record["Year"],
+                            url:        record["URL"]
+
                         };
 
                         items.push(item);
@@ -95,25 +100,77 @@ var DB = DB || {};
             });
         },
 
-        queryPapers : function(query) {
+        queryPapers : function(query, cb) {
 
+            // Store the papers that are found
+            var dataTypes = [], encodings = [], paradigms = [], evaluators = [], domain = [];
+            // Promise array
+            var promises = [];
+
+            /** make sure the DB is open **/
             opened.then(function(){
 
-                self.db.papers
+                /** query the DB for each of the incoming properties **/
+
+                // SubDomain
+                promises.push(self.db.papers
+                    .where("domain")
+                    .anyOf(query.or.domain)
+                    .toArray());
+
+                // Data Types
+                promises.push(self.db.papers
                     .where("dataTypes")
-                        .anyOf(query.dataTypes)
-                    .or('encodings')
-                        .anyOf(_.union(query.spatial,query.nonSpatial))
-                    .or('paradigms')
-                        .anyOf(query.paradigms)
-                    .or('domain')
-                        .anyOf(query.domain)
-                    .toArray(function(paper) {
-                        console.log(paper);
+                        .anyOf(query.or.dataTypes)
+                    .toArray());
+
+                // Paradigms
+                promises.push(self.db.papers
+                    .where("paradigms")
+                    .anyOf(query.or.paradigms)
+                    .toArray());
+
+                // Encodings
+                promises.push(self.db.papers
+                    .where("encodings")
+                        .anyOf(query.or.encodings)
+                    .toArray());
+
+                // Evaluators
+                promises.push(self.db.papers
+                    .where("evaluators")
+                        .anyOf(query.or.evaluators)
+                    .toArray());
+
+                /** when all the queries have resolved, process the data **/
+                Promise.all(promises)
+                    .then(function(result){
+                        var results = [];
+                        /** iterate over all the query items **/
+                        _.valuesIn(query.or).forEach(function(attr, idx){
+
+                            // if the attribute was queried for, use its results
+                            if(attr.length > 0) {
+                                // if first result
+                                if(results.length === 0) {
+                                    results = result[idx];
+                                }
+                                // else, we want the intersection
+                                else {
+                                    results = _.intersection(results);
+                                }
+                            }
+                        });
+
+                        /** Invoke the callback with the results **/
+                        cb(results);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
                     });
+
             });
         }
-
     };
 
 })();

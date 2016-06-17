@@ -1,7 +1,5 @@
 var App = App || {};
 
-
-
 /** Initialize the advanced menu accordian **/
 $(function() {
     var Accordion = function(el, multiple) {
@@ -45,7 +43,7 @@ $(function() {
 
     function setupDB(data, tabletop) {
 
-        /** add the rows to the database  **/
+        /** Add the rows to the database  **/
         App.curreltSelection = App.rows = tabletop.sheets("Papers").all();
 
         /** Parse the data before inserting it into the database **/
@@ -99,34 +97,42 @@ $(function() {
         App.phyGraph.graphChart(physicalData.encodings, "#physical", physicalData.max, physicalData.groups, _.values(physicalData.authors));
     }
 
-    function setupTable(data, tabletop) {
+    function setupTable(data) {
 
-        // Reference : https://datatables.net/reference/index
-        // $(document).ready(function () {
-        //     App.table = $('#papers').DataTable({
-        //         data: App.rows,
-        //         scrollY:  '50vh',
-        //         scrollX:  false,
-        //         sScrollY: null,
-        //         columns: [
-        //             {title: "Author", data: "Author"},
-        //             {title: "Year", data: "Year"},
-        //             {title: "Paper Title", data: "Paper Title"},
-        //             // {title: "Url", data: "URL"},
-        //             {title: "Domain", data: "Domain"},
-        //             {title: "Sub-Domain", data: "Sub-Domain"},
-        //             {title: "No. of Users", data: "# of Users"},
-        //             {title: "Users", data: "Users"},
-        //             {title: "Level of Expertise", data: "Level of Expertise"},
-        //             {title: "Data Types", data: "Data Types"},
-        //             {title: "Paradigm", data: "Paradigm"},
-        //             {title: "Number of Overlays", data: "Number of Overlays"},
-        //             {title: "Evaluation type", data: "Evaluation type"}
-        //         ],
-        //         order: [[1, 'asc'], [0, 'asc']],
-        //         stateSave: true
-        //     });
+        // Map data into DataTables format
+        // _.map(data, function(obj){
+        //
         // });
+
+        console.log(data);
+
+        Reference : https://datatables.net/reference/index
+        $(document).ready(function () {
+            App.table = $('#papers').DataTable({
+                data: data,
+                scrollY:  '50vh',
+                scrollX:  false,
+                sScrollY: null,
+                columns: [
+                    {title: "Author", data: "author"},
+                    {title: "Year", data: "year"},
+                    {title: "Paper Title", data: "title"},
+                    {title: "Url", data: "uRL"},
+                    // {title: "Domain", data: "domain"},
+                    {title: "Sub-Domain", data: "domain"},
+                    // {title: "No. of Users", data: "# of Users"},
+                    // {title: "Users", data: "Users"},
+                    {title: "Level of Expertise", data: "expertise"},
+                    {title: "Data Types", data: "dataTypes"},
+                    {title: "Paradigm", data: "paradigms"},
+                    // {title: "Number of Overlays", data: "Number of Overlays"},
+                    {title: "Evaluation type", data: "evaluation"},
+                    {title: "Evaluators", data: "evaluators"}
+                ],
+                order: [[1, 'asc'], [0, 'asc']],
+                stateSave: true
+            });
+        });
     }
 
     App.initDB = function() {
@@ -153,8 +159,8 @@ $(function() {
                 domain: [],
                 dataTypes: [],
                 paradigms: [],
-                spatial: [],
-                nonSpatial: []
+                encodings: [],
+                evaluators: []
             };
 
         /** Get the search values **/
@@ -179,11 +185,11 @@ $(function() {
             advanced[ $(this).attr('name')].push( $(this).attr('value'));
         });
 
-        DB.queryPapers(advanced);
+        var results = DB.queryPapers({and: [input, operator], or:advanced}, setupTable);
+
 
         // we don't want the page to reload
         return false;
-
     };
 
 })();
