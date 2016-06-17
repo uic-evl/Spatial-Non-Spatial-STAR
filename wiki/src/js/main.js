@@ -99,8 +99,6 @@ $(function() {
 
     function setupTable(data) {
 
-        console.log(data);
-
         //Reference : https://datatables.net/reference/index
         $(document).ready(function () {
             App.table = $('#papers').DataTable({
@@ -161,17 +159,17 @@ $(function() {
         /** Get the search values **/
 
         // search variable
-        $('[name="my_fields[]"]').each(function(index){
+        $('[name="my_fields[]"]').each(function(){
             input.push($(this).val().split()[0]);
         });
 
         // operator
-        $('[name="operator[]"]').each(function(index){
+        $('[name="operator[]"]').each(function(){
             operator.push($(this).val().split()[0]);
         });
 
         // value
-        $('[name="my_value[]"]').each(function(index){
+        $('[name="my_value[]"]').each(function(){
             values.push($(this).val().split()[0]);
         });
 
@@ -180,8 +178,8 @@ $(function() {
             advanced[ $(this).attr('name')].push( $(this).attr('value'));
         });
 
-        var results = DB.queryPapers({and: [input, operator], or:advanced}, setupTable);
-
+        /** query the for the papers that meet the criteria **/
+        DB.queryPapers({and: [input, operator], or:advanced}, setupTable);
 
         // we don't want the page to reload
         return false;
