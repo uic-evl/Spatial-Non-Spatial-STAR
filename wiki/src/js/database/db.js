@@ -85,7 +85,7 @@ var DB = DB || {};
         {
 
             opened.then(function(){
-                
+
                 switch(query.op) {
 
                     case 'LIKE':
@@ -161,17 +161,17 @@ var DB = DB || {};
             /** make sure the DB is open **/
             opened.then(function(){
 
-                /** iterate over the search fields **/
-                for(var i = 0; i < query.and[0].length; i++){
-
-                    var attr = query.and[0][i];
-                    var operator = query.and[1][i];
-                    var value = query.and[2][i];
-
-                    console.log(attr, operator, value);
-
-                    DB.queryPapersByTitle({attr: attr, op: operator, value: value});
-                }
+                // /** iterate over the search fields **/
+                // for(var i = 0; i < query.and[0].length; i++){
+                //
+                //     var attr = query.and[0][i];
+                //     var operator = query.and[1][i];
+                //     var value = query.and[2][i];
+                //
+                //     console.log(attr, operator, value);
+                //
+                //     DB.queryPapersByTitle({attr: attr, op: operator, value: value});
+                // }
 
                 /** query the DB for each of the incoming properties **/
 

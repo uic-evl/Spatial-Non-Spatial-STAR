@@ -187,36 +187,24 @@ var Graph = function() {
         });
     }
 
-    self.parseEncodingsData = function(rows){
+    self.parseEncodings = function(rows){
 
-        // console.log(rows);
-
-        // get only the rows that have a number corresponding to their entry
-        //var rows = _.reject(tabletop.sheets("Encodings").all(), function(o) { return !o.No; });
-        rows = _.map(rows, function(d){
-            var out =_.reduce(d, function(result, value, key) {
-
-                result[key] = +value || value;
-                return result;
-            }, { });
-            return out;
-        });
-
-        // spatial columns
+        // Spatial columns
         var spatial = [
             'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
         ];
 
-        // non-spatial keys
-        var nonEncodings = _.keys(_.omit(rows[0], _.flatten(['Author','Sub-Domain', 'Year', spatial])));
+        // Non-Spatial columns
+        var nonSpatial = _.keys(_.omit(App.encodings[0], _.flatten(['Author','Sub-Domain', 'Year', spatial])));
 
-        // template for the encodings chart
-        var nonSpatial = _.reduce(nonEncodings,
+        // Set up the data structure for reduce to clone
+        var nonSpatialTemplate = _.reduce(nonSpatial,
             function(result, value, key){
                 result[value] = 0;
                 return result;
             }, {});
 
+        /* Author / Paper Affiliation */
         var authors = {
             'Chloropleth / Heatmap': {},
             'Ball and Stick / Mesh': {},
@@ -226,41 +214,37 @@ var Graph = function() {
             'Animation': {}
         };
 
-        var max = 0;
+        /** iterate over the resutls to combine the encodings **/
         var encodings = _.reduce(rows, function(result, value, key) {
 
-            // get the rows that are one
-            var enc = _.pickBy(value, _.isNumber);
-            enc = _.omit(enc, ['Year']);
+            /** Separate the spatial and non-spatial encodings **/
+            var spat = _.intersection(value.encodings, spatial);
+            var non  = _.intersection(value.encodings, nonSpatial);
 
-            var spat = _.pick(enc, spatial);
-            var non = _.omit(enc, spatial);
-
-            _.keys(spat).forEach(function(s){
-
-                _.keys(non).forEach(function(n){
+             spat.forEach(function(s){
+                non.forEach(function(n){
 
                     // increment the result
                     result[s][n] += 1;
 
                     // store the corresponding authors in another array
                     authors[s][n] = authors[s][n] || [];
-                    authors[s][n].push({name: value['Author'], year: value['Year']});
+                    authors[s][n].push({name: value['author'], year: value['year']});
                 });
             });
 
             return result;
-
         }, {
-            'Chloropleth / Heatmap': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Ball and Stick / Mesh': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Isosurface / Streamlines': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Volume / Images': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Glyph': _.cloneDeep(nonSpatial),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Animation': _.cloneDeep(nonSpatial)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
+            'Chloropleth / Heatmap': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Ball and Stick / Mesh': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Isosurface / Streamlines': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Volume / Images': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Glyph': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Animation': _.cloneDeep(nonSpatialTemplate)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
         });
 
         // Finally, map to the format needed for the chart
+        var max = 0;
         encodings = _.map(encodings, function(d, k, o)
         {
             // console.log(d);
@@ -279,7 +263,7 @@ var Graph = function() {
             return obj;
         });
 
-        return {encodings: encodings, authors: authors, max: max, groups: nonEncodings};
+        return {encodings: encodings, authors: authors, max: max, groups: nonSpatial};
     };
 
     /**
@@ -296,7 +280,8 @@ var Graph = function() {
 
     self.graphChart = function(data, chartDiv, maxValue, grpNames, authors) {
 
-        var totWidth = d3.select('.col-md-4').node().clientWidth * 0.9,
+        /** Set up the chart properties **/
+        var totWidth = d3.select('.chartDiv').node().clientWidth * 0.9,
             totHeight = totWidth * 0.85,
             margin = {top: 100, right: 20, bottom: 25, left: 100},
             width = totWidth - (margin.left + margin.right),
