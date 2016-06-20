@@ -137,10 +137,30 @@ $(function() {
 
             function format ( d ) {
 
-                return 'Full name: '+d.first_name+' '+d.last_name+'<br>'+
-                    'Salary: '+d.salary+'<br>'+
-                    'The child row can contain any data you wish, including links, images, inner tables etc.';
+                /** construct the sub row details **/
+                var details =
+                    '<div class="details-container">'+
+                        '<table cellpadding="5" cellspacing="0" border="0" class="details-table">'+
 
+                            '<tr>'+
+                                '<td class="title">Paper:</td>'+
+                                '<td><a href="' + d.url +'">' + d.title + '</a></td>'+
+                            '</tr>'+
+
+                            '<tr>'+
+                                '<td class="title">Encodings :</td>'+
+                                '<td>' + d.encodings.join(', ') +'</td>'+
+                            '</tr>'+
+
+                            '<tr>'+
+                                '<td class="title">Tasks :</td>'+
+                                '<td>' + d.tasks.join(', ') +'</td>'+
+                            '</tr>'+
+
+                        '</table>'+
+                    '</div>';
+
+                return details;
             }
 
             // Array to track the ids of the details displayed rows
