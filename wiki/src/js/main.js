@@ -269,7 +269,7 @@ $(function() {
         });
 
         /** query the for the papers that meet the criteria **/
-        DB.queryPapers({and: [input, operator], or:advanced}, setupTable);
+        DB.queryPapers({and: [input, operator, values], or:advanced}, setupTable);
 
         // we don't want the page to reload
         return false;

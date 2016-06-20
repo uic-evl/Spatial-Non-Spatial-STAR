@@ -7,6 +7,14 @@ var DB = DB || {};
 
     var self = this;
 
+    var queryMap = {
+        LIKE : 'anyOfIgnoreCase',
+        EQUAL : 'equals',
+        _LIKE : 'startsWithIgnoreCase',
+        NOT : 'notEqual',
+        'NOT LIKE' : 'notOf'
+    };
+
     DB = {
 
         initializeDB: function (name, records) {
@@ -75,14 +83,58 @@ var DB = DB || {};
         /** Query for the paper by title **/
         queryPapersByTitle : function(query)
         {
-            opened.then(function(){
 
-                self.db.papers
-                    .where("title")
-                    .equalsIgnoreCase(query)
-                    .toArray(function(paper) {
-                        console.log(paper);
-                    });
+            opened.then(function(){
+                
+                switch(query.op) {
+
+                    case 'LIKE':
+                        self.db.papers
+                            .where(query.attr)
+                            .equalsIgnoreCase(query.value)
+                            .toArray(function(paper) {
+                                console.log(paper);
+                            });
+                            break;
+
+                    case 'EQUAL':
+                        self.db.papers
+                            .where(query.attr)
+                            .equalsIgnoreCase(query.value)
+                            .toArray(function(paper) {
+                                console.log(paper);
+                            });
+                        break;
+
+                    case '_LIKE':
+                        self.db.papers
+                            .where(query.attr)
+                            .startsWithIgnoreCase(query.value)
+                            .toArray(function(paper) {
+                                console.log(paper);
+                            });
+                        break;
+
+                    case 'NOT':
+                        self.db.papers
+                            .where(query.attr)
+                            .notEqual(query.value)
+                            .toArray(function(paper) {
+                                console.log(paper);
+                            });
+                        break;
+
+                    case 'NOT LIKE':
+                        self.db.papers
+                            .where(query.attr)
+                            .noneOf(query.value)
+                            .toArray(function(paper) {
+                                console.log(paper);
+                            });
+                        break;
+                }
+
+
             });
         },
 
@@ -108,6 +160,18 @@ var DB = DB || {};
 
             /** make sure the DB is open **/
             opened.then(function(){
+
+                /** iterate over the search fields **/
+                for(var i = 0; i < query.and[0].length; i++){
+
+                    var attr = query.and[0][i];
+                    var operator = query.and[1][i];
+                    var value = query.and[2][i];
+
+                    console.log(attr, operator, value);
+
+                    DB.queryPapersByTitle({attr: attr, op: operator, value: value});
+                }
 
                 /** query the DB for each of the incoming properties **/
 
