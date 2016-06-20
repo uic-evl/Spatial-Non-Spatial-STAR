@@ -125,7 +125,7 @@ $(function() {
                     // {title: "No. of Users", data: "# of Users"},
                     // {title: "Users", data: "Users"},
                     {title: "Level of Expertise", data: "expertise"},
-                    {title: "Data Types", data: "dataTypes"},
+                    // {title: "Data Types", data: "dataTypes"},
                     {title: "Paradigm", data: "paradigms"},
                     // {title: "Number of Overlays", data: "Number of Overlays"},
                     {title: "Evaluation type", data: "evaluation"},
@@ -135,6 +135,7 @@ $(function() {
                 // stateSave: true
             });
 
+            /** formatter for the sub-rows **/
             function format ( d ) {
 
                 /** construct the sub row details **/
@@ -150,6 +151,11 @@ $(function() {
                             '<tr>'+
                                 '<td class="title">Encodings :</td>'+
                                 '<td>' + d.encodings.join(', ') +'</td>'+
+                            '</tr>'+
+
+                            '<tr>'+
+                                '<td class="title">Data Types :</td>'+
+                                '<td>' + d.dataTypes.join(', ') +'</td>'+
                             '</tr>'+
 
                             '<tr>'+
