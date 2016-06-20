@@ -50,7 +50,6 @@ var DB = DB || {};
                             expertise:  record["Single/Mixed Expertise"],
                             year:       record["Year"],
                             url:        record["URL"]
-
                         };
 
                         items.push(item);
@@ -114,6 +113,10 @@ var DB = DB || {};
 
                 // SubDomain
                 promises.push(self.db.papers
+                    .toArray());
+
+                // SubDomain
+                promises.push(self.db.papers
                     .where("domain")
                     .anyOf(query.or.domain)
                     .toArray());
@@ -145,9 +148,11 @@ var DB = DB || {};
                 /** when all the queries have resolved, process the data **/
                 Promise.all(promises)
                     .then(function(result){
-                        var results = [];
+                        var results = result[0];
                         /** iterate over all the query items **/
                         _.valuesIn(query.or).forEach(function(attr, idx){
+
+                            if(idx === 0) return;
 
                             // if the attribute was queried for, use its results
                             if(attr.length > 0) {

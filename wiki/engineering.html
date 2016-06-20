@@ -16,17 +16,19 @@
     <link href="lib/css/bootstrap.css" rel="stylesheet" type="text/css">
 
     <!-- Table Styling -->
-    <link href="http://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 
     <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
     <link rel="stylesheet" type="text/css" href="lib/js/external/datepicker/css/datepicker-min.css"/>
     <link rel="stylesheet" type="text/css" href="lib/css/style.css">
 
+    <link href="http://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+
     <!---- CSS Source ---->
     <link  href="src/css/findingsCharts.css" rel="stylesheet" type="text/css">
     <link href="src/css/custom.css"          rel="stylesheet" type="text/css">
     <link href="src/css/accordian.css"       rel="stylesheet" type="text/css" >
+    <link href="src/css/main.css"       rel="stylesheet" type="text/css" >
 
     <!---- JS Libraries ---->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -81,7 +83,7 @@
 
     </section>
 
-    <div class="vcenter">
+    <div id="search" class="vcenter">
         <div id="searchContainer" class="container">
             <div class="row">
                 <div class="col-md-8 col-md-offset-4">
@@ -370,11 +372,12 @@
                 </div>
 
             </div>
-
         </div>
     </div>
 
-    <div class="container-fluid">
+    <div id="loading" style="display:none;"></div>
+
+    <div id="results" class="container-fluid">
         <!--<div class="row">-->
 
             <!--<div class="col-md-4">-->

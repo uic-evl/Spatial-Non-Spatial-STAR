@@ -99,16 +99,27 @@ $(function() {
 
         //Reference : https://datatables.net/reference/index
         $(document).ready(function () {
+
+            /** display the results **/
+            d3.select('#results')
+                .style("display", "block");
+
             App.table = $('#papers').DataTable({
                 data: data,
                 scrollY:  '50vh',
                 scrollX:  false,
                 sScrollY: null,
                 columns: [
+                    {
+                        "class":          "details-control",
+                        "orderable":      false,
+                        "data":           null,
+                        "defaultContent": ""
+                    },
                     {title: "Author", data: "author"},
                     {title: "Year", data: "year"},
                     {title: "Paper Title", data: "title"},
-                    {title: "Url", data: "url"},
+                    // {title: "Url", data: "url"},
                     // {title: "Domain", data: "domain"},
                     {title: "Sub-Domain", data: "domain"},
                     // {title: "No. of Users", data: "# of Users"},
@@ -123,6 +134,56 @@ $(function() {
                 order: [[1, 'asc'], [0, 'asc']]
                 // stateSave: true
             });
+
+            function format ( d ) {
+
+                return 'Full name: '+d.first_name+' '+d.last_name+'<br>'+
+                    'Salary: '+d.salary+'<br>'+
+                    'The child row can contain any data you wish, including links, images, inner tables etc.';
+
+            }
+
+            // Array to track the ids of the details displayed rows
+            var detailRows = [];
+
+            $('#papers tbody').on( 'click', 'tr td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = App.table.row( tr );
+                var idx = $.inArray( tr.attr('id'), detailRows );
+
+                if ( row.child.isShown() ) {
+                    tr.removeClass( 'details' );
+                    row.child.hide();
+
+                    // Remove from the 'open' array
+                    detailRows.splice( idx, 1 );
+                }
+                else {
+                    tr.addClass( 'details' );
+                    row.child( format( row.data() ) ).show();
+
+                    // Add to the 'open' array
+                    if ( idx === -1 ) {
+                        detailRows.push( tr.attr('id') );
+                    }
+                }
+            } );
+
+            // On each draw, loop over the `detailRows` array and show any child rows
+            App.table.on( 'draw', function () {
+                $.each( detailRows, function ( i, id ) {
+                    $('#'+id+' td.details-control').trigger( 'click' );
+                } );
+            } );
+
+            /** remove the spinner **/
+            d3.select('#loading')
+                .style("display", "none");
+
+            /** move the searchbar to the top **/
+            d3.select("#search")
+                .classed("vcenter", false);
+
         });
     }
 
@@ -144,6 +205,10 @@ $(function() {
     };
 
     App.getResults = function(e) {
+
+        /** put up the lading spinner **/
+        d3.select('#loading')
+            .style("display", "block");
 
         var input = [], operator = [], values = [],
             advanced = {
