@@ -330,7 +330,6 @@ var Graph = function() {
      * @param {Array} authors The authors corresponding to the data
      */
     self.graphEncodingBubbleChart = function(data, chartDiv, maxValue, grpNames, authors) {
-
         /** Set up the chart properties **/
         var totWidth = d3.select('.chartDiv4').node().clientWidth * 0.9,
             totHeight = totWidth * 0.85,
@@ -462,7 +461,7 @@ var Graph = function() {
         /** Set up the chart properties **/
         var totWidth = d3.select('.chartDiv8').node().clientWidth * 0.9,
             totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
-            margin = {top: 0, right: 20, bottom: 100, left: 50},
+            margin = {top: 0, right: 20, bottom: 100, left: 60},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
