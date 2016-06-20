@@ -66,11 +66,6 @@
             .style("text-decoration", "underline")
             .text("DataTypes by Domain");
 
-    //    svg.append("text")
-    //            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-    //            .attr("transform", "translate("+ (margin.left/2) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
-    //            .text("Value");
-
     d3.csv("DataTypes.csv", function(error, data) {
         if (error) throw error;
 

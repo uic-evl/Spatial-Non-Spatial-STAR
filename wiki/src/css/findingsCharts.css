@@ -9,7 +9,7 @@
 }
 
 .legend text {
-    font: 40px sans-serif;
+    font: 15px sans-serif;
 }
 
 .axis path,
@@ -19,13 +19,13 @@
     shape-rendering: crispEdges;
 }
 
-.x.axis path,
-.x.axis line {
+#encodings .x.axis path,
+#encodings .x.axis line {
     display: none;
 }
 
-.y.axis path,
-.y.axis line {
+#encodings .y.axis path,
+#encodings .y.axis line {
     display: none;
 }
 

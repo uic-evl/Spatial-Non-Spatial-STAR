@@ -44,6 +44,7 @@ $(function() {
         /** Add the rows to the database  **/
         App.curreltSelection = App.rows = tabletop.sheets("Papers").all();
         App.encodings = tabletop.sheets("Encodings").all();
+        App.tasks = tabletop.sheets("Tasks").all();
 
         /** Parse the data before inserting it into the database **/
         _.map(App.rows, function (o) {
@@ -72,11 +73,14 @@ $(function() {
         App.engGraph = new Graph();
 
         // get the parsed encodings
-        var engineeringData = App.engGraph.parseEncodings(data);
+        var encodingData = App.engGraph.parseEncodings(data);
+        var taskData = App.engGraph.parseTasks(data, ["Physical Science", "Natural Science", "Both", "Bio", "Sim"]);
 
         // plot the bubble scatter plots
-        App.engGraph.graphChart(engineeringData.encodings, "#engineering",
-            engineeringData.max, engineeringData.groups, _.values(engineeringData.authors));
+        App.engGraph.graphEncodingBubbleChart(encodingData.encodings, "#encodings",
+            encodingData.max, encodingData.groups, _.values(encodingData.authors));
+
+        App.engGraph.graphTaskBarChart(taskData.tasks, "#tasks", 0, taskData.groups, ["Physical Science", "Natural Science", "Both"]);
     }
 
     function setupTable(data) {
