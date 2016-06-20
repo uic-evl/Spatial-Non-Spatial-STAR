@@ -109,6 +109,7 @@ $(function() {
                 scrollY:  '50vh',
                 scrollX:  false,
                 sScrollY: null,
+                "bFilter": false,
                 columns: [
                     {
                         "class":          "details-control",
