@@ -116,20 +116,20 @@ $(function() {
                         "data":           null,
                         "defaultContent": ""
                     },
-                    {title: "Author", data: "author"},
-                    {title: "Year", data: "year"},
-                    {title: "Paper Title", data: "title"},
+                    {title: "Author", data: "author", className: "dt-center",  "targets": [ 0 ] },
+                    {title: "Year", data: "year", className: "dt-center",  "targets": [ 0 ]},
+                    {title: "Paper Title", data: "title", className: "dt-center",  "targets": [ 0 ]},
                     // {title: "Url", data: "url"},
-                    // {title: "Domain", data: "domain"},
-                    {title: "Sub-Domain", data: "domain"},
+                    // {title: "Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
+                    {title: "Sub-Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
                     // {title: "No. of Users", data: "# of Users"},
                     // {title: "Users", data: "Users"},
-                    {title: "Level of Expertise", data: "expertise"},
+                    {title: "Level of Expertise", data: "expertise", className: "dt-center",  "targets": [ 0 ]},
                     // {title: "Data Types", data: "dataTypes"},
-                    {title: "Paradigm", data: "paradigms"},
+                    {title: "Paradigm", data: "paradigms", className: "dt-center",  "targets": [ 0 ]},
                     // {title: "Number of Overlays", data: "Number of Overlays"},
-                    {title: "Evaluation type", data: "evaluation"},
-                    {title: "Evaluators", data: "evaluators"}
+                    {title: "Evaluation type", data: "evaluation", className: "dt-center",  "targets": [ 0 ]},
+                    {title: "Evaluators", data: "evaluators", className: "dt-center",  "targets": [ 0 ]}
                 ],
                 order: [[1, 'asc'], [0, 'asc']]
                 // stateSave: true
