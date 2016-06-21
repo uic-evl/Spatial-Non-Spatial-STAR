@@ -63,6 +63,8 @@ $(function() {
             _.map(o["Tasks"], _.trimEnd);
         });
 
+        console.log(tabletop);
+
         /** create the new database for the session **/
         App.db = DB.initializeDB('BioMed', App.rows);
     }

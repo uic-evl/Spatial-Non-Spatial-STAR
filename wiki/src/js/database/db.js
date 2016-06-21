@@ -17,6 +17,9 @@ var DB = DB || {};
 
     DB = {
 
+        /** Helper function **/
+        getVersionNo: function() { return self.db.verno; },
+
         initializeDB: function (name, records) {
 
             Dexie.exists(name).then(function(exists) {
@@ -26,6 +29,68 @@ var DB = DB || {};
                 // Define your database schema
                 self.db.version(1).stores({
                     papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
+                });
+
+                self.db.version(2).stores({
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
+                }).upgrade(function(t)
+                {
+
+                    var incomingRecords = _.cloneDeep(records);
+
+                    // update the records that exist
+                   return t.papers.toCollection().modify(function(paper) {
+
+                        var updatedRecord = _.find(incomingRecords, {Paper: paper.title});
+                        incomingRecords = _.without(incomingRecords, updatedRecord);
+
+                        // update the records
+                        paper.title =      updatedRecord["Paper"] ;
+                        paper.author  =    updatedRecord["Author"] ;
+                        paper.dataTypes =  updatedRecord["Data Types"] ;
+                        paper.encodings =  updatedRecord["Encodings"] ;
+                        paper.tasks =      updatedRecord["Tasks"] ;
+                        paper.paradigms =  updatedRecord["Paradigm"] ;
+                        paper.domain =     updatedRecord["SubDomain"] ;
+                        paper.evaluators = updatedRecord["Evaluators"] ;
+                        paper.evaluation = updatedRecord["Evaluation Type"] ;
+                        paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
+                        paper.year =       updatedRecord["Year"] ;
+                        paper.url =        updatedRecord["URL"];
+
+                    });
+
+                    // var items = [];
+                    // incomingRecords.forEach(function(record){
+                    //
+                    //     var item = {
+                    //         title:      record["Paper"],
+                    //         author :    record["Author"],
+                    //         dataTypes:  record["Data Types"],
+                    //         encodings:  record["Encodings"],
+                    //         tasks:      record["Tasks"],
+                    //         paradigms:  record["Paradigm"],
+                    //         domain:     record["SubDomain"],
+                    //         evaluators: record["Evaluators"],
+                    //         evaluation: record["Evaluation Type"],
+                    //         expertise:  record["Single/Mixed Expertise"],
+                    //         year:       record["Year"],
+                    //         url:        record["URL"]
+                    //     };
+                    //
+                    //     items.push(item);
+                    // });
+
+                    // t.papers.bulkPut(items)
+                    //     .catch(function(error) {
+                    //         //
+                    //         // Finally don't forget to catch any error
+                    //         // that could have happened anywhere in the
+                    //         // code blocks above.
+                    //         //
+                    //         console.log("Oops: " + error);
+                    //     });
+
                 });
 
                 // Open the DB
