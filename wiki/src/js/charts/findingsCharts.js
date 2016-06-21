@@ -500,9 +500,9 @@ var Graph = function() {
     self.graphTaskBarChart = function(data, chartDiv, maxValue, grpNames, subDomains) {
 
         /** Set up the chart properties **/
-        var totWidth = d3.select('.chartDiv8').node().clientWidth * 0.9,
+        var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.90,
             totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
-            margin = {top: 0, right: 20, bottom: 100, left: 60},
+            margin = {top: 0, right: 0, bottom: 100, left: 50},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
@@ -556,7 +556,7 @@ var Graph = function() {
             .call(xAxis).selectAll("text")
             .attr("y", 30)
             .attr("x", 0)
-            .attr("dy", ".35em")
+            .attr("dy", ".30em")
             // .attr("transform", "rotate(-45)")
             .style("text-anchor", "middle");
 
@@ -608,9 +608,9 @@ var Graph = function() {
     self.graphDataTypeBarChart = function(data, chartDiv, maxValue, grpNames, subDomains) {
 
         /** Set up the chart properties **/
-        var totWidth = d3.select('.chartDiv8').node().clientWidth * 0.9,
+        var totWidth = d3.select('.chartDiv4').node().clientWidth * 0.9,
             totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
-            margin = {top: 0, right: 20, bottom: 100, left: 60},
+            margin = {top: 0, right: 20, bottom: 100, left: 50},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 

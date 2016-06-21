@@ -8,6 +8,10 @@
     font: 15px sans-serif;
 }
 
+#tasks .axis text {
+    font: 12px sans-serif;
+}
+
 .legend text {
     font: 15px sans-serif;
 }
