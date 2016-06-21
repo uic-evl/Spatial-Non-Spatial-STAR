@@ -66,3 +66,38 @@ td.details-control:before {
 tr.shown td.details-control:before {
     content: '\2212';
 }
+
+#nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+#nav li {
+    float: left;
+}
+
+#nav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 0px 20px 20px 20px;
+    font-size: 24px;
+}
+
+/* Change the link color to #111 (black) on hover */
+#nav li a:hover {
+    color: red;
+    text-decoration: underline;
+}
+
+#nav .nav-text {
+    color: white;
+}
+
+.title {
+    color: white;
+    font-size: 34px;
+}

@@ -77,7 +77,9 @@ var Graph = function() {
         var newRows = [];
         _.forEach(authors, function(a)
         {
-            newRows.push(_.find(App.rows, function(r) {return r.Author.trim() == a.name.trim() && parseInt(r.Year) == a.year }));
+            newRows.push(_.find(App.queryResults, function(r) {
+                return r.author.trim() == a.name.trim() && parseInt(r.year) == a.year;
+            }));
         });
 
         if(_.indexOf(self.selected, obj) < 0)
@@ -124,7 +126,7 @@ var Graph = function() {
                 .classed("unSelected", false);
 
             // reset the table
-            App.currentSelection = App.rows;
+            App.currentSelection = App.queryResults;
         }
 
         /** modify the table to only show the entries related to the selected bubble **/
@@ -634,7 +636,7 @@ var Graph = function() {
     };
 
     /**
-     * Creates and plots the Bar Chart of the Tasks
+     * Creates and plots the Bar Chart of the Data Types
      *
      * @constructor
      * @this {Graph}
@@ -754,4 +756,3 @@ var Graph = function() {
 
     return self;
 };
-

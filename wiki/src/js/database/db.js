@@ -6,15 +6,7 @@ var DB = DB || {};
     var opened = deferred.promise;
 
     var self = this;
-
-    var queryMap = {
-        LIKE : 'anyOfIgnoreCase',
-        EQUAL : 'equals',
-        _LIKE : 'startsWithIgnoreCase',
-        NOT : 'notEqual',
-        'NOT LIKE' : 'notOf'
-    };
-
+    
     DB = {
 
         /** Helper function **/

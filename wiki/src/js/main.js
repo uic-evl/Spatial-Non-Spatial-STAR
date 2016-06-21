@@ -42,7 +42,7 @@ $(function() {
     function setupDB(data, tabletop) {
 
         /** Add the rows to the database  **/
-        App.curreltSelection = App.rows = tabletop.sheets("Papers").all();
+        App.rows = tabletop.sheets("Papers").all();
         App.encodings = tabletop.sheets("Encodings").all();
         App.tasks = tabletop.sheets("Tasks").all();
 
@@ -88,6 +88,8 @@ $(function() {
     }
 
     function setupTable(data) {
+
+        App.curreltSelection = App.queryResults = data;
 
         // jQuery selector to avoid redundant calls
         var tableSelector = $('#papers');
