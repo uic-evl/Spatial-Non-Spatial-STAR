@@ -76,8 +76,6 @@ $(function() {
         var encodingData = App.engGraph.parseEncodings(data);
         var taskData = App.engGraph.parseFields(data, ["Physical Science", "Natural Science", "Simulation"]);
 
-        console.log(taskData);
-
         // plot the bubble scatter plots
         App.engGraph.graphEncodingBubbleChart(encodingData.encodings, "#encodings",
             encodingData.max, encodingData.groups, _.values(encodingData.authors));
