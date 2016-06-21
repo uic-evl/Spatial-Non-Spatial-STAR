@@ -185,6 +185,14 @@ var Graph = function() {
         });
     }
 
+    /**
+     * Parses the data from the Google Sheets for use in the charts
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} rows The data to be parsed
+     * @returns {Object} The mapped tasks, data types, and task types
+     */
     self.parseEncodings = function(rows){
 
         // Spatial columns
@@ -264,6 +272,15 @@ var Graph = function() {
         return {encodings: encodings, authors: authors, max: max, groups: nonSpatial};
     };
 
+    /**
+     * Parses the data from the Google Sheets for use in the charts
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} rows The data to be parsed
+     * @param {Array} subDomains The list of sub-domains to map the data
+     * @returns {Object} The mapped tasks, data types, and task types
+     */
     self.parseFields = function(rows, subDomains) {
 
         var taskNames = d3.keys(App.tasks[0]).filter(function(key) {
@@ -497,6 +514,17 @@ var Graph = function() {
         d3.selectAll('.container').style("visibility", "visible");
     };
 
+    /**
+     * Creates and plots the Bar Chart of the Tasks
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} data The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} subDomains The list of subDomains for the xAxis groupting
+     */
     self.graphTaskBarChart = function(data, chartDiv, maxValue, grpNames, subDomains) {
 
         /** Set up the chart properties **/
@@ -605,6 +633,17 @@ var Graph = function() {
             .text(function(d) { return d; });
     };
 
+    /**
+     * Creates and plots the Bar Chart of the Tasks
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} data The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} subDomains The list of subDomains for the xAxis groupting
+     */
     self.graphDataTypeBarChart = function(data, chartDiv, maxValue, grpNames, subDomains) {
 
         /** Set up the chart properties **/
