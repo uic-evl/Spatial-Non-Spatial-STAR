@@ -74,13 +74,19 @@ $(function() {
 
         // get the parsed encodings
         var encodingData = App.engGraph.parseEncodings(data);
-        var taskData = App.engGraph.parseTasks(data, ["Physical Science", "Natural Science", "Both", "Bio", "Sim"]);
+        var taskData = App.engGraph.parseFields(data, ["Physical Science", "Natural Science", "Simulation"]);
+
+        console.log(taskData);
 
         // plot the bubble scatter plots
         App.engGraph.graphEncodingBubbleChart(encodingData.encodings, "#encodings",
             encodingData.max, encodingData.groups, _.values(encodingData.authors));
 
-        App.engGraph.graphTaskBarChart(taskData.tasks, "#tasks", 0, taskData.groups, ["Physical Science", "Natural Science", "Both"]);
+        // plot the task analysis
+        App.engGraph.graphTaskBarChart(taskData.tasks, "#tasks", 0, taskData.groups, ["Physical Science", "Natural Science", "Simulation"]);
+
+        // plot the data type analysis
+        App.engGraph.graphDataTypeBarChart(taskData.dataTypes, "#dataTypes", 0, ["Table", "Field", "Network", "Geometry"], ["Physical Science", "Natural Science", "Simulation"]);
     }
 
     function setupTable(data) {

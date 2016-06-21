@@ -75,6 +75,8 @@
             d.ages = ageNames.map(function(name) { return {name: name, value: +d[name]}; });
         });
 
+        console.log(data);
+
         x0.domain(data.map(function(d) {
             return d.DataType;
         }));

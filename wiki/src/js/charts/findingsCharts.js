@@ -234,7 +234,7 @@ var Graph = function() {
             return result;
         }, {
             'Chloropleth / Heatmap': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
-            'Ball and Stick / Mesh': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Ball and Stick / Mesh': _.cloneDeep(nonSpatialTemplate),//{ enc odings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Isosurface / Streamlines': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Volume / Images': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Glyph': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
@@ -264,7 +264,7 @@ var Graph = function() {
         return {encodings: encodings, authors: authors, max: max, groups: nonSpatial};
     };
 
-    self.parseTasks = function(rows, subDomains) {
+    self.parseFields = function(rows, subDomains) {
 
         var taskNames = d3.keys(App.tasks[0]).filter(function(key) {
             return key !== "Author" && key !== "Year" && key !== "Sub-Domain";  });
@@ -275,33 +275,60 @@ var Graph = function() {
                 return result;
             }, {});
 
-        var tasks = _.reduce(rows, function(result, value, key) {
+        var data = _.reduce(rows, function(result, value, key) {
 
             value.tasks.forEach(function(task){
-                result[task][value.domain] += 1;
+
+                if(value.domain === 'Both'){
+                    result[0][task]["Physical Science"] += 1;
+                    result[0][task]["Natural Science"] += 1;
+                }
+                else{
+                    result[0][task][value.domain] += 1;
+                }
+
+            });
+
+            value.dataTypes.forEach(function(task){
+
+                if(value.domain === 'Both'){
+                    result[1][task]["Physical Science"] += 1;
+                    result[1][task]["Natural Science"] += 1;
+                }
+                else {
+                    result[1][task][value.domain] += 1;
+                }
+
             });
 
             return result;
         },
+        [{
+            "Discover"  : _.cloneDeep(taskTemplate),
+            "Present"   : _.cloneDeep(taskTemplate),
+            "Annotate"  : _.cloneDeep(taskTemplate),
+            "Record"    : _.cloneDeep(taskTemplate),
+            "Derive"    : _.cloneDeep(taskTemplate),
+            "Browse"    : _.cloneDeep(taskTemplate),
+            "Explore"   : _.cloneDeep(taskTemplate),
+            "Lookup"    : _.cloneDeep(taskTemplate),
+            "Locate"    : _.cloneDeep(taskTemplate),
+            "Identify"  : _.cloneDeep(taskTemplate),
+            "Compare"   : _.cloneDeep(taskTemplate),
+            "Summarize" : _.cloneDeep(taskTemplate)
+        },
         {
-            "Discover": _.cloneDeep(taskTemplate),
-            "Present": _.cloneDeep(taskTemplate),
-            "Annotate": _.cloneDeep(taskTemplate),
-            "Record": _.cloneDeep(taskTemplate),
-            "Derive": _.cloneDeep(taskTemplate),
-            "Browse": _.cloneDeep(taskTemplate),
-            "Explore": _.cloneDeep(taskTemplate),
-            "Lookup": _.cloneDeep(taskTemplate),
-            "Locate": _.cloneDeep(taskTemplate),
-            "Identify": _.cloneDeep(taskTemplate),
-            "Compare": _.cloneDeep(taskTemplate),
-            "Summarize": _.cloneDeep(taskTemplate)
-        });
+            "Table"     : _.cloneDeep(taskTemplate),
+            "Network"   : _.cloneDeep(taskTemplate),
+            "Field"     : _.cloneDeep(taskTemplate),
+            "Geometry"  : _.cloneDeep(taskTemplate)
+        }
+        ]);
 
 
         /** Map the data into the correct format for use **/
-        var mapped = [];
-        _.map(tasks, function(obj, task) {
+        var mappedTasks = [];
+        _.map(data[0], function(obj, task) {
 
             var map = {Task: task, tasks: []};
 
@@ -311,10 +338,24 @@ var Graph = function() {
                 map.tasks.push({name: key, value: value})
             });
 
-            mapped.push(map);
+            mappedTasks.push(map);
         });
 
-       return {tasks: mapped,  groups: taskNames};
+        var mappedTypes = [];
+        _.map(data[1], function(obj, task) {
+
+            var map = {DataType: task, dataType: []};
+
+            _.forIn(obj, function(value, key) {
+
+                map[key] = value;
+                map.dataType.push({name: key, value: value})
+            });
+
+            mappedTypes.push(map);
+        });
+
+       return {tasks: mappedTasks, dataTypes: mappedTypes, groups: taskNames};
 
     };
 
@@ -563,7 +604,115 @@ var Graph = function() {
             .style("text-anchor", "end")
             .text(function(d) { return d; });
     };
-    
+
+    self.graphDataTypeBarChart = function(data, chartDiv, maxValue, grpNames, subDomains) {
+
+        /** Set up the chart properties **/
+        var totWidth = d3.select('.chartDiv8').node().clientWidth * 0.9,
+            totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
+            margin = {top: 0, right: 20, bottom: 100, left: 60},
+            width = totWidth - (margin.left + margin.right),
+            height = totHeight - (margin.top + margin.bottom);
+
+        var x0 = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1);
+
+        var x1 = d3.scale.ordinal();
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        var color = d3.scale.ordinal()
+            .range(["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#a05d56", "#d0743c", "#ff8c00"]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x0)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        var svg = d3.select(chartDiv).append("svg")
+            .attr("width", totWidth)
+            .attr("height", totHeight - (margin.bottom + margin.top) / 2)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        /** Chart Title **/
+        // svg.append("text")
+        //     .attr("x", (width / 2))
+        //     .attr("y", (-10))
+        //     .attr("text-anchor", "middle")
+        //     .style("font-size", "24px")
+        //     .style("text-decoration", "bold")
+        //     .style("text-decoration", "underline")
+        //     .text("Task Analysis by Sub-Domain");
+
+        /** Setup the x domains **/
+        x0.domain(grpNames);
+        x0.domain(grpNames);
+        x1.domain(subDomains).rangeRoundBands([0, x0.rangeBand()]);
+
+        /** Setup the y domains **/
+        y.domain([0, d3.max(data, function(d) { return d3.max(d.dataType, function(d) { return d.value; }); })]);
+
+        /** xAxis Labels **/
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis).selectAll("text")
+            .attr("y", 30)
+            .attr("x", 0)
+            .attr("dy", ".35em")
+            // .attr("transform", "rotate(-45)")
+            .style("text-anchor", "middle");
+
+        /** yAxis Labels **/
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+            .attr("transform", "translate(-30,"+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+            .text("Count");
+
+        var task = svg.selectAll(".task")
+            .data(data)
+            .enter().append("g")
+            .attr("class", "task")
+            .attr("transform", function(d) { return "translate(" + x0(d.DataType) + ",0)"; });
+
+        task.selectAll("rect")
+            .data(function(d) { return d.dataType; })
+            .enter().append("rect")
+            .attr("width", x1.rangeBand())
+            .attr("x", function(d) { return x1(d.name); })
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); })
+            .style("fill", function(d) { return color(d.name); });
+
+        /** Construct the legend **/
+        var legend = svg.selectAll(".legend")
+            .data(subDomains.slice().reverse())
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(-10," + i * 20 + ")"; });
+
+        legend.append("rect")
+            .attr("x", width - 18)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", color);
+
+        legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text(function(d) { return d; });
+    };
+
     return self;
 };
 
