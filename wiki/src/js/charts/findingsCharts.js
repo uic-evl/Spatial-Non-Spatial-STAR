@@ -84,6 +84,8 @@ var Graph = function() {
 
         if(_.indexOf(self.selected, obj) < 0)
         {
+            console.log('select');
+
             // remove the previous selection
             d3.select(this)
                 .classed("unSelected", false);
@@ -116,8 +118,12 @@ var Graph = function() {
             App.currentSelection = _.difference(App.currentSelection, newRows);
         }
 
+        /** modify the table to only show the entries related to the selected bubble **/
         if(self.selected.length === 0)
         {
+
+            console.log('no length');
+
             // there is no click interaction
             self.clicked = false;
 
@@ -125,18 +131,25 @@ var Graph = function() {
             self.chart.selectAll('circle')
                 .classed("unSelected", false);
 
-            // reset the table
-            App.currentSelection = App.queryResults;
+            // clear the old rows
+            App.table.clear();
+            //add the selection to the table
+            App.table.rows.add(App.queryResults);
+            //render the table
+            App.table.draw();
+        }
+        else
+        {
+            // clear the old rows
+            App.table.clear();
+            //add the selection to the table
+            App.table.rows.add(App.currentSelection);
+            //render the table
+            App.table.draw();
         }
 
-        /** modify the table to only show the entries related to the selected bubble **/
 
-        // clear the old rows
-        App.table.clear();
-        //add the selection to the table
-        App.table.rows.add(App.currentSelection);
-        //render the table
-        App.table.draw();
+
     };
 
     function wrap(text, width) {

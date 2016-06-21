@@ -89,7 +89,8 @@ $(function() {
 
     function setupTable(data) {
 
-        App.curreltSelection = App.queryResults = data;
+        App.curreltSelection = [];
+        App.queryResults = data;
 
         // jQuery selector to avoid redundant calls
         var tableSelector = $('#papers');
