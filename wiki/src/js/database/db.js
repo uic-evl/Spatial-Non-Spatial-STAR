@@ -31,16 +31,17 @@ var DB = DB || {};
                     papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
                 });
 
+                // version 2 with the modified data
                 self.db.version(2).stores({
                     papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
                 }).upgrade(function(t)
                 {
-
                     var incomingRecords = _.cloneDeep(records);
 
                     // update the records that exist
                    return t.papers.toCollection().modify(function(paper) {
 
+                       /** select the paper and remove it from the temporary list **/
                         var updatedRecord = _.find(incomingRecords, {Paper: paper.title});
                         incomingRecords = _.without(incomingRecords, updatedRecord);
 
