@@ -1,9 +1,5 @@
 var App = App || {};
 
-String.prototype.lowerCase = function() {
-    return this.charAt(0).toLowerCase() + this.slice(1);
-};
-
 /*** KO Class ***/
 function Papers() {
     var self = this;
@@ -76,7 +72,5 @@ function Papers() {
 
 /*** IFE to load the data and apply the KO bindings ***/
 (function(){
-
     ko.applyBindings(new Papers());
-
 })();
