@@ -147,9 +147,6 @@ var Graph = function() {
             //render the table
             App.table.draw();
         }
-
-
-
     };
 
     function wrap(text, width) {

@@ -231,11 +231,9 @@ var DB = DB || {};
                 //     DB.queryPapersByTitle({attr: attr, op: operator, value: value});
                 // }
 
-                /** query the DB for each of the incoming properties **/
+                console.log(query.or);
 
-                // SubDomain
-                promises.push(self.db.papers
-                    .toArray());
+                /** query the DB for each of the incoming properties **/
 
                 // SubDomain
                 promises.push(self.db.papers
@@ -267,25 +265,25 @@ var DB = DB || {};
                         .anyOf(query.or.evaluators)
                     .toArray());
 
+                // All possible
+                promises.push(self.db.papers
+                    .toArray());
+
                 /** when all the queries have resolved, process the data **/
                 Promise.all(promises)
                     .then(function(result){
-                        var results = result[0];
+
+                        var results = result[result.length-1];
+
                         /** iterate over all the query items **/
                         _.valuesIn(query.or).forEach(function(attr, idx){
 
-                            if(idx === 0) return;
+                            // the last result was the query for all records
+                            if(idx === result.length-1) return;
 
                             // if the attribute was queried for, use its results
                             if(attr.length > 0) {
-                                // if first result
-                                if(results.length === 0) {
-                                    results = result[idx];
-                                }
-                                // else, we want the intersection
-                                else {
-                                    results = _.intersection(results);
-                                }
+                                results = _.intersection(result[idx]);
                             }
                         });
 
