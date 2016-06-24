@@ -247,7 +247,7 @@ var Graph = function() {
 
                     // store the corresponding authors in another array
                     authors[s][n] = authors[s][n] || [];
-                    authors[s][n].push({name: value['author'], year: value['year']});
+                    authors[s][n].push({name: value['author'].trim(), year: value['year']});
                 });
             });
 
@@ -423,10 +423,8 @@ var Graph = function() {
                 var authors = self.authors[row][obj.name];
                 var html = "";
 
-                authors.forEach(function(a)
-                {
-                    html += "<span style='color:red'>" + String(a.name) + "</span>"+ "</br>";
-                });
+                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('name')).join(', ') + "</span>";
+
 
                 return html;
 

@@ -230,9 +230,7 @@ var DB = DB || {};
                 //
                 //     DB.queryPapersByTitle({attr: attr, op: operator, value: value});
                 // }
-
-                console.log(query.or);
-
+                
                 /** query the DB for each of the incoming properties **/
 
                 // SubDomain
