@@ -262,7 +262,8 @@ $(function() {
 
         /** Get the advanced values **/
         $('#accordion').find('input:checked').each(function() {
-            advanced[ $(this).attr('name')].push( $(this).attr('value'));
+            console.log($(this).attr('name').replace(/ /g,''));
+            advanced[ $(this).attr('name').replace(/ /g,'')].push( $(this).attr('value'));
         });
 
         /** query the for the papers that meet the criteria **/
