@@ -204,7 +204,7 @@ var Graph = function() {
      * @this {Graph}
      * @param {Object} rows The data to be parsed
      * @returns {Object} The mapped tasks, data types, and task types
-     */
+     **/
     self.parseEncodings = function(rows){
 
         // Spatial columns
