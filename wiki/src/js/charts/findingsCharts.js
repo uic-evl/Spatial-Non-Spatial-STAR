@@ -381,7 +381,6 @@ var Graph = function() {
         });
 
        return {tasks: mappedTasks, dataTypes: mappedTypes, groups: taskNames};
-
     };
 
     /**

@@ -30,7 +30,6 @@ $(function() {
 
 (function() {
 
-    //var final_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1oIxumn3O9Bu7y-yyHY-gJsf_9c-pk5PbEMsw5apmTf8/pubhtml';
     var engineering_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1b5_Yy_cGvcL6Uec3rYaEgT4NSi29OgP8tU1mV43DcFE/pubhtml';
 
     App.table = null;
@@ -72,19 +71,21 @@ $(function() {
         /** initialize a new bubble graph **/
         App.engGraph = new Graph();
 
+        var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('domain'))) ), "Both");
+
         // get the parsed encodings
         var encodingData = App.engGraph.parseEncodings(data);
-        var taskData = App.engGraph.parseFields(data, ["Physical Science", "Natural Science", "Simulation"]);
+        var taskData = App.engGraph.parseFields(data, subDomains);
 
         // plot the bubble scatter plots
         App.engGraph.graphEncodingBubbleChart(encodingData.encodings, "#encodings",
             encodingData.max, encodingData.groups, _.values(encodingData.authors));
 
         // plot the task analysis
-        App.engGraph.graphTaskBarChart(taskData.tasks, "#tasks", 0, taskData.groups, ["Physical Science", "Natural Science", "Simulation"]);
+        App.engGraph.graphTaskBarChart(taskData.tasks, "#tasks", 0, taskData.groups, subDomains);
 
         // plot the data type analysis
-        App.engGraph.graphDataTypeBarChart(taskData.dataTypes, "#dataTypes", 0, ["Table", "Field", "Network", "Geometry"], ["Physical Science", "Natural Science", "Simulation"]);
+        App.engGraph.graphDataTypeBarChart(taskData.dataTypes, "#dataTypes", 0, ["Table", "Field", "Network", "Geometry"], subDomains);
     }
 
     function setupTable(data) {
