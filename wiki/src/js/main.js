@@ -203,7 +203,14 @@ $(function() {
             } );
 
             /** setup the charts **/
-            setupCharts(data);
+            if(App.queryResults.length > 0){
+                setupCharts(data);
+            }
+            // no results to show
+            else{
+                d3.selectAll('.resultCharts')
+                    .style("display", "none");
+            }
 
             /** remove the spinner **/
             d3.select('#loading')
