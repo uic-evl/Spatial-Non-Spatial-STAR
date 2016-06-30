@@ -100,4 +100,5 @@ tr.shown td.details-control:before {
 .main_title {
     color: white;
     font-size: 34px;
+    font-weight: bold;
 }
