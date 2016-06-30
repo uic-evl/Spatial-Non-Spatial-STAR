@@ -68,6 +68,8 @@ $(function() {
 
     function setupCharts(data){
 
+        // TODO Check if there was a previous query and clear the old results
+
         /** initialize a new bubble graph **/
         App.engGraph = new Graph();
 
@@ -89,6 +91,8 @@ $(function() {
     }
 
     function setupTable(data) {
+
+        // TODO Check if there was a previous query and clear the old results
 
         App.curreltSelection = [];
         App.queryResults = data;
@@ -206,6 +210,9 @@ $(function() {
             /** setup the charts **/
             if(App.queryResults.length > 0){
                 setupCharts(data);
+
+                d3.selectAll('.resultCharts')
+                    .style("display", "block");
             }
             // no results to show
             else{
@@ -238,7 +245,7 @@ $(function() {
 
     App.getResults = function(e) {
 
-        /** put up the lading spinner **/
+        /** put up the loading spinner **/
         d3.select('#loading')
             .style("display", "block");
 
