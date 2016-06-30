@@ -25,7 +25,7 @@ $(function() {
         }
     };
 
-    var accordion = new Accordion($('#accordion'), false);
+    App.accordion = new Accordion($('#accordion'), false);
 });
 
 (function() {
@@ -279,6 +279,11 @@ $(function() {
         $('#accordion').find('input:checked').each(function() {
             advanced[ $(this).attr('name')].push( $(this).attr('value'));
         });
+
+        /* minimize the accordion if open */
+        if(d3.select('#accordion li').classed('open')) {
+            App.accordion.dropdown({data: {el: App.accordion.el, multiple: App.accordion.multiple}});
+        }
 
         /** query the for the papers that meet the criteria **/
         DB.queryPapers({and: [input, operator, values], or: advanced}, setupTable);
