@@ -311,7 +311,6 @@ var Graph = function() {
                 else{
                     result[0][task][value.domain] += 1;
                 }
-
             });
 
             value.dataTypes.forEach(function(task){
@@ -414,12 +413,12 @@ var Graph = function() {
         /* Initialize tooltip */
         self.tip = d3.tip().attr('class', 'd3-tip').html(
             function(obj, col, row) {
-
+                
                 var authors = self.authors[row][obj.name];
                 var html = "";
 
+                html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
                 html += "Authors: <span style='color:red'>" + _.map(authors, _.property('name')).join(', ') + "</span>";
-
 
                 return html;
 
