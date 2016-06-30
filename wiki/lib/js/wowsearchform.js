@@ -20,6 +20,8 @@
  * @license LGPL or MIT
  */
 
+var App = App || {};
+
 ;(function ( $, window, undefined ) {
     // undefined is used here as the undefined global variable in ECMAScript 3 is
     // mutable (ie. it can be changed by someone else). undefined isn't really being
@@ -63,7 +65,7 @@
             $(t.form).wrapInner('<fieldset>');
             t.master = $("fieldset:first-child", t.form );
             //search reset button btnReset
-            $(t.form).find(t.options.btnReset).addClass("wowNoClone").click(function() { 	t.reset(); 	});
+            $(t.form).find(t.options.btnReset).addClass("wowNoClone").click(function() { t.reset(); App.resetFields(); });
             //
             elm_textbox = $('input:text', t.form);
             //save a copy of original textbox
@@ -120,7 +122,7 @@
             //element handle
             var input_text = $('input:text', elm);
             var select_operator = $('select.operator', elm);
-            
+
             $("select.wowFields", elm).change(function () {
                 $("option:selected",this).each(function () {
                     //get data type... from class name

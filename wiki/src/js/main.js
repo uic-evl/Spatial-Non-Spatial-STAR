@@ -280,4 +280,13 @@ $(function() {
         return false;
     };
 
+    /** clears the advanced search menu checkboxes **/
+    App.resetFields = function() {
+
+        $('#accordion').find('input:checked').each(function() {
+            $(this).attr('checked', false);
+        });
+
+    }
+
 })();
