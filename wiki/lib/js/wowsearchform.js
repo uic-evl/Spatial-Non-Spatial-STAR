@@ -120,7 +120,7 @@
             //element handle
             var input_text = $('input:text', elm);
             var select_operator = $('select.operator', elm);
-
+            
             $("select.wowFields", elm).change(function () {
                 $("option:selected",this).each(function () {
                     //get data type... from class name
@@ -273,10 +273,10 @@
          });
          /**/
         return this.each(function () {
-            var $this = $(this)
-            var data  = $this.data('wow.searchform')
-            if (!data) $this.data('wow.searchform', (data = new Wowsearchform(this, options)))
-            if (typeof options == 'string') data[options].call($this)
+            var $this = $(this);
+            var data  = $this.data('wow.searchform');
+            if (!data) $this.data('wow.searchform', (data = new Wowsearchform(this, options)));
+            if (typeof options == 'string') data[options].call($this);
         })
     };
 

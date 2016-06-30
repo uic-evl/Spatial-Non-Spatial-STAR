@@ -9,9 +9,7 @@
 		filter_add_tooltip: "Add new research filter",
 		filter_remove_tooltip: "Remove this research filter",
 		operator_for_text: { 'LIKE': "contains", 'EQUAL': "equal to"},
-		operator_for_number:  { '=': "equal",  '>': "greater than",  '<': "less than", '!=': "different to" }
+		operator_for_number:  { 'ON': "equal",  'AFTER': "after",  'BEFORE': "before"}
 	};
 
 })(jQuery);
-
-

@@ -292,11 +292,46 @@ var DB = DB || {};
                                 // store the results
                                 results = _.intersection(output, results);
                             }
+
+                            /** date selectors **/
+                            else if(operator === 'ON') {
+
+                                // get the matching results
+                                var output = _.filter(all, function(o) {
+                                    return parseInt(o.year) === new Date(value).getFullYear();
+                                });
+                                
+                                // store the results
+                                results = _.intersection(output, results);
+                            }
+
+                            else if(operator === 'AFTER') {
+
+                                // get the matching results
+                                var output = _.filter(all, function(o) {
+                                    return parseInt(o.year) > new Date(value).getFullYear();
+                                });
+
+                                // store the results
+                                results = _.intersection(output, results);
+
+                            }
+
+                            else if(operator === 'BEFORE') {
+
+                                // get the matching results
+                                var output = _.filter(all, function(o) {
+                                    return parseInt(o.year) < new Date(value).getFullYear();
+                                });
+
+                                // store the results
+                                results = _.intersection(output, results);
+                            }
                         }
 
                         /** iterate over all the query items **/
                         _.valuesIn(query.or).forEach(function(attr, idx){
-                            
+
                             // the last result was the query for all records
                             if(idx === result.length-1) return;
 

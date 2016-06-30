@@ -84,8 +84,6 @@ var Graph = function() {
 
         if(_.indexOf(self.selected, obj) < 0)
         {
-            console.log('select');
-
             // remove the previous selection
             d3.select(this)
                 .classed("unSelected", false);
@@ -121,8 +119,6 @@ var Graph = function() {
         /** modify the table to only show the entries related to the selected bubble **/
         if(self.selected.length === 0)
         {
-
-            console.log('no length');
 
             // there is no click interaction
             self.clicked = false;
