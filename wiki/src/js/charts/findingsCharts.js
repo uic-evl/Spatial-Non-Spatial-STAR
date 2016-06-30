@@ -413,7 +413,7 @@ var Graph = function() {
         /* Initialize tooltip */
         self.tip = d3.tip().attr('class', 'd3-tip').html(
             function(obj, col, row) {
-                
+
                 var authors = self.authors[row][obj.name];
                 var html = "";
 
@@ -534,7 +534,8 @@ var Graph = function() {
         /** Set up the chart properties **/
         var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.90,
             totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
-            margin = {top: 0, right: 0, bottom: 100, left: 50},
+            margin = {top: 10, right: 0, bottom: 100, left: 50},
+            padding = {top: 20, right: 0, bottom: 0, left: 0},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
@@ -559,7 +560,7 @@ var Graph = function() {
 
         var svg = d3.select(chartDiv).append("svg")
                 .attr("width", totWidth)
-                .attr("height", totHeight - (margin.bottom + margin.top) / 2)
+                .attr("height", totHeight - (margin.bottom + margin.top) / 2 )
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -653,7 +654,8 @@ var Graph = function() {
         /** Set up the chart properties **/
         var totWidth = d3.select('.chartDiv4').node().clientWidth * 0.9,
             totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
-            margin = {top: 0, right: 20, bottom: 100, left: 50},
+            margin = {top: 10, right: 20, bottom: 100, left: 50},
+            padding = {top: 20, right: 0, bottom: 50, left: 0},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
@@ -677,7 +679,7 @@ var Graph = function() {
             .orient("left");
 
         var svg = d3.select(chartDiv).append("svg")
-            .attr("width", totWidth)
+            .attr("width", totWidth )
             .attr("height", totHeight - (margin.bottom + margin.top) / 2)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
