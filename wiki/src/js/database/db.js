@@ -219,18 +219,6 @@ var DB = DB || {};
             /** make sure the DB is open **/
             opened.then(function(){
 
-                // /** iterate over the search fields **/
-                // for(var i = 0; i < query.and[0].length; i++){
-                //
-                //     var attr = query.and[0][i];
-                //     var operator = query.and[1][i];
-                //     var value = query.and[2][i];
-                //
-                //     console.log(attr, operator, value);
-                //
-                //     DB.queryPapersByTitle({attr: attr, op: operator, value: value});
-                // }
-                
                 /** query the DB for each of the incoming properties **/
 
                 // SubDomain
@@ -271,17 +259,50 @@ var DB = DB || {};
                 Promise.all(promises)
                     .then(function(result){
 
-                        var results = result[result.length-1];
+                        var all =  result[result.length-1];
+                        var results = all;
+
+                        // /** iterate over the search fields **/
+                        for(var i = 0; i < query.and[0].length; i++){
+
+                            /* get the query parameters */
+                            var attr = query.and[0][i];
+                            var operator = query.and[1][i];
+                            var value = query.and[2][i];
+
+                            // Contains the queried string
+                            if(operator === 'LIKE'){
+
+                                // get the matching results
+                                var output = _.filter(all, function(o) {
+                                    return o[attr].toLowerCase().includes(value.toLowerCase()) ;
+                                });
+
+                                // store the results
+                                results = _.intersection(output, results);
+                            }
+                            // equals the queried string
+                            else if(operator === 'EQUALS'){
+
+                                // get the matching results
+                                var output = _.filter(all, function(o) {
+                                    return o[attr].toLowerCase() === value.toLowerCase() ;
+                                });
+
+                                // store the results
+                                results = _.intersection(output, results);
+                            }
+                        }
 
                         /** iterate over all the query items **/
                         _.valuesIn(query.or).forEach(function(attr, idx){
-
+                            
                             // the last result was the query for all records
                             if(idx === result.length-1) return;
 
                             // if the attribute was queried for, use its results
                             if(attr.length > 0) {
-                                results = _.intersection(result[idx]);
+                                results = _.intersectionBy(result[idx], results, 'title');
                             }
                         });
 
