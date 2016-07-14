@@ -11,12 +11,15 @@ var Graph = function() {
         if(obj.value === 0)
             return;
 
-        self.bubbleTip.show(obj, col, row);
+        // set the authors and chart to be used
+        self.authors = (_.isObject(this.authors[row])) ? this.authors[row][obj.name] : this.authors[obj.name][this.groups[row]];
+        self.chart = this.chart;
+        self.selector = this.selector;
 
-        var authors = self.bubbleAuthors[row][obj.name];
+        this.tooltip.show(obj, self.authors);
 
         // remove the highlighting class if the selection is empty
-        if(authors.length == 0){
+        if(self.authors.length == 0){
             $("#papers tbody tr")
                 .removeClass( 'row_selected' );
             return;
@@ -46,7 +49,7 @@ var Graph = function() {
             var author = App.table.cell( rowIdx, 0 ).data();
             var year = App.table.cell( rowIdx, 1 ).data();
 
-            return _.find(authors, function(r) {return r.name === author && parseInt(r.year) == year }) ;
+            return _.find(self.authors, function(r) {return r.name === author && parseInt(r.year) == year }) ;
         } );
 
         // Add a class to those rows using an index selector
@@ -60,22 +63,20 @@ var Graph = function() {
     // finishes their hover
     var endCB = function() {
         // hide the tooltip
-        self.bubbleTip.hide();
+        this.tooltip.hide();
 
         // deselect the table rows
         $("#papers tbody tr")
             .removeClass( 'row_selected' );
     };
 
-    var clickCB = function(obj, col, row) {
+    var clickCB = function(obj) {
         // if the circle is hidden, no tooltip should be shown
         if(obj.value === 0) return;
 
-        var authors = self.bubbleAuthors[row][obj.name];
-
         // select the rows associated with the selected bubble
         var newRows = [];
-        _.forEach(authors, function(a)
+        _.forEach(self.authors, function(a)
         {
             newRows.push(_.find(App.queryResults, function(r) {
                 return r.author.trim() == a.name.trim() && parseInt(r.year) == a.year;
@@ -91,7 +92,7 @@ var Graph = function() {
             self.selected.push(obj);
 
             // grey out the circles that are not selected
-            self.chart.selectAll('circle')
+            self.chart.selectAll(self.selector)
                 .filter(
                     function(d) {
                         if(_.indexOf(self.selected, d) < 0)
@@ -119,12 +120,11 @@ var Graph = function() {
         /** modify the table to only show the entries related to the selected bubble **/
         if(self.selected.length === 0)
         {
-
             // there is no click interaction
             self.clicked = false;
 
             // make all of the circle their original color
-            self.chart.selectAll('circle')
+            self.chart.selectAll(self.selector)
                 .classed("unSelected", false);
 
             // clear the old rows
@@ -443,9 +443,6 @@ var Graph = function() {
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
-        // attach the list of authors to the chart closure
-        self.bubbleAuthors = authors;
-
         // flag to indicate if the bubble was selected or not
         self.clicked = false;
 
@@ -453,10 +450,9 @@ var Graph = function() {
         self.selected = [];
 
         /* Initialize tooltip */
-        self.bubbleTip = d3.tip().attr('class', 'd3-tip').html(
-            function(obj, col, row) {
+        var bubbleTip = d3.tip().attr('class', 'd3-tip').html(
+            function(obj, authors ) {
 
-                var authors = self.bubbleAuthors[row][obj.name];
                 var html = "";
 
                 html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
@@ -480,7 +476,7 @@ var Graph = function() {
             .scale(y)
             .orient("left");
 
-        self.chart = d3.select(chartDiv)
+        var chart = d3.select(chartDiv)
             .append("svg")
             .attr("width", totWidth)
             .attr("height", totHeight)
@@ -494,7 +490,7 @@ var Graph = function() {
             return d.Spatial;
         }));
 
-        self.chart.append("g")
+        chart.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + (height) + ")")
             .call(xAxis)
@@ -505,7 +501,7 @@ var Graph = function() {
                 .attr("dy", x.rangeBand()/10 + 20)
         ;
 
-        self.chart
+        chart
             .append("g")
             .attr("class", "y axis")
             .call(yAxis)
@@ -514,7 +510,7 @@ var Graph = function() {
             .style({"text-anchor":"end", "font-weight": "bold", "text-align": "center"})
         ;
 
-        var grows = self.chart.selectAll(".grow")
+        var grows = chart.selectAll(".grow")
                 .data(data)
                 .enter().append("g")
                 .attr("class", "grow")
@@ -523,7 +519,7 @@ var Graph = function() {
                 })
             ;
 
-        grows.call(self.bubbleTip);
+        grows.call(bubbleTip);
 
         var gcells = grows.selectAll(".gcell")
                 .data(function (d) {
@@ -546,8 +542,8 @@ var Graph = function() {
                     var rind = d.value;
                     return rmax / ((-1) * (rind - (maxValue + 1) ));
                 })
-            .on('mouseover', hoveringCB)
-            .on('mouseout', endCB)
+            .on('mouseover', hoveringCB.bind({tooltip: bubbleTip, authors:  authors, chart: chart, selector: 'circle'}))
+            .on('mouseout', endCB.bind({tooltip: bubbleTip, authors: authors}))
             .on('click', clickCB)
             .style("fill",
                 function (d) {
@@ -582,9 +578,6 @@ var Graph = function() {
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
 
-        // attach the list of authors to the chart closure
-        self.taskAuthors = authors;
-
         var x0 = d3.scale.ordinal()
             .rangeRoundBands([0, width], .1);
 
@@ -610,10 +603,9 @@ var Graph = function() {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        self.taskTip = d3.tip().attr('class', 'd3-tip').html(
-            function(obj, col, row) {
+        var taskTip = d3.tip().attr('class', 'd3-tip').html(
+            function(obj, authors) {
 
-                var authors = self.taskAuthors[obj.name][grpNames[row]];
                 var html = "";
 
                 html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
@@ -657,8 +649,7 @@ var Graph = function() {
             .attr("class", "task")
             .attr("transform", function(d) { return "translate(" + x0(d.Task) + ",0)"; });
 
-        task.call(self.taskTip);
-
+        task.call(taskTip);
 
         task.selectAll("rect")
             .data(function(d) { return d.tasks; })
@@ -668,8 +659,9 @@ var Graph = function() {
                 .attr("y", function(d) { return y(d.value); })
                 .attr("height", function(d) { return height - y(d.value); })
                 .style("fill", function(d) { return color(d.name); })
-            .on('mouseover', self.taskTip.show)
-            .on('mouseout', self.taskTip.hide);
+            .on('mouseover', hoveringCB.bind({tooltip: taskTip, authors:  authors, groups: grpNames, chart: svg, selector: 'rect'}))
+            .on('mouseout', endCB.bind({tooltip: taskTip, authors: authors}))
+            .on('click', clickCB);
 
         /** Construct the legend **/
         var legend = svg.selectAll(".legend")
@@ -742,10 +734,9 @@ var Graph = function() {
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        self.typeTip = d3.tip().attr('class', 'd3-tip').html(
-            function(obj, col, row) {
+        var typeTip = d3.tip().attr('class', 'd3-tip').html(
+            function(obj, authors) {
 
-                var authors = self.typeAuthors[obj.name][grpNames[row]];
                 var html = "";
 
                 html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
@@ -797,10 +788,11 @@ var Graph = function() {
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return height - y(d.value); })
             .style("fill", function(d) { return color(d.name); })
-            .on('mouseover', self.typeTip.show)
-            .on('mouseout', self.typeTip.hide);
+            .on('mouseover', hoveringCB.bind({tooltip: typeTip, authors:  authors, groups: grpNames, chart: svg, selector: 'rect'}))
+            .on('mouseout', endCB.bind({tooltip: typeTip, authors: authors}))
+            .on('click', clickCB);
 
-        task.call(self.typeTip);
+        task.call(typeTip);
 
         /** Construct the legend **/
         var legend = svg.selectAll(".legend")
