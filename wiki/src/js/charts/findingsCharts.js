@@ -11,9 +11,9 @@ var Graph = function() {
         if(obj.value === 0)
             return;
 
-        self.tip.show(obj, col, row);
+        self.bubbleTip.show(obj, col, row);
 
-        var authors = self.authors[row][obj.name];
+        var authors = self.bubbleAuthors[row][obj.name];
 
         // remove the highlighting class if the selection is empty
         if(authors.length == 0){
@@ -60,7 +60,7 @@ var Graph = function() {
     // finishes their hover
     var endCB = function() {
         // hide the tooltip
-        self.tip.hide();
+        self.bubbleTip.hide();
 
         // deselect the table rows
         $("#papers tbody tr")
@@ -71,7 +71,7 @@ var Graph = function() {
         // if the circle is hidden, no tooltip should be shown
         if(obj.value === 0) return;
 
-        var authors = self.authors[row][obj.name];
+        var authors = self.bubbleAuthors[row][obj.name];
 
         // select the rows associated with the selected bubble
         var newRows = [];
@@ -294,35 +294,78 @@ var Graph = function() {
         var taskNames = d3.keys(App.tasks[0]).filter(function(key) {
             return key !== "Author" && key !== "Year" && key !== "Sub-Domain";  });
 
+        /* creates a template for parsing the data */
         var taskTemplate = _.reduce(subDomains,
             function(result, value, key){
                 result[value] = 0;
                 return result;
             }, {});
 
+        var authors = [
+            {
+                'Simulation': {},
+                'Physical Science': {},
+                'Natural Science': {}
+            },
+            {
+                'Simulation': {},
+                'Physical Science': {},
+                'Natural Science': {}
+            }
+        ];
+
         var data = _.reduce(rows, function(result, value, key) {
 
             value.tasks.forEach(function(task){
 
                 if(value.domain === 'Both'){
+
+                    // increment the task count
                     result[0][task]["Physical Science"] += 1;
                     result[0][task]["Natural Science"] += 1;
+
+                    // store the corresponding authors in another array
+                    authors[0]["Physical Science"][task] = authors[0]["Physical Science"][task] || [];
+                    authors[0]["Natural Science"][task] = authors[0]["Natural Science"][task] || [];
+
+                    authors[0]["Natural Science"][task].push({name: value['author'].trim(), year: value['year']});
+                    authors[0]["Physical Science"][task].push({name: value['author'].trim(), year: value['year']});
+
                 }
                 else{
+                    // increment the task count
                     result[0][task][value.domain] += 1;
+
+                    // store the corresponding authors in another array
+                    authors[0][value.domain][task] = authors[1][value.domain][task] || [];
+                    authors[0][value.domain][task].push({name: value['author'].trim(), year: value['year']});
                 }
             });
 
-            value.dataTypes.forEach(function(task){
+            value.dataTypes.forEach(function(type){
 
                 if(value.domain === 'Both'){
-                    result[1][task]["Physical Science"] += 1;
-                    result[1][task]["Natural Science"] += 1;
+
+                    // increment the data type count
+                    result[1][type]["Physical Science"] += 1;
+                    result[1][type]["Natural Science"] += 1;
+
+                    // store the corresponding authors in another array
+                    authors[1]["Physical Science"][type] = authors[1]["Physical Science"][type] || [];
+                    authors[1]["Natural Science"][type] = authors[1]["Natural Science"][type] || [];
+
+                    authors[1]["Natural Science"][type].push({name: value['author'].trim(), year: value['year']});
+                    authors[1]["Physical Science"][type].push({name: value['author'].trim(), year: value['year']});
                 }
                 else {
-                    result[1][task][value.domain] += 1;
-                }
 
+                    // increment the data type count
+                    result[1][type][value.domain] += 1;
+
+                    // store the corresponding authors in another array
+                    authors[1][value.domain][type] = authors[1][value.domain][type] || [];
+                    authors[1][value.domain][type].push({name: value['author'].trim(), year: value['year']});
+                }
             });
 
             return result;
@@ -349,6 +392,8 @@ var Graph = function() {
         }
         ]);
 
+
+        console.log(authors);
 
         /** Map the data into the correct format for use **/
         var mappedTasks = [];
@@ -379,7 +424,7 @@ var Graph = function() {
             mappedTypes.push(map);
         });
 
-       return {tasks: mappedTasks, dataTypes: mappedTypes, groups: taskNames};
+       return {tasks: mappedTasks, dataTypes: mappedTypes, groups: taskNames, authors: authors};
     };
 
     /**
@@ -402,7 +447,7 @@ var Graph = function() {
             height = totHeight - (margin.top + margin.bottom);
 
         // attach the list of authors to the chart closure
-        self.authors = authors;
+        self.bubbleAuthors = authors;
 
         // flag to indicate if the bubble was selected or not
         self.clicked = false;
@@ -411,10 +456,10 @@ var Graph = function() {
         self.selected = [];
 
         /* Initialize tooltip */
-        self.tip = d3.tip().attr('class', 'd3-tip').html(
+        self.bubbleTip = d3.tip().attr('class', 'd3-tip').html(
             function(obj, col, row) {
 
-                var authors = self.authors[row][obj.name];
+                var authors = self.bubbleAuthors[row][obj.name];
                 var html = "";
 
                 html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
@@ -481,7 +526,7 @@ var Graph = function() {
                 })
             ;
 
-        grows.call(self.tip);
+        grows.call(self.bubbleTip);
 
         var gcells = grows.selectAll(".gcell")
                 .data(function (d) {
@@ -529,7 +574,7 @@ var Graph = function() {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The list of subDomains for the xAxis groupting
      */
-    self.graphTaskBarChart = function(data, chartDiv, maxValue, grpNames, subDomains) {
+    self.graphTaskBarChart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         /** Set up the chart properties **/
         var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.90,
@@ -564,15 +609,18 @@ var Graph = function() {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        /** Chart Title **/
-        // svg.append("text")
-        //     .attr("x", (width / 2))
-        //     .attr("y", (-10))
-        //     .attr("text-anchor", "middle")
-        //     .style("font-size", "24px")
-        //     .style("text-decoration", "bold")
-        //     .style("text-decoration", "underline")
-        //     .text("Task Analysis by Sub-Domain");
+        self.taskTip = d3.tip().attr('class', 'd3-tip').html(
+            function(obj, col, row) {
+
+                var authors = self.authors[row][obj.name];
+                var html = "";
+
+                html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
+                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('name')).join(', ') + "</span>";
+
+                return html;
+
+            }.bind(self) );
 
         /** Setup the x domains **/
         x0.domain(grpNames);
