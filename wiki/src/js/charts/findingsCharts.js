@@ -337,7 +337,7 @@ var Graph = function() {
                     result[0][task][value.domain] += 1;
 
                     // store the corresponding authors in another array
-                    authors[0][value.domain][task] = authors[1][value.domain][task] || [];
+                    authors[0][value.domain][task] = authors[0][value.domain][task] || [];
                     authors[0][value.domain][task].push({name: value['author'].trim(), year: value['year']});
                 }
             });
@@ -391,9 +391,6 @@ var Graph = function() {
             "Geometry"  : _.cloneDeep(taskTemplate)
         }
         ]);
-
-
-        console.log(authors);
 
         /** Map the data into the correct format for use **/
         var mappedTasks = [];
@@ -573,6 +570,7 @@ var Graph = function() {
      * @param {number} maxValue The count of that the largest circle will possess
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The list of subDomains for the xAxis groupting
+     * @param {Array} authors The list of authors by task and domain
      */
     self.graphTaskBarChart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
@@ -580,9 +578,12 @@ var Graph = function() {
         var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.90,
             totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
             margin = {top: 10, right: 0, bottom: 100, left: 50},
-            padding = {top: 20, right: 0, bottom: 0, left: 0},
+            //padding = {top: 20, right: 0, bottom: 0, left: 0},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
+
+        // attach the list of authors to the chart closure
+        self.taskAuthors = authors;
 
         var x0 = d3.scale.ordinal()
             .rangeRoundBands([0, width], .1);
@@ -612,7 +613,7 @@ var Graph = function() {
         self.taskTip = d3.tip().attr('class', 'd3-tip').html(
             function(obj, col, row) {
 
-                var authors = self.authors[row][obj.name];
+                var authors = self.taskAuthors[obj.name][grpNames[row]];
                 var html = "";
 
                 html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
@@ -656,14 +657,19 @@ var Graph = function() {
             .attr("class", "task")
             .attr("transform", function(d) { return "translate(" + x0(d.Task) + ",0)"; });
 
+        task.call(self.taskTip);
+
+
         task.selectAll("rect")
             .data(function(d) { return d.tasks; })
             .enter().append("rect")
-            .attr("width", x1.rangeBand())
-            .attr("x", function(d) { return x1(d.name); })
-            .attr("y", function(d) { return y(d.value); })
-            .attr("height", function(d) { return height - y(d.value); })
-            .style("fill", function(d) { return color(d.name); });
+                .attr("width", x1.rangeBand())
+                .attr("x", function(d) { return x1(d.name); })
+                .attr("y", function(d) { return y(d.value); })
+                .attr("height", function(d) { return height - y(d.value); })
+                .style("fill", function(d) { return color(d.name); })
+            .on('mouseover', self.taskTip.show)
+            .on('mouseout', self.taskTip.hide);
 
         /** Construct the legend **/
         var legend = svg.selectAll(".legend")
