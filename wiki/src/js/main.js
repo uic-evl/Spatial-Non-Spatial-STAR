@@ -87,7 +87,8 @@ $(function() {
         App.engGraph.graphTaskBarChart(taskData.tasks, "#tasks", 0, taskData.groups, subDomains, taskData.authors[0]);
 
         // plot the data type analysis
-        App.engGraph.graphDataTypeBarChart(taskData.dataTypes, "#dataTypes", 0, ["Table", "Field", "Network", "Geometry"], subDomains);
+        App.engGraph.graphDataTypeBarChart(taskData.dataTypes, "#dataTypes", 0, ["Table", "Field", "Network", "Geometry"],
+            subDomains, taskData.authors[1]);
     }
 
     function setupTable(data) {

@@ -701,9 +701,10 @@ var Graph = function() {
      * @param {String} chartDiv ID if the div the chart is created in
      * @param {number} maxValue The count of that the largest circle will possess
      * @param {Array} grpNames The values for the x-axis
-     * @param {Array} subDomains The list of subDomains for the xAxis groupting
+     * @param {Array} subDomains The list of subDomains for the xAxis grouping
+     * @param {Array} authors The list of authors by task and domain
      */
-    self.graphDataTypeBarChart = function(data, chartDiv, maxValue, grpNames, subDomains) {
+    self.graphDataTypeBarChart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         /** Set up the chart properties **/
         var totWidth = d3.select('.chartDiv4').node().clientWidth * 0.9,
@@ -712,6 +713,9 @@ var Graph = function() {
             padding = {top: 20, right: 0, bottom: 50, left: 0},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
+
+        // attach the list of authors to the chart closure
+        self.typeAuthors = authors;
 
         var x0 = d3.scale.ordinal()
             .rangeRoundBands([0, width], .1);
@@ -738,15 +742,18 @@ var Graph = function() {
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        /** Chart Title **/
-        // svg.append("text")
-        //     .attr("x", (width / 2))
-        //     .attr("y", (-10))
-        //     .attr("text-anchor", "middle")
-        //     .style("font-size", "24px")
-        //     .style("text-decoration", "bold")
-        //     .style("text-decoration", "underline")
-        //     .text("Task Analysis by Sub-Domain");
+        self.typeTip = d3.tip().attr('class', 'd3-tip').html(
+            function(obj, col, row) {
+
+                var authors = self.typeAuthors[obj.name][grpNames[row]];
+                var html = "";
+
+                html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
+                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('name')).join(', ') + "</span>";
+
+                return html;
+
+            }.bind(self) );
 
         /** Setup the x domains **/
         x0.domain(grpNames);
@@ -789,7 +796,11 @@ var Graph = function() {
             .attr("x", function(d) { return x1(d.name); })
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return height - y(d.value); })
-            .style("fill", function(d) { return color(d.name); });
+            .style("fill", function(d) { return color(d.name); })
+            .on('mouseover', self.typeTip.show)
+            .on('mouseout', self.typeTip.hide);
+
+        task.call(self.typeTip);
 
         /** Construct the legend **/
         var legend = svg.selectAll(".legend")
