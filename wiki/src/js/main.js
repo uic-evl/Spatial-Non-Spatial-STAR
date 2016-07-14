@@ -149,7 +149,7 @@ $(function() {
 
                             '<tr>'+
                                 '<td class="title">Paper:</td>'+
-                                '<td><a href="' + d.url +'">' + d.title + '</a></td>'+
+                                '<td><a href="' + d.url +'" target="_blank">' + d.title + '</a></td>'+
                             '</tr>'+
 
                             '<tr>'+
