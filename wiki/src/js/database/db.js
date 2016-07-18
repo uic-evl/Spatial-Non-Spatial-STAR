@@ -53,38 +53,39 @@ var DB = DB || {};
 
                     });
 
-                    // var items = [];
-                    // incomingRecords.forEach(function(record){
-                    //
-                    //     var item = {
-                    //         title:      record["Paper"],
-                    //         author :    record["Author"],
-                    //         dataTypes:  record["Data Types"],
-                    //         encodings:  record["Encodings"],
-                    //         tasks:      record["Tasks"],
-                    //         paradigms:  record["Paradigm"],
-                    //         domain:     record["SubDomain"],
-                    //         evaluators: record["Evaluators"],
-                    //         evaluation: record["Evaluation Type"],
-                    //         expertise:  record["Single/Mixed Expertise"],
-                    //         year:       record["Year"],
-                    //         url:        record["URL"]
-                    //     };
-                    //
-                    //     items.push(item);
-                    // });
-
-                    // t.papers.bulkPut(items)
-                    //     .catch(function(error) {
-                    //         //
-                    //         // Finally don't forget to catch any error
-                    //         // that could have happened anywhere in the
-                    //         // code blocks above.
-                    //         //
-                    //         console.log("Oops: " + error);
-                    //     });
-
                 });
+
+                // version 3 with the modified data
+                // self.db.version(3).stores({
+                //     papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
+                // }).upgrade(function(t)
+                // {
+                //     var incomingRecords = _.cloneDeep(records);
+                //
+                //     // update the records that exist
+                //     return t.papers.toCollection().modify(function(paper) {
+                //
+                //         /** select the paper and remove it from the temporary list **/
+                //         var updatedRecord = _.find(incomingRecords, {Paper: paper.title});
+                //         incomingRecords = _.without(incomingRecords, updatedRecord);
+                //
+                //         // update the records
+                //         paper.title =      updatedRecord["Paper"] ;
+                //         paper.author  =    updatedRecord["Author"] ;
+                //         paper.dataTypes =  updatedRecord["Data Types"] ;
+                //         paper.encodings =  updatedRecord["Encodings"] ;
+                //         paper.tasks =      updatedRecord["Tasks"] ;
+                //         paper.paradigms =  updatedRecord["Paradigm"] ;
+                //         paper.domain =     updatedRecord["SubDomain"] ;
+                //         paper.evaluators = updatedRecord["Evaluators"] ;
+                //         paper.evaluation = updatedRecord["Evaluation Type"] ;
+                //         paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
+                //         paper.year =       updatedRecord["Year"] ;
+                //         paper.url =        updatedRecord["URL"];
+                //
+                //     });
+                //
+                // });
 
                 // Open the DB
                 self.db.open()
@@ -96,31 +97,32 @@ var DB = DB || {};
                         console.log("Open failed: " + e);
                 });
 
+                // format the incoming data
+                var items = [];
+                records.forEach(function(record, idx)
+                {
+                    var item = {
+                        title:      record["Paper"],
+                        author :    record["Author"],
+                        dataTypes:  record["Data Types"],
+                        encodings:  record["Encodings"],
+                        tasks:      record["Tasks"],
+                        paradigms:  record["Paradigm"],
+                        domain:     record["SubDomain"],
+                        evaluators: record["Evaluators"],
+                        evaluation: record["Evaluation Type"],
+                        expertise:  record["Single/Mixed Expertise"],
+                        year:       record["Year"],
+                        url:        record["URL"]
+                    };
+
+                    items.push(item);
+                });
+
                 // if the DB doesn't exist, populate it
                 if (!exists)
                 {
                     // Populate the DB with data
-                    var items = [];
-                    records.forEach(function(record, idx)
-                    {
-                        var item = {
-                            title:      record["Paper"],
-                            author :    record["Author"],
-                            dataTypes:  record["Data Types"],
-                            encodings:  record["Encodings"],
-                            tasks:      record["Tasks"],
-                            paradigms:  record["Paradigm"],
-                            domain:     record["SubDomain"],
-                            evaluators: record["Evaluators"],
-                            evaluation: record["Evaluation Type"],
-                            expertise:  record["Single/Mixed Expertise"],
-                            year:       record["Year"],
-                            url:        record["URL"]
-                        };
-
-                        items.push(item);
-                    });
-
                     /** bulk insert the items in the db **/
                     self.db.papers.bulkPut(items)
                         .catch(function(error) {
@@ -133,6 +135,30 @@ var DB = DB || {};
                         });
                 }
 
+                // else, add the entries that aren't in the table yet
+                else {
+                    opened.then(function(){
+
+                        self.db.papers.toArray().then(function(results){
+
+                            var newPapers = _.differenceBy(items, results, 'title');
+
+                            /** bulk insert the items in the db **/
+                            self.db.papers.bulkPut(newPapers)
+                                .catch(function(error) {
+                                    //
+                                    // Finally don't forget to catch any error
+                                    // that could have happened anywhere in the
+                                    // code blocks above.
+                                    //
+                                    console.log("Oops: " + error);
+                                });
+                        });
+                    });
+
+
+                }
+
             }).catch(function (error) {
                 console.error("Oops, an error occurred when trying to check database existance");
             });
@@ -141,7 +167,6 @@ var DB = DB || {};
         /** Query for the paper by title **/
         queryPapersByTitle : function(query)
         {
-
             opened.then(function(){
 
                 switch(query.op) {
@@ -346,6 +371,7 @@ var DB = DB || {};
                     })
                     .catch(function (error) {
                         console.log(error);
+                        console.log(arguments);
                     });
 
             });
