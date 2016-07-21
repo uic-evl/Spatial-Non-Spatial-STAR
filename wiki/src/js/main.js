@@ -123,11 +123,21 @@ $(function() {
             // if the table was already created, refresh it with new data
             if(App.table)
             {
+                /* clear the old click events */
                 tableSelector.find('tbody').off("click", 'tr td.details-control');
+
+                /* clear the table and charts */
                 App.table.clear().draw();
-                App.table.rows.add(data); // Add new data
-                App.table.columns.adjust().draw(); // Draw the DataTable
+                d3.select("#dataTypes svg").remove();
+                d3.select("#tasks svg").remove();
+                d3.select("#encodings svg").remove();
+
+                /* Add new data */
+                App.table.rows.add(data);
+                /* Draw the DataTable */
+                App.table.columns.adjust().draw();
             }
+            /* else, create the table */
             else
             {
                 App.table = tableSelector.DataTable({
@@ -203,8 +213,6 @@ $(function() {
             /** Setup the sub-row click events **/
             tableSelector.find('tbody').on( 'click', 'tr td.details-control', function () {
 
-                console.log("click");
-
                 var tr = $(this).closest('tr');
                 var row = App.table.row( tr );
                 var idx = $.inArray( tr.attr('id'), detailRows );
@@ -235,17 +243,17 @@ $(function() {
             } );
 
             /** setup the charts **/
-            // if(App.queryResults.length > 0){
-            //     setupCharts(data);
-            //
-            //     d3.selectAll('.resultCharts')
-            //         .style("display", "block");
-            // }
-            // // no results to show
-            // else{
-            //     d3.selectAll('.resultCharts')
-            //         .style("display", "none");
-            // }
+            if(App.queryResults.length > 0){
+                setupCharts(data);
+
+                d3.selectAll('.resultCharts')
+                    .style("display", "block");
+            }
+            // no results to show
+            else{
+                d3.selectAll('.resultCharts')
+                    .style("display", "none");
+            }
 
             /** remove the spinner **/
             d3.select('#loading')
