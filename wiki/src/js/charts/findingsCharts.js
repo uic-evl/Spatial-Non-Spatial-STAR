@@ -340,9 +340,9 @@ var Graph = function() {
     self.graphTaskBarChart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         /** Set up the chart properties **/
-        var totWidth = d3.select('.chartDiv6').node().clientWidth,
-            totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
-            margin = {top: 10, right: 20, bottom: 100, left: 50},
+        var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.9,
+            totHeight = d3.select('.chartDiv4').node().clientWidth * 0.9,
+            margin = {top: 10, right: 20, bottom: 125, left: 50},
             //padding = {top: 20, right: 0, bottom: 0, left: 0},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
@@ -393,15 +393,25 @@ var Graph = function() {
         y.domain([0, d3.max(data, function(d) { return d3.max(d.tasks, function(d) { return d.value; }); })]);
 
         /** xAxis Labels **/
+        // svg.append("g")
+        //     .attr("class", "x axis")
+        //     .attr("transform", "translate(0," + height + ")")
+        //     .call(xAxis).selectAll("text")
+        //     .attr("y", 20)
+        //     .attr("x", 0)
+        //     .attr("dy", ".30em")
+        //     .attr("transform", "rotate(-45)")
+        //     .style("text-anchor", "middle");
+
         svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis).selectAll("text")
-            .attr("y", 30)
-            .attr("x", 0)
-            .attr("dy", ".30em")
+            .attr("transform", "translate(0," + (height) + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .style({"text-anchor": "end", "font-weight": "bold"})
             .attr("transform", "rotate(-45)")
-            .style("text-anchor", "middle");
+            .attr("dx", "-0.8em")
+            .attr("dy", x1.rangeBand()/10);
 
         /** yAxis Labels **/
         svg.append("g")
