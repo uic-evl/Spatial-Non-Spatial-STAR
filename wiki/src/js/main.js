@@ -66,18 +66,30 @@ $(function() {
         App.db = DB.initializeDB('BioMed', App.rows);
     }
 
+    App.initDB = function() {
+
+        /** Access the Google Doc and select grab the  data **/
+        Tabletop.init({
+            key: engineering_spreadsheet_url,
+            callback: setupDB,
+            wanted: ["Papers", "Tasks", "Encodings"],
+            debug: true
+        });
+    };
+
     function setupCharts(data){
 
         // TODO Check if there was a previous query and clear the old results
 
         /** initialize a new bubble graph **/
         App.engGraph = new Graph();
+        App.dataParser = new Parser();
 
         var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('domain'))) ), "Both");
 
         // get the parsed encodings
-        var encodingData = App.engGraph.parseEncodings(data);
-        var taskData = App.engGraph.parseFields(data, subDomains);
+        var encodingData = App.dataParser.parseEncodings(data);
+        var taskData = App.dataParser.parseFields(data, subDomains);
 
         // plot the bubble scatter plots
         App.engGraph.graphEncodingBubbleChart(encodingData.encodings, "#encodings",
@@ -108,37 +120,48 @@ $(function() {
             d3.select('#results')
                 .style("display", "block");
 
-            App.table = tableSelector.DataTable({
-                data: data,
-                scrollY:  '50vh',
-                scrollX:  false,
-                sScrollY: null,
-                "bFilter": false,
-                columns: [
-                    {
-                        "class":          "details-control",
-                        "orderable":      false,
-                        "data":           null,
-                        "defaultContent": ""
-                    },
-                    {title: "Author", data: "author", className: "dt-center",  "targets": [ 0 ] },
-                    {title: "Year", data: "year", className: "dt-center",  "targets": [ 0 ]},
-                    {title: "Paper Title", data: "title", className: "dt-center",  "targets": [ 0 ]},
-                    // {title: "Url", data: "url"},
-                    // {title: "Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
-                    {title: "Sub-Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
-                    // {title: "No. of Users", data: "# of Users"},
-                    // {title: "Users", data: "Users"},
-                    {title: "Level of Expertise", data: "expertise", className: "dt-center",  "targets": [ 0 ]},
-                    // {title: "Data Types", data: "dataTypes"},
-                    {title: "Paradigm", data: "paradigms", className: "dt-center",  "targets": [ 0 ]},
-                    // {title: "Number of Overlays", data: "Number of Overlays"},
-                    {title: "Evaluation type", data: "evaluation", className: "dt-center",  "targets": [ 0 ]},
-                    {title: "Evaluators", data: "evaluators", className: "dt-center",  "targets": [ 0 ]}
-                ],
-                order: [[1, 'asc'], [0, 'asc']]
-                // stateSave: true
-            });
+            // if the table was already created, refresh it with new data
+            if(App.table)
+            {
+                tableSelector.find('tbody').off("click", 'tr td.details-control');
+                App.table.clear().draw();
+                App.table.rows.add(data); // Add new data
+                App.table.columns.adjust().draw(); // Draw the DataTable
+            }
+            else
+            {
+                App.table = tableSelector.DataTable({
+                    data: data,
+                    scrollY:  '50vh',
+                    scrollX:  false,
+                    sScrollY: null,
+                    "bFilter": false,
+                    columns: [
+                        {
+                            "class":          "details-control",
+                            "orderable":      false,
+                            "data":           null,
+                            "defaultContent": ""
+                        },
+                        {title: "Author", data: "author", className: "dt-center",  "targets": [ 0 ] },
+                        {title: "Year", data: "year", className: "dt-center",  "targets": [ 0 ]},
+                        {title: "Paper Title", data: "title", className: "dt-center",  "targets": [ 0 ]},
+                        // {title: "Url", data: "url"},
+                        // {title: "Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
+                        {title: "Sub-Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
+                        // {title: "No. of Users", data: "# of Users"},
+                        // {title: "Users", data: "Users"},
+                        {title: "Level of Expertise", data: "expertise", className: "dt-center",  "targets": [ 0 ]},
+                        // {title: "Data Types", data: "dataTypes"},
+                        {title: "Paradigm", data: "paradigms", className: "dt-center",  "targets": [ 0 ]},
+                        // {title: "Number of Overlays", data: "Number of Overlays"},
+                        {title: "Evaluation type", data: "evaluation", className: "dt-center",  "targets": [ 0 ]},
+                        {title: "Evaluators", data: "evaluators", className: "dt-center",  "targets": [ 0 ]}
+                    ],
+                    order: [[1, 'asc'], [0, 'asc']]
+                    // stateSave: true
+                });
+            }
 
             /** formatter for the sub-rows **/
             function format ( d ) {
@@ -179,6 +202,9 @@ $(function() {
 
             /** Setup the sub-row click events **/
             tableSelector.find('tbody').on( 'click', 'tr td.details-control', function () {
+
+                console.log("click");
+
                 var tr = $(this).closest('tr');
                 var row = App.table.row( tr );
                 var idx = $.inArray( tr.attr('id'), detailRows );
@@ -209,17 +235,17 @@ $(function() {
             } );
 
             /** setup the charts **/
-            if(App.queryResults.length > 0){
-                setupCharts(data);
-
-                d3.selectAll('.resultCharts')
-                    .style("display", "block");
-            }
-            // no results to show
-            else{
-                d3.selectAll('.resultCharts')
-                    .style("display", "none");
-            }
+            // if(App.queryResults.length > 0){
+            //     setupCharts(data);
+            //
+            //     d3.selectAll('.resultCharts')
+            //         .style("display", "block");
+            // }
+            // // no results to show
+            // else{
+            //     d3.selectAll('.resultCharts')
+            //         .style("display", "none");
+            // }
 
             /** remove the spinner **/
             d3.select('#loading')
@@ -231,18 +257,6 @@ $(function() {
 
         });
     }
-
-    App.initDB = function() {
-
-        /** Access the Google Doc and select grab the  data **/
-        Tabletop.init({
-            key: engineering_spreadsheet_url,
-            callback: setupDB,
-            wanted: ["Papers", "Tasks", "Encodings"],
-            debug: true
-        });
-
-    };
 
     App.getResults = function(e) {
 
@@ -258,6 +272,10 @@ $(function() {
                 encodings: [],
                 evaluators: []
             };
+
+        /** Check to see if a previous search was performed. If so,
+         *  clear the old charts and table */
+
 
         /** Get the search values **/
 
@@ -299,7 +317,6 @@ $(function() {
         $('#accordion').find('input:checked').each(function() {
             $(this).attr('checked', false);
         });
-
     }
 
 })();
