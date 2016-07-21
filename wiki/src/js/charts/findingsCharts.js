@@ -340,9 +340,9 @@ var Graph = function() {
     self.graphTaskBarChart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         /** Set up the chart properties **/
-        var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.90,
+        var totWidth = d3.select('.chartDiv6').node().clientWidth,
             totHeight = d3.select('.chartDiv4').node().clientWidth * 0.85,
-            margin = {top: 10, right: 0, bottom: 100, left: 50},
+            margin = {top: 10, right: 20, bottom: 100, left: 50},
             //padding = {top: 20, right: 0, bottom: 0, left: 0},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
@@ -400,7 +400,7 @@ var Graph = function() {
             .attr("y", 30)
             .attr("x", 0)
             .attr("dy", ".30em")
-            // .attr("transform", "rotate(-45)")
+            .attr("transform", "rotate(-45)")
             .style("text-anchor", "middle");
 
         /** yAxis Labels **/
@@ -451,6 +451,16 @@ var Graph = function() {
             .attr("dy", ".35em")
             .style("text-anchor", "end")
             .text(function(d) { return d; });
+
+        // svg.append("g")
+        //     .attr("class", "legendLinear")
+        //     .attr("transform", "translate(0,"+(height+40)+")");
+
+        // var legend = svg.append("g")
+        //     .attr("class","legend")
+        //     .attr("transform","translate(50,30)")
+        //     .style("font-size","12px")
+        //     .call(d3.legend)
     };
 
     /**
