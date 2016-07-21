@@ -334,7 +334,7 @@ var Graph = function() {
      * @param {String} chartDiv ID if the div the chart is created in
      * @param {number} maxValue The count of that the largest circle will possess
      * @param {Array} grpNames The values for the x-axis
-     * @param {Array} subDomains The list of subDomains for the xAxis groupting
+     * @param {Array} subDomains The list of subDomains for the xAxis grouping
      * @param {Array} authors The list of authors by task and domain
      */
     self.graphTaskBarChart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
@@ -471,6 +471,31 @@ var Graph = function() {
         //     .attr("transform","translate(50,30)")
         //     .style("font-size","12px")
         //     .call(d3.legend)
+    };
+
+    self.graphTaskBarNVD3Chart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
+
+        nv.addGraph(function() {
+
+            var chart = nv.models.multiBarChart();
+
+            chart.xAxis
+                .tickFormat(d3.format(',f'));
+
+            chart.yAxis
+                .tickFormat(d3.format(',.1f'));
+
+            d3.select('#tasks svg')
+                .datum(data)
+                //.transition().duration(500)
+                .call(chart)
+            ;
+
+            nv.utils.windowResize(chart.update);
+
+            return chart;
+        });
+
     };
 
     /**

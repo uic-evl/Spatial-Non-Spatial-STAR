@@ -18,6 +18,8 @@
     <!-- Table Styling -->
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.4/nv.d3.css"/>
+
     <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
     <link rel="stylesheet" type="text/css" href="lib/js/external/datepicker/css/datepicker-min.css"/>
     <link rel="stylesheet" type="text/css" href="lib/css/style.css">
@@ -43,7 +45,9 @@
     <!-- D3 -->
     <script type="text/javascript" src="lib/js/d3.min.js"></script>
     <script type="text/javascript" src="lib/js/d3-tip.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.7.0/d3-legend.min.js"></script>
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3-legend/1.7.0/d3-legend.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.4/nv.d3.js"></script>
 
 
     <!-- DB and Table-->
@@ -203,7 +207,9 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <div class="chart" id="tasks"></div>
+                        <div class="chart" id="tasks">
+                            <svg></svg>
+                        </div>
                     </div>
                 </div>
             </div>

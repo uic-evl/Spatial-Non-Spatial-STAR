@@ -96,7 +96,8 @@ $(function() {
             encodingData.max, encodingData.groups, _.values(encodingData.authors));
 
         // plot the task analysis
-        App.engGraph.graphTaskBarChart(taskData.tasks, "#tasks", 0, taskData.groups, subDomains, taskData.authors[0]);
+        // App.engGraph.graphTaskBarChart(taskData.tasks, "#tasks", 0, taskData.groups, subDomains, taskData.authors[0]);
+        App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups, subDomains, taskData.authors[0]);
 
         // plot the data type analysis
         App.engGraph.graphDataTypeBarChart(taskData.dataTypes, "#dataTypes", 0, ["Table", "Field", "Network", "Geometry"],
