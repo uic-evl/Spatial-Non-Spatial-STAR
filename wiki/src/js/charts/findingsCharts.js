@@ -475,18 +475,37 @@ var Graph = function() {
 
     self.graphTaskBarNVD3Chart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
+        var datum = [];
+        data.forEach(function(obj){
+            datum.push({key: obj.Task, values: obj.tasks})
+        });
+
+        var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.9,
+            totHeight = d3.select('.chartDiv4').node().clientWidth * 0.9;
+
+        console.log(datum);
+
         nv.addGraph(function() {
 
-            var chart = nv.models.multiBarChart();
+             d3.select(chartDiv).append("svg")
+                .attr("width", totWidth)
+                .attr("height", totHeight);
 
-            chart.xAxis
-                .tickFormat(d3.format(',f'));
+            var chart = nv.models.multiBarChart()
+                .x(function(d) { return d.key })
+                .y(function(d) { return d.value })
+                .showLegend(false)
+                ;
 
-            chart.yAxis
-                .tickFormat(d3.format(',.1f'));
+
+            // chart.xAxis
+            //     .tickFormat(d3.format(',f'));
+            //
+            // chart.yAxis
+            //     .tickFormat(d3.format(',.1f'));
 
             d3.select('#tasks svg')
-                .datum(data)
+                .datum(datum)
                 //.transition().duration(500)
                 .call(chart)
             ;

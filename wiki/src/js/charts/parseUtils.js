@@ -140,8 +140,8 @@ var Parser = function() {
                         authors[0]["Physical Science"][task] = authors[0]["Physical Science"][task] || [];
                         authors[0]["Natural Science"][task] = authors[0]["Natural Science"][task] || [];
 
-                        authors[0]["Natural Science"][task].push({name: value['author'].trim(), year: value['year']});
-                        authors[0]["Physical Science"][task].push({name: value['author'].trim(), year: value['year']});
+                        authors[0]["Natural Science"][task].push({label: value['author'].trim(), year: value['year']});
+                        authors[0]["Physical Science"][task].push({label: value['author'].trim(), year: value['year']});
 
                     }
                     else{
@@ -150,7 +150,7 @@ var Parser = function() {
 
                         // store the corresponding authors in another array
                         authors[0][value.domain][task] = authors[0][value.domain][task] || [];
-                        authors[0][value.domain][task].push({name: value['author'].trim(), year: value['year']});
+                        authors[0][value.domain][task].push({label: value['author'].trim(), year: value['year']});
                     }
                 });
 
@@ -166,8 +166,8 @@ var Parser = function() {
                         authors[1]["Physical Science"][type] = authors[1]["Physical Science"][type] || [];
                         authors[1]["Natural Science"][type] = authors[1]["Natural Science"][type] || [];
 
-                        authors[1]["Natural Science"][type].push({name: value['author'].trim(), year: value['year']});
-                        authors[1]["Physical Science"][type].push({name: value['author'].trim(), year: value['year']});
+                        authors[1]["Natural Science"][type].push({label: value['author'].trim(), year: value['year']});
+                        authors[1]["Physical Science"][type].push({label: value['author'].trim(), year: value['year']});
                     }
                     else {
 
@@ -176,7 +176,7 @@ var Parser = function() {
 
                         // store the corresponding authors in another array
                         authors[1][value.domain][type] = authors[1][value.domain][type] || [];
-                        authors[1][value.domain][type].push({name: value['author'].trim(), year: value['year']});
+                        authors[1][value.domain][type].push({label: value['author'].trim(), year: value['year']});
                     }
                 });
 
@@ -213,7 +213,7 @@ var Parser = function() {
             _.forIn(obj, function(value, key) {
 
                 map[key] = value;
-                map.tasks.push({name: key, value: value})
+                map.tasks.push({label: key, value: value})
             });
 
             mappedTasks.push(map);
