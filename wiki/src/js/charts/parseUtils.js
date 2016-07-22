@@ -54,7 +54,7 @@ var Parser = function() {
 
                     // store the corresponding authors in another array
                     authors[s][n] = authors[s][n] || [];
-                    authors[s][n].push({name: value['author'].trim(), year: value['year']});
+                    authors[s][n].push({label: value['author'].trim(), year: value['year']});
                 });
             });
 
@@ -82,7 +82,7 @@ var Parser = function() {
 
             var pairs = _.toPairs(d);
             pairs.forEach(function(arr){
-                obj.groups.push({name: arr[0], value: parseInt(arr[1])});
+                obj.groups.push({label: arr[0], value: parseInt(arr[1])});
             });
 
             return obj;
@@ -227,7 +227,7 @@ var Parser = function() {
             _.forIn(obj, function(value, key) {
 
                 map[key] = value;
-                map.dataType.push({name: key, value: value})
+                map.dataType.push({label: key, value: value})
             });
 
             mappedTypes.push(map);

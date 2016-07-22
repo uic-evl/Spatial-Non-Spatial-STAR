@@ -13,7 +13,7 @@ var Graph = function() {
 
         // set the authors and chart to be used
         self.authors = (_.isObject(this.authors[row]))
-            ? this.authors[row][obj.name] : this.authors[obj.key][obj.label];
+            ? this.authors[row][obj.label] : this.authors[obj.key][obj.label];
 
         self.chart = this.chart;
         self.selector = this.selector;
@@ -208,7 +208,7 @@ var Graph = function() {
      */
     self.graphEncodingBubbleChart = function(data, chartDiv, maxValue, grpNames, authors) {
         /** Set up the chart properties **/
-        var totWidth = d3.select('.chartDiv4').node().clientWidth * 0.9,
+        var totWidth = d3.select('.chartDiv8').node().clientWidth * 0.9,
             totHeight = totWidth * 0.85,
             margin = {top: 100, right: 20, bottom: 25, left: 100},
             width = totWidth - (margin.left + margin.right),
@@ -227,7 +227,7 @@ var Graph = function() {
                 var html = "";
 
                 html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
-                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('name')).join(', ') + "</span>";
+                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('label')).join(', ') + "</span>";
 
                 return html;
 
@@ -332,7 +332,7 @@ var Graph = function() {
 
     self.graphTaskBarNVD3Chart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
-        var totWidth = d3.select('.col-md-6').node().clientWidth,
+        var totWidth = d3.select('.chartDiv4').node().clientWidth,
             totHeight = totWidth * 0.85;
 
         var chart;
@@ -358,7 +358,7 @@ var Graph = function() {
                 var html = "";
 
                 html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
-                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('name')).join(', ') + "</span>";
+                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('label')).join(', ') + "</span>";
 
                 return html;
 
@@ -404,7 +404,7 @@ var Graph = function() {
 
     self.graphTypeBarNVD3Chart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
-        var totWidth = d3.select('.col-md-6').node().clientWidth,
+        var totWidth = d3.select('.chartDiv4').node().clientWidth,
             totHeight = totWidth * 0.85;
 
         var typeTip = d3.tip().attr('class', 'd3-tip').html(
