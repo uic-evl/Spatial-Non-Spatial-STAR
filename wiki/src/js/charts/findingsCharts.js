@@ -389,11 +389,12 @@ var Graph = function() {
             nv.utils.windowResize(chart.update);
 
             return chart;
+
         }, function(){
 
                 d3.select(chartDiv).selectAll(".nv-bar")
                     .on('mouseover', hoveringCB.bind({tooltip: taskTip, authors:  authors,
-                        groups: grpNames, chart: d3.select(chartDiv), selector: '.nv-bar'}))
+                        groups: grpNames, chart: d3.select("#results"), selector: '.nv-bar'}))
                     .on('mouseout', endCB.bind({tooltip: taskTip, authors: authors}))
                     .on('click', clickCB);
             }
@@ -510,14 +511,13 @@ var Graph = function() {
 
                  d3.select(chartDiv).selectAll(".nv-bar")
                     .on('mouseover', hoveringCB.bind({tooltip: typeTip, authors:  authors,
-                        groups: grpNames, chart: d3.select(chartDiv), selector: '.nv-bar'}))
+                        groups: grpNames, chart: d3.select("#results"), selector: '.nv-bar'}))
                     .on('mouseout', endCB.bind({tooltip: typeTip, authors: authors}))
                     .on('click', clickCB);
         }
 
         );
     };
-
 
 
     /**
