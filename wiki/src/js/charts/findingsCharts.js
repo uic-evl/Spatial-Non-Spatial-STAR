@@ -208,8 +208,8 @@ var Graph = function() {
      */
     self.graphEncodingBubbleChart = function(data, chartDiv, maxValue, grpNames, authors) {
         /** Set up the chart properties **/
-        var totWidth = d3.select('.chartDiv8').node().clientWidth * 0.9,
-            totHeight = totWidth * 0.85,
+        var totWidth = d3.select('.chartDiv8').node().clientWidth * 0.95,
+            totHeight = totWidth * 0.9,
             margin = {top: 100, right: 20, bottom: 25, left: 100},
             width = totWidth - (margin.left + margin.right),
             height = totHeight - (margin.top + margin.bottom);
