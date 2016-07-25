@@ -7,8 +7,6 @@ var Graph = function() {
     // hovers over one of the circles
     var hoveringCB = function(obj, col, row){
 
-        console.log(this);
-
         // show the tooptip if the circle is visible
         if(obj.value === 0)
             return;
@@ -461,35 +459,6 @@ var Graph = function() {
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
                     .showControls(false);
-
-            // chart.tooltip.keyFormatter(function (d, i) {
-            //
-            //     var symbol = '';
-            //
-            //     // pieSectorData().forEach(function (entry) {
-            //     //     // Search data for key and return the symbols
-            //     //     if (entry.key == d){
-            //     //         symbol = entry.symbols
-            //     //     }
-            //     // });
-            //     return  d + '(hi)'
-            //
-            // });
-            //
-            // chart.tooltip.valueFormatter(function (d, i) {
-            //
-            //     // console.log(arguments);
-            //     var symbol = '';
-            //
-            //     // pieSectorData().forEach(function (entry) {
-            //     //     // Search data for key and return the symbols
-            //     //     if (entry.key == d){
-            //     //         symbol = entry.symbols
-            //     //     }
-            //     // });
-            //     return '(hi)'
-            //
-            // });
 
             d3.select('#dataTypes svg')
                 .datum(datum)
