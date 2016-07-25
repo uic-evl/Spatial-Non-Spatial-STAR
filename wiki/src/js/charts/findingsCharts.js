@@ -7,6 +7,8 @@ var Graph = function() {
     // hovers over one of the circles
     var hoveringCB = function(obj, col, row){
 
+        console.log(this);
+
         // show the tooptip if the circle is visible
         if(obj.value === 0)
             return;
@@ -18,7 +20,10 @@ var Graph = function() {
         self.chart = this.chart;
         self.selector = this.selector;
 
-        //this.tooltip.show(obj, self.authors);
+        if(this.tooltip)
+        {
+            this.tooltip.show(obj, self.authors);
+        }
 
         // remove the highlighting class if the selection is empty
         if(self.authors.length == 0){
@@ -64,8 +69,12 @@ var Graph = function() {
     // the hover callback to be used when the user
     // finishes their hover
     var endCB = function() {
+
         // hide the tooltip
-        this.tooltip.hide();
+        if(this.tooltip)
+        {
+            this.tooltip.hide();
+        }
 
         // deselect the table rows
         $("#papers tbody tr")
@@ -349,18 +358,6 @@ var Graph = function() {
                 { key: "Simulation",        values: [], color: "#7fc97f" }
             ]);
 
-        var taskTip = d3.tip().attr('class', 'd3-tip').html(
-            function(obj, authors) {
-
-                var html = "";
-
-                html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
-                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('label')).join(', ') + "</span>";
-
-                return html;
-
-            }.bind(self) );
-
         nv.addGraph(function() {
 
             d3.select(chartDiv).append("svg")
@@ -385,17 +382,28 @@ var Graph = function() {
 
             nv.utils.windowResize(chart.update);
 
+
             return chart;
 
         }, function(){
 
+            $("#tasks svg .nv-bar").each(function(i, elem) {
+
+                $(elem).hover(function() {
+
+                    hoveringCB.call({authors: authors, groups: grpNames,
+                        chart: d3.select("#results"), selector: '.nv-bar'}, d3.select(elem).data()[0], 0, i)
+
+                }, function() {
+
+                    endCB.call({authors: authors});
+
+                });
+            });
+
                 d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('mouseover', hoveringCB.bind({tooltip: taskTip, authors:  authors,
-                        groups: grpNames, chart: d3.select("#results"), selector: '.nv-bar'}))
-                    .on('mouseout', endCB.bind({tooltip: taskTip, authors: authors}))
                     .on('click', clickCB);
             }
-
         );
     };
 
@@ -403,18 +411,6 @@ var Graph = function() {
 
         var totWidth = d3.select('.chartDiv4').node().clientWidth,
             totHeight = totWidth * 0.85;
-
-        var typeTip = d3.tip().attr('class', 'd3-tip').html(
-            function(obj, authors) {
-
-                var html = "";
-
-                html += "Number of Papers: <span style='color:red'>" + obj.value + "</span> </br>";
-                html += "Authors: <span style='color:red'>" + _.map(authors, _.property('name')).join(', ') + "</span>";
-
-                return html;
-
-            }.bind(self) );
 
         var chart;
 
@@ -503,12 +499,24 @@ var Graph = function() {
             nv.utils.windowResize(chart.update);
 
             return chart;
+
         }, function(){
 
-                 d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('mouseover', hoveringCB.bind({tooltip: typeTip, authors:  authors,
-                        groups: grpNames, chart: d3.select("#results"), selector: '.nv-bar'}))
-                    .on('mouseout', endCB.bind({tooltip: typeTip, authors: authors}))
+                $("#dataTypes svg .nv-bar").each(function(i, elem) {
+
+                    $(elem).hover(function() {
+
+                        hoveringCB.call({authors: authors, groups: grpNames,
+                            chart: d3.select("#results"), selector: '.nv-bar'}, d3.select(elem).data()[0], 0, i)
+
+                    }, function() {
+
+                        endCB.call({authors: authors});
+
+                    });
+                });
+
+                d3.select(chartDiv).selectAll(".nv-bar")
                     .on('click', clickCB);
         }
 
