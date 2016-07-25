@@ -344,9 +344,9 @@ var Graph = function() {
 
             },
             [
-                { key: "Natural Science",   values: [] },
-                { key: "Physical Science",  values: [] },
-                { key: "Simulation",        values: [] }
+                { key: "Natural Science",   values: [], color: "#beaed4"},
+                { key: "Physical Science",  values: [], color: "#fdc086" },
+                { key: "Simulation",        values: [], color: "#7fc97f" }
             ]);
 
         var taskTip = d3.tip().attr('class', 'd3-tip').html(
@@ -371,7 +371,7 @@ var Graph = function() {
                 .x(function(d) { return d.label })
                 .y(function(d) { return d.value })
                 .margin({bottom: 60})
-                .showLegend(false)
+                .showLegend(true)
                 .reduceXTicks(false)
                 .rotateLabels(-45)
                 .groupSpacing(0.2)
@@ -445,23 +445,22 @@ var Graph = function() {
 
             },
             [
-                { key: "Natural Science",   values: [] },
-                { key: "Physical Science",  values: [] },
-                { key: "Simulation",        values: [] }
+                { key: "Natural Science",   values: [], color: "#beaed4" },
+                { key: "Physical Science",  values: [], color: "#fdc086" },
+                { key: "Simulation",        values: [], color: "#7fc97f" }
             ]);
 
         nv.addGraph(function() {
 
             d3.select(chartDiv)
-                .append("svg")
-                .attr("width", totWidth)
+                .append("svg").attr("width", totWidth)
                 .attr("height", totHeight);
 
             chart = nv.models.multiBarChart()
                     .x(function(d) { return d.label })
                     .y(function(d) { return d.value })
                     .margin({bottom: 60})
-                    .showLegend(false)
+                    .showLegend(true)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
