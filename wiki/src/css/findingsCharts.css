@@ -52,3 +52,11 @@ tr.row_selected td {
 .unSelected {
     fill: #f0f0f0 !important;
 }
+
+.nv-axis .tick line {
+    display:none;
+}
+
+#encodings .nv-y .domain {
+    display:none;
+}

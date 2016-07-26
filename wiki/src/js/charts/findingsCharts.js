@@ -334,6 +334,84 @@ var Graph = function() {
         d3.selectAll('.container').style("visibility", "visible");
     };
 
+
+    self.graphEncodingBubbleNVD3Chart = function(data, chartDiv, maxValue, grpNames, authors)
+    {
+        console.log(grpNames);
+
+        var nonSpatialMap = {}, spatialMap = {}, i = 0;
+
+        grpNames.forEach(function(grp){
+            nonSpatialMap[grp] = i++;
+        });
+
+        i = 0;
+        var datum = _.reduce(data, function(result, value, key) {
+
+            spatialMap[value.Spatial] = i++;
+            value.groups.forEach(function(obj)
+            {
+                result.values.push({size: obj.value * 10, y: spatialMap[value.Spatial], x: nonSpatialMap[obj.label]});
+            });
+
+            return result;
+
+            },
+
+                { key: "Group 1", values: []}
+        );
+
+
+        var totWidth = d3.select('.chartDiv12').node().clientWidth,
+            totHeight = totWidth * 0.85;
+
+        console.log(datum);
+
+        var chart;
+
+        nv.addGraph(function() {
+
+            d3.select(chartDiv).append("svg")
+                .attr("width", totWidth)
+                .attr("height", totHeight);
+
+            chart = nv.models.scatterChart()
+                .showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
+                .showDistY(true)
+                .showLegend(false)
+                .margin({bottom: 60, left: 100})
+                .pointRange([0, 5000]);
+
+                //.transitionDuration(350)
+                //.color(d3.scale.category10().range());
+
+            //Axis settings
+            //chart.xAxis.tickFormat(d3.format('.02f'));
+            //chart.yAxis.tickFormat(d3.format('.02f'));
+
+            d3.select('#encodings svg')
+                .datum([datum])
+                .call(chart);
+
+            nv.utils.windowResize(chart.update);
+
+            return chart;
+        });
+
+    };
+
+    /**
+     * Creates and plots the Task Bar Chart
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} data The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} subDomains The values for the y-axis
+     * @param {Array} authors The authors corresponding to the data
+     */
     self.graphTaskBarNVD3Chart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         var totWidth = d3.select('.chartDiv4').node().clientWidth,
@@ -405,6 +483,18 @@ var Graph = function() {
         );
     };
 
+    /**
+     * Creates and plots the Data Type Bar Chart
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} data The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} subDomains The values for the y-axis
+     * @param {Array} authors The authors corresponding to the data
+     */
     self.graphTypeBarNVD3Chart = function(data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         var totWidth = d3.select('.chartDiv4').node().clientWidth,
