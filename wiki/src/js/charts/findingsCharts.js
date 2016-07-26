@@ -468,25 +468,28 @@ var Graph = function() {
                 var data = d3.select(elem).data()[0][0].domains;
                 var datum = [];
 
+                /** map the domains into the correct format for the pie chart **/
                 _.toPairs(data).forEach(function (obj) {
                     datum.push({label: obj[0], value: obj[1], color: colorMap[obj[0]]})
                 });
 
-                //console.log(datum);
-
+                // create the pie glyph
                 var pieGlyph = d3.select(d3.select(elem).node().parentNode)
                     .append('g')
                     .data([datum])
                     .attr('transform', 'translate(' + position[0] + ',' + position[1] + ')');
 
+                // crate the total arc and function to map the curves
                 var arc = d3.svg.arc().outerRadius(r);
                 var pie = d3.layout.pie().value(function(d){return d.value;});
 
+                // add the arcs to the glyph
                 var arcs = pieGlyph.selectAll("g.slice")
                     .data(pie).enter()
                     .append("svg:g")
                     .attr("class", "slice " + pointClass);
 
+                // color the slices accordingly
                arcs.append('svg:path')
                     .attr("fill", function(d, i){
                         return d.data.color;
@@ -495,6 +498,7 @@ var Graph = function() {
                         return arc(d);
                     });
 
+                // remove the old glyph completely
                 d3.select(elem).remove();
 
 
