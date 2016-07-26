@@ -385,6 +385,11 @@ var Graph = function() {
             totHeight = totWidth * 0.85,
             chart = null;
 
+        var nonSpat = _.toPairs(nonSpatialMap);
+        var spat = _.toPairs(spatialMap);
+
+
+
         nv.addGraph(function() {
 
             d3.select(chartDiv).append("svg")
@@ -395,8 +400,21 @@ var Graph = function() {
                 .showDistX(true)
                 .showDistY(true)
                 .showLegend(false)
-                .margin({bottom: 60, left: 100})
+                .margin({bottom: 100, left: 150})
                 .pointRange([0, 5000]);
+
+
+            // substitute the numerical labels for the
+            // ordinal
+            chart.xAxis.tickFormat(function(d){
+                return nonSpat[d][0];
+            });
+
+            chart.yAxis.tickFormat(function(d){
+
+                if(_.isInteger(d))
+                    return spat[d][0];
+            });
 
             d3.select('#encodings svg')
                 .datum([datum])
@@ -407,7 +425,6 @@ var Graph = function() {
             return chart;
         }, function()
         {
-
             //console.log(d3.selectAll("#encodings svg .nv-point"));
 
             $("#encodings svg .nv-point").each(function(i, elem) {
@@ -417,12 +434,42 @@ var Graph = function() {
                 var commands = d3.select(elem).attr('d').match(cmdRegEx);
 
                 var position = d3.transform(d3.select(elem).attr('transform') ).translate;
-                var radius = parseInt(commands[0].split('A')[1]);
+                var r = parseInt(commands[0].split('A')[1]);
 
-                console.log(position, radius);
+                var data = [{"label":"Category A", "value":20, color: "#beaed4"},
+                    {"label":"Category B", "value":50, color: "#fdc086"},
+                    {"label":"Category C", "value":30, color: "#7fc97f"}];
+
+                var color = d3.scale.category20c();
+
+                // var pieGlyph = d3.select(elem)
+                //     .data([data]);
+
+                var pieGlyph = d3.select(d3.select(elem).node().parentNode)
+                    .append('g')
+                    .data([data])
+                    .attr('transform', 'translate(' + position[0] + ',' + position[1] + ')');
+
+                var arc = d3.svg.arc().outerRadius(r);
+                var pie = d3.layout.pie().value(function(d){return d.value;});
+
+                var arcs = pieGlyph.selectAll("g.slice")
+                    .data(pie).enter()
+                    .append("svg:g")
+                    .attr("class", "slice");
+
+               arcs.append('svg:path')
+                    .attr("fill", function(d, i){
+                        return d.data.color;
+                    })
+                    .attr("d", function (d) {
+                        return arc(d);
+                    });
+
+                d3.select(elem).style('visibility', 'hidden');
+
             });
         });
-
     };
 
     /**
