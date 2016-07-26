@@ -32,7 +32,6 @@
 #encodings .y.axis line {
     display: none;
 }
-
 /*.row {*/
     /*margin-top: 10px;*/
 /*}*/
@@ -59,4 +58,8 @@ tr.row_selected td {
 
 #encodings .nv-y .domain {
     display:none;
+}
+
+#encodings svg .nv-distribution line{
+    display: none;
 }

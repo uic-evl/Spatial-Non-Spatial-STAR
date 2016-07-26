@@ -172,7 +172,11 @@ var Graph = function() {
                 dy = parseFloat(text.attr("dy")),
                 tspan = text.text(null)
                     .append("tspan")
-                    .attr("x", -15).attr("y", y).attr("dy", dy + "em")
+                    .attr("x", -15)
+                    .attr("y", y)
+                    .attr("dy", function(dy) {
+                        if(dy)
+                            return dy + "em" })
                     .attr("text-anchor", "middle");
 
             var flag = false;
@@ -205,13 +209,6 @@ var Graph = function() {
                 }
             }
         });
-    }
-
-    function createPieChart()
-    {
-
-
-
     }
 
     /**
@@ -388,8 +385,6 @@ var Graph = function() {
         var nonSpat = _.toPairs(nonSpatialMap);
         var spat = _.toPairs(spatialMap);
 
-
-
         nv.addGraph(function() {
 
             d3.select(chartDiv).append("svg")
@@ -400,7 +395,7 @@ var Graph = function() {
                 .showDistX(true)
                 .showDistY(true)
                 .showLegend(false)
-                .margin({bottom: 100, left: 150})
+                .margin({bottom: 100, left: 150, right: 20})
                 .pointRange([0, 5000]);
 
 
@@ -416,19 +411,32 @@ var Graph = function() {
                     return spat[d][0];
             });
 
+
             d3.select('#encodings svg')
                 .datum([datum])
                 .call(chart);
 
-            nv.utils.windowResize(chart.update);
+            //nv.utils.windowResize(chart.update);
 
             return chart;
         }, function()
         {
-            //console.log(d3.selectAll("#encodings svg .nv-point"));
 
+            // wrap the text of the y-axis
+            d3.selectAll('#encodings svg .nv-y text')
+                .call(wrap, chart.yRange())
+                .attr('transform', 'translate(' + -75 +','+ '0)' )
+                .style({"text-anchor": "end", "font-weight": "bold"});
+
+            // move the text of the x-axis down and rotate it
+            d3.select('#encodings svg .nv-x .nv-axis')
+                .attr('transform', 'translate(' + -10 +','+ chart.margin().bottom / 4.0 +')' )
+                .selectAll('text')
+                    .style({"text-anchor": "end", "font-weight": "bold"})
+                    .attr("transform", "rotate(-45)");
+
+            /* iterate over every scatter bubble point and create a pie chart in its stead */
             $("#encodings svg .nv-point").each(function(i, elem) {
-
 
                 var cmdRegEx = /[A][0-9]*/gi;
                 var commands = d3.select(elem).attr('d').match(cmdRegEx);
@@ -436,14 +444,13 @@ var Graph = function() {
                 var position = d3.transform(d3.select(elem).attr('transform') ).translate;
                 var r = parseInt(commands[0].split('A')[1]);
 
-                var data = [{"label":"Category A", "value":20, color: "#beaed4"},
+                var pointClass = d3.select(elem).attr('class');
+
+                var data = [
+                    {"label":"Category A", "value":20, color: "#beaed4"},
                     {"label":"Category B", "value":50, color: "#fdc086"},
-                    {"label":"Category C", "value":30, color: "#7fc97f"}];
-
-                var color = d3.scale.category20c();
-
-                // var pieGlyph = d3.select(elem)
-                //     .data([data]);
+                    {"label":"Category C", "value":30, color: "#7fc97f"}
+                    ];
 
                 var pieGlyph = d3.select(d3.select(elem).node().parentNode)
                     .append('g')
@@ -456,7 +463,7 @@ var Graph = function() {
                 var arcs = pieGlyph.selectAll("g.slice")
                     .data(pie).enter()
                     .append("svg:g")
-                    .attr("class", "slice");
+                    .attr("class", "slice " + pointClass);
 
                arcs.append('svg:path')
                     .attr("fill", function(d, i){
@@ -466,7 +473,8 @@ var Graph = function() {
                         return arc(d);
                     });
 
-                d3.select(elem).style('visibility', 'hidden');
+                d3.select(elem).remove();
+
 
             });
         });
