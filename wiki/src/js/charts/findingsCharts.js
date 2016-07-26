@@ -8,6 +8,13 @@ var Graph = function() {
     // list of the selected nodes
     self.selected = [];
 
+    var colorMap =
+        {
+            "Natural Science": "#beaed4",
+            "Physical Science": "#fdc086",
+            "Simulation": "#7fc97f"
+        };
+
     // the hover callback to be used when the user
     // hovers over one of the circles
     var hoveringCB = function(obj, col, row){
@@ -353,8 +360,9 @@ var Graph = function() {
      * @param {number} maxValue The count of that the largest circle will possess
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} authors The authors corresponding to the data
+     * @param {Array} subDomains Subdomains mapped to the encoding pairings
      */
-    self.graphEncodingBubbleNVD3Chart = function(data, chartDiv, maxValue, grpNames, authors)
+    self.graphEncodingBubbleNVD3Chart = function(data, chartDiv, maxValue, grpNames, authors, subDomains)
     {
         /* define the maps that will be used for the labels of the scatter plot buttle */
         var nonSpatialMap = {}, spatialMap = {}, i = 0;
@@ -371,7 +379,12 @@ var Graph = function() {
             spatialMap[value.Spatial] = i++;
             value.groups.forEach(function(obj)
             {
-                result.values.push({size: obj.value * 10, y: spatialMap[value.Spatial], x: nonSpatialMap[obj.label]});
+                result.values.push({
+                    size: obj.value * 10,
+                    y: spatialMap[value.Spatial],
+                    x: nonSpatialMap[obj.label],
+                    domains: subDomains[value.Spatial][obj.label]
+                });
             });
             return result;
 
@@ -398,30 +411,32 @@ var Graph = function() {
                 .margin({bottom: 100, left: 150, right: 20})
                 .pointRange([0, 5000]);
 
+            /*** substitute the numerical labels for the ordinal values x-axis ***/
 
-            // substitute the numerical labels for the
-            // ordinal
+            // x-axis
             chart.xAxis.tickFormat(function(d){
                 return nonSpat[d][0];
             });
 
+            // y-axis
             chart.yAxis.tickFormat(function(d){
 
                 if(_.isInteger(d))
                     return spat[d][0];
             });
 
-
+            // add the data to the chart
             d3.select('#encodings svg')
                 .datum([datum])
                 .call(chart);
 
+            // TODO re-enable resizing for this chart
             //nv.utils.windowResize(chart.update);
 
             return chart;
+
         }, function()
         {
-
             // wrap the text of the y-axis
             d3.selectAll('#encodings svg .nv-y text')
                 .call(wrap, chart.yRange())
@@ -430,7 +445,7 @@ var Graph = function() {
 
             // move the text of the x-axis down and rotate it
             d3.select('#encodings svg .nv-x .nv-axis')
-                .attr('transform', 'translate(' + -10 +','+ chart.margin().bottom / 4.0 +')' )
+                .attr('transform', 'translate(' + -10 +','+ chart.margin().bottom / 3.0 +')' )
                 .selectAll('text')
                     .style({"text-anchor": "end", "font-weight": "bold"})
                     .attr("transform", "rotate(-45)");
@@ -438,23 +453,30 @@ var Graph = function() {
             /* iterate over every scatter bubble point and create a pie chart in its stead */
             $("#encodings svg .nv-point").each(function(i, elem) {
 
+                // regex to parse the glyph path
                 var cmdRegEx = /[A][0-9]*/gi;
                 var commands = d3.select(elem).attr('d').match(cmdRegEx);
 
+                // the position and radius of the glyph
                 var position = d3.transform(d3.select(elem).attr('transform') ).translate;
                 var r = parseInt(commands[0].split('A')[1]);
 
+                // the classes attached to each glyph
                 var pointClass = d3.select(elem).attr('class');
 
-                var data = [
-                    {"label":"Category A", "value":20, color: "#beaed4"},
-                    {"label":"Category B", "value":50, color: "#fdc086"},
-                    {"label":"Category C", "value":30, color: "#7fc97f"}
-                    ];
+                /** Map the subdomains into an array to use for the pie charts **/
+                var data = d3.select(elem).data()[0][0].domains;
+                var datum = [];
+
+                _.toPairs(data).forEach(function (obj) {
+                    datum.push({label: obj[0], value: obj[1], color: colorMap[obj[0]]})
+                });
+
+                //console.log(datum);
 
                 var pieGlyph = d3.select(d3.select(elem).node().parentNode)
                     .append('g')
-                    .data([data])
+                    .data([datum])
                     .attr('transform', 'translate(' + position[0] + ',' + position[1] + ')');
 
                 var arc = d3.svg.arc().outerRadius(r);

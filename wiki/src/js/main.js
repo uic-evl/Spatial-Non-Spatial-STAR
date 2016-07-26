@@ -92,11 +92,8 @@ $(function() {
         var taskData = App.dataParser.parseFields(data, subDomains);
 
         // plot the bubble scatter plots
-        //App.engGraph.graphEncodingBubbleChart(encodingData.encodings, "#encodings",
-        //   encodingData.max, encodingData.groups, _.values(encodingData.authors));
-
         App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-            encodingData.max, encodingData.groups, _.values(encodingData.authors));
+            encodingData.max, encodingData.groups, _.values(encodingData.authors), encodingData.subDomains);
 
         // plot the task analysis
         App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,

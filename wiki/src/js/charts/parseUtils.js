@@ -9,7 +9,7 @@ var Parser = function() {
      * @constructor
      * @this {Graph}
      * @param {Object} rows The data to be parsed
-     * @returns {Object} The mapped tasks, data types, and task types
+     * @returns {Object} The mapped encodings and their properties
      **/
 
     self.parseEncodings = function(rows){
@@ -39,6 +39,15 @@ var Parser = function() {
             'Animation': {}
         };
 
+        var subDomains = {
+            'Chloropleth / Heatmap': {},
+            'Ball and Stick / Mesh': {},
+            'Isosurface / Streamlines': {},
+            'Volume / Images': {},
+            'Glyph': {},
+            'Animation': {}
+        };
+
         /** iterate over the resutls to combine the encodings **/
         var encodings = _.reduce(rows, function(result, value, key) {
 
@@ -55,6 +64,37 @@ var Parser = function() {
                     // store the corresponding authors in another array
                     authors[s][n] = authors[s][n] || [];
                     authors[s][n].push({label: value['author'].trim(), year: value['year']});
+
+                    // create a count of the sub domains per encoding pair
+                    subDomains[s][n] = subDomains[s][n] || {};
+
+                    if(subDomains[s][n][value.domain] && value.domain != 'Both')
+                    {
+                        if(value.domain == 'Both')
+                        {
+                            console.log('in both');
+
+                            subDomains[s][n]['Natural Science'] += 1;
+                            subDomains[s][n]['Physical Science'] += 1;
+                        }
+                        else
+                        {
+                            subDomains[s][n][value.domain] += 1;
+                        }
+                    }
+                    else
+                    {
+                        if(value.domain == 'Both')
+                        {
+                            subDomains[s][n]['Natural Science'] = 1;
+                            subDomains[s][n]['Physical Science'] = 1;
+                        }
+                        else
+                        {
+                            subDomains[s][n][value.domain] = 1;
+                        }
+                    }
+
                 });
             });
 
@@ -67,6 +107,7 @@ var Parser = function() {
             'Glyph': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Animation': _.cloneDeep(nonSpatialTemplate)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
         });
+
 
         // Finally, map to the format needed for the chart
         var max = 0;
@@ -88,7 +129,7 @@ var Parser = function() {
             return obj;
         });
 
-        return {encodings: encodings, authors: authors, max: max, groups: nonSpatial};
+        return {encodings: encodings, authors: authors, subDomains: subDomains, max: max, groups: nonSpatial};
     };
 
     /**
