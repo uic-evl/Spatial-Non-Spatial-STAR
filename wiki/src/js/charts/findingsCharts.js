@@ -3,6 +3,11 @@ var Graph = function() {
 
     var self = this;
 
+    // flag to indicate if the bubble was selected or not
+    self.clicked = false;
+    // list of the selected nodes
+    self.selected = [];
+
     // the hover callback to be used when the user
     // hovers over one of the circles
     var hoveringCB = function(obj, col, row){
@@ -202,6 +207,13 @@ var Graph = function() {
         });
     }
 
+    function createPieChart()
+    {
+
+
+
+    }
+
     /**
      * Creates and plots the Bubble Scatter Plot
      *
@@ -334,17 +346,28 @@ var Graph = function() {
         d3.selectAll('.container').style("visibility", "visible");
     };
 
-
+    /**
+     * Creates and plots the Bubble Scatter Plot
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} data The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} authors The authors corresponding to the data
+     */
     self.graphEncodingBubbleNVD3Chart = function(data, chartDiv, maxValue, grpNames, authors)
     {
-        console.log(grpNames);
-
+        /* define the maps that will be used for the labels of the scatter plot buttle */
         var nonSpatialMap = {}, spatialMap = {}, i = 0;
 
+        // create the non-spatial map
         grpNames.forEach(function(grp){
             nonSpatialMap[grp] = i++;
         });
 
+        // reset the iterator and create the spatial map
         i = 0;
         var datum = _.reduce(data, function(result, value, key) {
 
@@ -353,21 +376,14 @@ var Graph = function() {
             {
                 result.values.push({size: obj.value * 10, y: spatialMap[value.Spatial], x: nonSpatialMap[obj.label]});
             });
-
             return result;
 
-            },
+            }, { key: "Group 1", values: []});
 
-                { key: "Group 1", values: []}
-        );
-
-
+        /* the width and height of the chart */
         var totWidth = d3.select('.chartDiv12').node().clientWidth,
-            totHeight = totWidth * 0.85;
-
-        console.log(datum);
-
-        var chart;
+            totHeight = totWidth * 0.85,
+            chart = null;
 
         nv.addGraph(function() {
 
@@ -376,18 +392,11 @@ var Graph = function() {
                 .attr("height", totHeight);
 
             chart = nv.models.scatterChart()
-                .showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
+                .showDistX(true)
                 .showDistY(true)
                 .showLegend(false)
                 .margin({bottom: 60, left: 100})
                 .pointRange([0, 5000]);
-
-                //.transitionDuration(350)
-                //.color(d3.scale.category10().range());
-
-            //Axis settings
-            //chart.xAxis.tickFormat(d3.format('.02f'));
-            //chart.yAxis.tickFormat(d3.format('.02f'));
 
             d3.select('#encodings svg')
                 .datum([datum])
@@ -396,6 +405,22 @@ var Graph = function() {
             nv.utils.windowResize(chart.update);
 
             return chart;
+        }, function()
+        {
+
+            //console.log(d3.selectAll("#encodings svg .nv-point"));
+
+            $("#encodings svg .nv-point").each(function(i, elem) {
+
+
+                var cmdRegEx = /[A][0-9]*/gi;
+                var commands = d3.select(elem).attr('d').match(cmdRegEx);
+
+                var position = d3.transform(d3.select(elem).attr('transform') ).translate;
+                var radius = parseInt(commands[0].split('A')[1]);
+
+                console.log(position, radius);
+            });
         });
 
     };
@@ -458,10 +483,9 @@ var Graph = function() {
 
             nv.utils.windowResize(chart.update);
 
-
             return chart;
-
-        }, function(){
+        }, function()
+            {
 
             $("#tasks svg .nv-bar").each(function(i, elem) {
 
@@ -526,7 +550,6 @@ var Graph = function() {
                 });
 
                 return result;
-
             },
             [
                 { key: "Natural Science",   values: [], color: "#beaed4" },
@@ -559,24 +582,20 @@ var Graph = function() {
 
             return chart;
 
-        }, function(){
+        }, function()
+        {
+            $("#dataTypes svg .nv-bar").each(function(i, elem) {
 
-                $("#dataTypes svg .nv-bar").each(function(i, elem) {
-
-                    $(elem).hover(function() {
-
-                        hoveringCB.call({authors: authors, groups: grpNames,
-                            chart: d3.select("#results"), selector: '.nv-bar'}, d3.select(elem).data()[0], 0, i)
-
-                    }, function() {
-
-                        endCB.call({authors: authors});
-
-                    });
+                $(elem).hover(function() {
+                    hoveringCB.call({authors: authors, groups: grpNames,
+                        chart: d3.select("#results"), selector: '.nv-bar'}, d3.select(elem).data()[0], 0, i)
+                }, function() {
+                    endCB.call({authors: authors});
                 });
+            });
 
-                d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('click', clickCB);
+            d3.select(chartDiv).selectAll(".nv-bar")
+                .on('click', clickCB);
         }
 
         );
