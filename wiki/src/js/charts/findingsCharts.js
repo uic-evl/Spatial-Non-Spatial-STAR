@@ -399,159 +399,174 @@ var Graph = function () {
 
         nv.addGraph(function () {
 
-            d3.select(chartDiv).append("svg")
-                .attr("width", totWidth)
-                .attr("height", totHeight);
+                d3.select(chartDiv).append("svg")
+                    .attr("width", totWidth)
+                    .attr("height", totHeight);
 
-            chart = nv.models.scatterChart()
-                .showLegend(false)
-                .margin({bottom: 100, left: 150, right: 20})
-                .pointRange([0, 5000]);
+                chart = nv.models.scatterChart()
+                    .showLegend(false)
+                    .margin({bottom: 100, left: 150, right: 20})
+                    .pointRange([0, 5000]);
+                    // .useVoronoi(false);
 
-            var previousTooltip = chart.tooltip.contentGenerator();
+                var previousTooltip = chart.tooltip.contentGenerator();
 
-            /* Set the value formatter to output the number of papers*/
-            chart.tooltip.valueFormatter(function(d,i){
-                return d;
-            });
-
-            /* Set the header formatter */
-            chart.tooltip.headerFormatter(function(d,i){
-                console.log(d);
-                return "Total Pairings: " + d;
-            });
-
-            chart.tooltip.contentGenerator(function (d) {
-
-                if(!d.point.domains) return;
-
-                d3.select('.nvtooltip').style('visibility', 'visible');
-
-                // clone the series data that the tooltip uses
-                var templateSeries = _.cloneDeep(d.series[0]);
-                // set the total number of papers
-                d.value = templateSeries.value;
-
-                // remove the old series value
-                d.series = [];
-
-                // iterate over the sub domain data to populate the tooltip
-                _.toPairs(d.point.domains).forEach(function(pair){
-
-                    // create a copy of the template
-                    var series = _.cloneDeep(templateSeries);
-
-                    // series label
-                    series.key = pair[0];
-                    // series value
-                    series.value = pair[1];
-                    // series color
-                    series.color = colorMap[series.key];
-
-                    // add the label to the tooltip
-                    d.series.push(series);
+                /* Set the value formatter to output the number of papers*/
+                chart.tooltip.valueFormatter(function(d,i){
+                    return d;
                 });
 
-                // clean up
-                templateSeries = null;
-
-                // call the default tooltip function with the newly modified data
-                return previousTooltip(d);
-
-            });
-
-            /*** substitute the numerical labels for the ordinal values x-axis ***/
-
-            // x-axis
-            chart.xAxis.tickFormat(function (d) {
-                return nonSpat[d][0];
-            });
-
-            // y-axis
-            chart.yAxis.tickFormat(function (d) {
-                if (_.isInteger(d)) return spat[d][0];
-            });
-
-            // add the data to the chart
-            d3.select('#encodings svg')
-                .datum([datum])
-                .call(chart);
-
-            // TODO re-enable resizing for this chart
-            //nv.utils.windowResize(chart.update);
-
-            return chart;
-
-        }, function () {
-            // wrap the text of the y-axis
-            d3.selectAll('#encodings svg .nv-y text')
-                .call(wrap, chart.yRange())
-                .attr('transform', 'translate(' + -75 + ',' + '0)')
-                .style({"text-anchor": "end", "font-weight": "bold"});
-
-            // move the text of the x-axis down and rotate it
-            d3.select('#encodings svg .nv-x .nv-axis')
-                .attr('transform', 'translate(' + -10 + ',' + chart.margin().bottom / 3.0 + ')')
-                .selectAll('text')
-                .style({"text-anchor": "end", "font-weight": "bold"})
-                .attr("transform", "rotate(-45)");
-
-            /* iterate over every scatter bubble point and create a pie chart in its stead */
-            $("#encodings").find("svg .nv-point").each(function (i, elem) {
-
-                // regex to parse the glyph path
-                var cmdRegEx = /[A][0-9]*/gi;
-                var commands = d3.select(elem).attr('d').match(cmdRegEx);
-
-                // the position and radius of the glyph
-                var position = d3.transform(d3.select(elem).attr('transform')).translate;
-                var r = parseInt(commands[0].split('A')[1]);
-
-                // the classes attached to each glyph
-                var pointClass = d3.select(elem).attr('class');
-
-                /** Map the subdomains into an array to use for the pie charts **/
-                var data = d3.select(elem).data()[0][0].domains;
-                var datum = [];
-
-                /** map the domains into the correct format for the pie chart **/
-                _.toPairs(data).forEach(function (obj) {
-                    datum.push({label: obj[0], value: obj[1], color: colorMap[obj[0]]})
+                /* Set the header formatter */
+                chart.tooltip.headerFormatter(function(d,i){
+                    return "Total Pairings: " + d;
                 });
 
-                // create the pie glyph
-                var pieGlyph = d3.select(d3.select(elem).node().parentNode)
-                    .append('g')
-                    .data([datum])
-                    .attr('transform', 'translate(' + position[0] + ',' + position[1] + ')')
-                    .attr("class", pointClass)
-                    .on('mouseout', function(){ d3.select('.nvtooltip').style('visibility', 'hidden');});
+                chart.tooltip.contentGenerator(function (d) {
 
-                // crate the total arc and function to map the curves
-                var arc = d3.svg.arc().outerRadius(r);
-                var pie = d3.layout.pie().value(function (d) {
-                    return d.value;
-                });
+                    if(!d.point.domains) return;
 
-                // add the arcs to the glyph
-                var arcs = pieGlyph.selectAll("g.slice")
-                    .data(pie).enter()
-                    .append("svg:g")
-                    .attr("class", "slice");
+                    d3.select('.nvtooltip').style('visibility', 'visible');
 
-                // color the slices accordingly
-                arcs.append('svg:path')
-                    .attr("fill", function (d, i) {
-                        return d.data.color;
-                    })
-                    .attr("d", function (d) {
-                        return arc(d);
+                    // clone the series data that the tooltip uses
+                    var templateSeries = _.cloneDeep(d.series[0]);
+                    // set the total number of papers
+                    d.value = templateSeries.value;
+
+                    console.log(templateSeries);
+
+                    // remove the old series value
+                    d.series = [];
+
+                    // iterate over the sub domain data to populate the tooltip
+                    _.toPairs(d.point.domains).forEach(function(pair){
+
+                        // create a copy of the template
+                        var series = _.cloneDeep(templateSeries);
+
+                        // series label
+                        series.key = pair[0];
+                        // series value
+                        series.value = pair[1];
+                        // series color
+                        series.color = colorMap[series.key];
+
+                        // add the label to the tooltip
+                        d.series.push(series);
                     });
 
-                // remove the old glyph completely
-                d3.select(elem).remove();
-            });
-        });
+                    // clean up
+                    templateSeries = null;
+
+                    // call the default tooltip function with the newly modified data
+                    return previousTooltip(d);
+
+                });
+
+                /*** substitute the numerical labels for the ordinal values x-axis ***/
+
+                // x-axis
+                chart.xAxis.tickFormat(function (d) {
+                    return nonSpat[d][0];
+                });
+
+                // y-axis
+                chart.yAxis.tickFormat(function (d) {
+                    if (_.isInteger(d)) return spat[d][0];
+                });
+
+                // add the data to the chart
+                d3.select('#encodings svg')
+                    .datum([datum])
+                    .call(chart);
+
+
+
+                // TODO re-enable resizing for this chart
+                //nv.utils.windowResize(chart.update);
+
+                return chart;
+        },
+            function () {
+
+                // wrap the text of the y-axis
+                d3.selectAll('#encodings svg .nv-y text')
+                    .call(wrap, chart.yRange())
+                    .attr('transform', 'translate(' + -75 + ',' + '0)')
+                    .style({"text-anchor": "end", "font-weight": "bold"});
+
+                // move the text of the x-axis down and rotate it
+                d3.select('#encodings svg .nv-x .nv-axis')
+                    .attr('transform', 'translate(' + -10 + ',' + chart.margin().bottom / 3.0 + ')')
+                    .selectAll('text')
+                    .style({"text-anchor": "end", "font-weight": "bold"})
+                    .attr("transform", "rotate(-45)");
+
+                /* iterate over every scatter bubble point and create a pie chart in its stead */
+                $("#encodings").find("svg .nv-groups path").each(function (i, elem) {
+
+                    // console.log(d3.select(elem).selectAll('div'));
+                    // regex to parse the glyph path
+                    var cmdRegEx = /[A][0-9]*/gi;
+                    var commands = d3.select(elem).attr('d').match(cmdRegEx);
+
+                    // the position and radius of the glyph
+                    var position = d3.transform(d3.select(elem).attr('transform')).translate;
+                    var r = parseInt(commands[0].split('A')[1]);
+
+                    // the classes attached to each glyph
+                    var pointClass = d3.select(elem).attr('class');
+
+                    /** Map the subdomains into an array to use for the pie charts **/
+                    var data = d3.select(elem).data()[0][0].domains;
+                    var datum = [];
+
+                    // no data.
+                    if(!data)
+                    {
+                        // remove the old glyph completely
+                        d3.select(elem).remove();
+                        return;
+                    }
+
+                    /** map the domains into the correct format for the pie chart **/
+                    _.toPairs(data).forEach(function (obj) {
+                        datum.push({label: obj[0], value: obj[1], color: colorMap[obj[0]]})
+                    });
+
+                    // create the pie glyph
+                    var pieGlyph = d3.select(d3.select(elem).node().parentNode)
+                        .append('g')
+                        .data([datum])
+                        .attr('transform', 'translate(' + position[0] + ',' + position[1] + ')')
+                        .attr("class", pointClass)
+                        .on('mouseout', function(){ d3.select('.nvtooltip').style('visibility', 'hidden');});
+
+                    // crate the total arc and function to map the curves
+                    var arc = d3.svg.arc().outerRadius(r);
+                    var pie = d3.layout.pie().value(function (d) {
+                        return d.value;
+                    });
+
+                    // add the arcs to the glyph
+                    var arcs = pieGlyph.selectAll("g.slice")
+                        .data(pie).enter()
+                        .append("svg:g")
+                        .attr("class", "slice");
+
+                    // color the slices accordingly
+                    arcs.append('svg:path')
+                        .attr("fill", function (d, i) {
+                            return d.data.color;
+                        })
+                        .attr("d", function (d) {
+                            return arc(d);
+                        });
+
+                    // remove the old glyph completely
+                    d3.select(elem).remove();
+                });
+            }
+        )
     };
 
     /**
