@@ -12195,24 +12195,28 @@
                                 });
                             })
                             .on('mouseover', function(d,i) {
-                                if (needsUpdate || !data[d.series]) return 0; //check if this is a dummy point
-                                var series = data[d.series],
-                                    point  = series.values[i];
+                                var seriesIndex = d[0].series; // probably should check to ensure d has 1 <= d.length
+                                if (needsUpdate || seriesIndex === undefined ) return 0; //check if this is a dummy point
+                                var series = data[seriesIndex];
+                                var point  = series.values[i];
+
+
 
                                 dispatch.elementMouseover({
                                     point: point,
                                     series: series,
                                     pos: [x(getX(point, i)) + margin.left, y(getY(point, i)) + margin.top],//TODO: make this pos base on the page
                                     relativePos: [x(getX(point, i)) + margin.left, y(getY(point, i)) + margin.top],
-                                    seriesIndex: d.series,
+                                    seriesIndex: seriesIndex,
                                     pointIndex: i,
                                     color: color(d, i)
                                 });
                             })
                             .on('mouseout', function(d,i) {
-                                if (needsUpdate || !data[d.series]) return 0; //check if this is a dummy point
-                                var series = data[d.series],
-                                    point  = series.values[i];
+                                var seriesIndex = d[0].series; // probably should check to ensure d has 1 <= d.length
+                                if (needsUpdate || seriesIndex === undefined ) return 0; //check if this is a dummy point
+                                var series = data[seriesIndex];
+                                var point  = series.values[i];
 
                                 dispatch.elementMouseout({
                                     point: point,

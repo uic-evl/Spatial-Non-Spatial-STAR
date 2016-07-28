@@ -72,8 +72,6 @@ var Parser = function() {
                     {
                         if(value.domain == 'Both')
                         {
-                            console.log('in both');
-
                             subDomains[s][n]['Natural Science'] += 1;
                             subDomains[s][n]['Physical Science'] += 1;
                         }

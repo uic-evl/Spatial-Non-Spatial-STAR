@@ -95,6 +95,10 @@ $(function() {
         App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
             encodingData.max, encodingData.groups, _.values(encodingData.authors), encodingData.subDomains);
 
+        // plot the bubble scatter plots
+        //App.engGraph.graphEncodingBubbleChart(encodingData.encodings, "#encodings",
+        //     encodingData.max, encodingData.groups, _.values(encodingData.authors));
+
         // plot the task analysis
         App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
             subDomains, taskData.authors[0]);
