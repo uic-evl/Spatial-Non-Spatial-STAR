@@ -390,8 +390,8 @@ var Graph = function () {
         });
 
         /* the width and height of the chart */
-        var totWidth = d3.select('.chartDiv12').node().clientWidth * 0.9,
-            totHeight = totWidth * 0.85,
+        var totWidth = d3.select('.chartDivBubbles').node().clientWidth,
+            totHeight = totWidth * 0.9,
             chart = null;
 
         var nonSpat = _.toPairs(nonSpatialMap);
@@ -404,9 +404,10 @@ var Graph = function () {
                     .attr("height", totHeight);
 
                 chart = nv.models.scatterChart()
+                    // .reduceXTicks(false)
                     .showLegend(false)
                     .margin({bottom: 100, left: 150, right: 20})
-                    .pointRange([0, 3000])
+                    .pointRange([0, (parseInt(totWidth * 0.075) * 45)])
                     .useVoronoi(false)
                 ;
 
@@ -414,7 +415,6 @@ var Graph = function () {
                 chart.tooltip.headerFormatter(function(d,i){
                     return "";
                 });
-
 
                 /* Set the value formatter to output the number of papers*/
                 chart.tooltip.valueFormatter(function(d,i){
@@ -461,12 +461,12 @@ var Graph = function () {
                     return previousTooltip(d);
                 });
 
-
                 /*** substitute the numerical labels for the ordinal values x-axis ***/
 
                 // x-axis
                 chart.xAxis.tickFormat(function (d) {
                     return nonSpat[d][0];
+                    //return nonSpat[d][0];
                 });
 
                 // y-axis
@@ -479,12 +479,25 @@ var Graph = function () {
                     .datum([datum])
                     .call(chart);
 
-                // TODO re-enable resizing for this chart
-                //nv.utils.windowResize(chart.update);
-
                 return chart;
         },
             function () {
+
+                // function update()
+                // {
+                //
+                //     var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.9,
+                //         totHeight = totWidth * 0.85;
+                //
+                //     // resize the points
+                //     chart.pointRange([0, (parseInt(totWidth * 0.075) * 50)]);
+                //
+                //     // resize the svg and redraw
+                //     d3.select('#encodings svg')
+                //         .attr("width", totWidth)
+                //         .attr("height", totHeight)
+                //         .call(chart);
+                // }
 
                 // wrap the text of the y-axis
                 d3.selectAll('#encodings svg .nv-y text')
@@ -496,32 +509,38 @@ var Graph = function () {
                 d3.select('#encodings svg .nv-x .nv-axis')
                     .attr('transform', 'translate(' + -10 + ',' + chart.margin().bottom / 3.0 + ')')
                     .selectAll('text')
-                    .style({"text-anchor": "end", "font-weight": "bold"})
+                    .style({"text-anchor": "end", "font-weight": "bolder"})
                     .attr("transform", "rotate(-45)");
 
+                // on window update
+                //nv.utils.windowResize(update);
+
+                // call update
+                //update();
+
                 /* iterate over every scatter bubble point and create a pie chart in its stead */
-                $("#encodings").find("svg .nv-groups path").each(function (i, elem) {
+                //$("#encodings").find("svg .nv-groups path").each(function (i, elem) {
 
                     // console.log(d3.select(elem).selectAll('div'));
                     // regex to parse the glyph path
-                    var cmdRegEx = /[A][0-9]*/gi;
-                    var commands = d3.select(elem).attr('d').match(cmdRegEx);
-
-                    // the position and radius of the glyph
-                    var position = d3.transform(d3.select(elem).attr('transform')).translate;
-                    var r = parseInt(commands[0].split('A')[1]);
-
-                    // the classes attached to each glyph
-                    var pointClass = d3.select(elem).attr('class');
-
-                    /** Map the sub domains into an array to use for the pie charts **/
-                    var data = d3.select(elem).data()[0][0].domains;
-                    var datum = [];
-
-                    /** map the domains into the correct format for the pie chart **/
-                    _.toPairs(data).forEach(function (obj) {
-                        datum.push({label: obj[0], value: obj[1], color: colorMap[obj[0]]})
-                    });
+                    // var cmdRegEx = /[A][0-9]*/gi;
+                    // var commands = d3.select(elem).attr('d').match(cmdRegEx);
+                    //
+                    // // the position and radius of the glyph
+                    // var position = d3.transform(d3.select(elem).attr('transform')).translate;
+                    // var r = parseInt(commands[0].split('A')[1]);
+                    //
+                    // // the classes attached to each glyph
+                    // var pointClass = d3.select(elem).attr('class');
+                    //
+                    // /** Map the sub domains into an array to use for the pie charts **/
+                    // var data = d3.select(elem).data()[0][0].domains;
+                    // var datum = [];
+                    //
+                    // /** map the domains into the correct format for the pie chart **/
+                    // _.toPairs(data).forEach(function (obj) {
+                    //     datum.push({label: obj[0], value: obj[1], color: colorMap[obj[0]]})
+                    // });
 
                     // create the pie glyph
                     // var pieGlyph = d3.select(d3.select(elem).node().parentNode)
@@ -554,7 +573,7 @@ var Graph = function () {
                     //
                     // //remove the old glyph completely
                     // d3.select(elem).remove();
-                });
+               //// });
             }
         );
     };
@@ -573,8 +592,8 @@ var Graph = function () {
      */
     self.graphTaskBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
-        var totWidth = d3.select('.chartDiv4').node().clientWidth,
-            totHeight = totWidth * 0.85;
+        var totWidth = d3.select('.taskDiv').node().clientWidth,
+            totHeight =  totWidth * 0.6;
 
         var chart;
 
@@ -607,8 +626,8 @@ var Graph = function () {
                     .y(function (d) {
                         return d.value
                     })
-                    .margin({bottom: 60})
-                    .showLegend(true)
+                    .margin({left: 30, bottom: 60})
+                    .showLegend(totHeight > 300)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
@@ -665,8 +684,8 @@ var Graph = function () {
      */
     self.graphTypeBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
-        var totWidth = d3.select('.chartDiv4').node().clientWidth,
-            totHeight = totWidth * 0.85;
+        var totWidth = d3.select('.typeDiv').node().clientWidth,
+            totHeight = totWidth * 0.6;
 
         var chart;
 
@@ -714,12 +733,12 @@ var Graph = function () {
                     .y(function (d) {
                         return d.value
                     })
-                    .margin({bottom: 60})
-                    .showLegend(true)
+                    .showLegend(totHeight > 300)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
-                    .showControls(false);
+                    .showControls(false)
+                    .margin({left: 30, bottom: 60});
 
                 /* Set the header formatter */
                 chart.tooltip.headerFormatter(function(d,i){

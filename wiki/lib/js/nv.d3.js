@@ -8351,7 +8351,7 @@
             , showXAxis = true
             , showYAxis = true
             , rightAlignYAxis = false
-            , reduceXTicks = true // if false a tick will show for every data point
+            , reduceXTicks = false // if false a tick will show for every data point
             , staggerLabels = false
             , wrapLabels = false
             , rotateLabels = 0
@@ -12695,7 +12695,7 @@
                 if (showXAxis) {
                     xAxis
                         .scale(x)
-                        ._ticks( nv.utils.calcTicksX(availableWidth/100, data) )
+                        ._ticks(8)//nv.utils.calcTicksX(availableWidth/100, data) )
                         .tickSize( -availableHeight , 0);
 
                     g.select('.nv-x.nv-axis')

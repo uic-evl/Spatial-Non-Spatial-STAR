@@ -99,6 +99,15 @@ $(function() {
         //App.engGraph.graphEncodingBubbleChart(encodingData.encodings, "#encodings",
         //     encodingData.max, encodingData.groups, _.values(encodingData.authors));
 
+
+
+        if($('.col-md-6').width() > 600)
+        {
+            d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
+            d3.select('.taskDiv').classed({'col-md-3': false, 'col-md-4': true});
+            d3.select('.typeDiv').classed({'col-md-3': false, 'col-md-4': true});
+        }
+
         // plot the task analysis
         App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
             subDomains, taskData.authors[0]);

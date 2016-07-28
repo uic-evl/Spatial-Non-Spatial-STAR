@@ -73,3 +73,11 @@ tr.row_selected td {
 #encodings .slice path {
     stroke: #fff;
 }
+
+.x_panel {
+    padding: 0 !important;
+}
+
+.x_title {
+    padding-left: 17px !important;
+}
