@@ -114,67 +114,77 @@
 
     <div id="search" class="vcenter">
         <div id="searchContainer" class="container">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-4">
-                    <!--Set class "wowsearchform" to start wowsearchform plugin-->
-                    <form id="myform" class="wowsearchform form-inline" method="post" onsubmit="event.preventDefault(); App.getResults(event);">
-
-                        <!--   It must be a SELECT of all fields to search (the class identify is "wowFields" and the name must be an array)  -->
-                        <select class="wowFields form-control" name="my_fields[]">
-                            <!--  NB: the class name identify the field type (text, number, date) -->
-                            <option class="text" value="title">Publication Title</option>
-                            <option class="text" value="author">Author</option>
-                            <option class="date" value="subscription">Publication date</option>
-                        </select>
-
-                        <!--   It must be a INPUT TEXT (the name must be an array)  -->
-                        <input type="text" class="form-control" name="my_value[]">
-
-                        <!--  You can use class identify "wowNoClone" for others html element   -->
-                        <button type="submit" class="wowNoClone btn btn-primary"><i class="glyphicon glyphicon-search"></i> Search</button>
-
-                        <!--  wowsearchform reset button has the class identify "wowReset"-->
-                        <a class="wowReset btn btn-default">Reset</a>
-
-                    </form>
-                </div>
-            </div>
 
             <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <ul id="accordion" class="accordion">
-                        <li>
-                            <div class="link"><i class="fa fa-database"></i>Advanced<i class="fa fa-chevron-down"></i></div>
-                            <ul class="submenu">
+                <div class="col-md-7 col-md-offset-3">
+
+                    <div class="row" style="padding-bottom: 10px;">
+                        <div class="col-md-12">
+                            <!--Set class "wowsearchform" to start wowsearchform plugin-->
+                            <form id="myform" class="wowsearchform form-inline" method="post" onsubmit="event.preventDefault(); App.getResults(event);">
+
+                                <!--   It must be a SELECT of all fields to search (the class identify is "wowFields" and the name must be an array)  -->
+                                <select class="wowFields form-control" name="my_fields[]">
+                                    <!--  NB: the class name identify the field type (text, number, date) -->
+                                    <option class="text" value="title">Publication Title</option>
+                                    <option class="text" value="author">Author</option>
+                                    <option class="date" value="subscription">Publication date</option>
+                                </select>
+
+                                <!--   It must be a INPUT TEXT (the name must be an array)  -->
+                                <input type="text" class="form-control" name="my_value[]">
+
+                                <!--  You can use class identify "wowNoClone" for others html element   -->
+                                <button type="submit" class="wowNoClone btn btn-primary"><i class="glyphicon glyphicon-search"></i> Search</button>
+
+                                <!--  wowsearchform reset button has the class identify "wowReset"-->
+                                <a class="wowReset btn btn-default">Reset</a>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-10">
+                            <ul id="accordion" class="accordion">
                                 <li>
-                                    <div class="container-fluid" data-bind="foreach: fields">
+                                    <div class="link"><i class="fa fa-database"></i>Advanced<i class="fa fa-chevron-down"></i></div>
+                                    <ul class="submenu">
+                                        <li>
+                                            <div class="container-fluid" data-bind="foreach: fields">
 
-                                        <div class="row" data-bind="css: { row: $index%3 >= 0 }">
-                                            <!-- Multiple Checkboxes -->
-                                            <div class="form-group col-md-4">
-                                                <div class="row">
-                                                    <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
-                                                </div>
-                                                <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
-                                                    <div class="col-md-12">
-                                                        <div class="checkbox">
-                                                            <input type="checkbox"
-                                                                   data-bind="attr: {name: el.category,
+                                                <div class="row" data-bind="css: { row: $index%3 >= 0 }">
+                                                    <!-- Multiple Checkboxes -->
+                                                    <div class="form-group col-md-4">
+                                                        <div class="row">
+                                                            <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
+                                                        </div>
+                                                        <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
+                                                            <div class="col-md-12">
+                                                                <div class="checkbox">
+                                                                    <input type="checkbox"
+                                                                           data-bind="attr: {name: el.category,
                                                                             id: String(el.text)}, value: String(el.text)">
-                                                            <label data-bind="attr: {for: el.category},
+                                                                    <label data-bind="attr: {for: el.category},
                                                                             text: String(el.text)"></label>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
+
+
         </div>
     </div>
 
