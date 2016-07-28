@@ -67,9 +67,16 @@ tr.shown td.details-control:before {
     content: '\2212';
 }
 
+#nav {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 0;
+}
+
 #nav ul {
     list-style-type: none;
-    margin: 0;
+    margin-bottom: 0 !important;
     padding: 0;
     overflow: hidden;
     background-color: #333;
@@ -83,8 +90,8 @@ tr.shown td.details-control:before {
     display: block;
     color: white;
     text-align: center;
-    padding: 0px 20px 20px 20px;
-    font-size: 24px;
+    padding: 0 20px 0 20px;
+    /*font-size: 24px;*/
 }
 
 /* Change the link color to #111 (black) on hover */
@@ -99,6 +106,6 @@ tr.shown td.details-control:before {
 
 .main_title {
     color: white;
-    font-size: 34px;
+    /*font-size: 34px;*/
     font-weight: bold;
 }
