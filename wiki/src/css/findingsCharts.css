@@ -73,7 +73,3 @@ tr.row_selected td {
 #encodings .slice path {
     stroke: #fff;
 }
-
-#encodings .nv-group {
-    fill-opacity: 1 !important;
-}

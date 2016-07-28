@@ -406,21 +406,22 @@ var Graph = function () {
                 chart = nv.models.scatterChart()
                     .showLegend(false)
                     .margin({bottom: 100, left: 150, right: 20})
-                    .pointRange([0, 5000])
+                    .pointRange([0, 3000])
                     .useVoronoi(false)
                 ;
 
-                var previousTooltip = chart.tooltip.contentGenerator();
+                /* Set the header formatter */
+                chart.tooltip.headerFormatter(function(d,i){
+                    return "";
+                });
+
 
                 /* Set the value formatter to output the number of papers*/
                 chart.tooltip.valueFormatter(function(d,i){
                     return d;
                 });
 
-                /* Set the header formatter */
-                chart.tooltip.headerFormatter(function(d,i){
-                    return "Total Pairings: " + d;
-                });
+                var previousTooltip = chart.tooltip.contentGenerator();
 
                 chart.tooltip.contentGenerator(function (d) {
 
@@ -459,6 +460,7 @@ var Graph = function () {
                     // call the default tooltip function with the newly modified data
                     return previousTooltip(d);
                 });
+
 
                 /*** substitute the numerical labels for the ordinal values x-axis ***/
 
@@ -515,14 +517,6 @@ var Graph = function () {
                     /** Map the sub domains into an array to use for the pie charts **/
                     var data = d3.select(elem).data()[0][0].domains;
                     var datum = [];
-
-                    // no data.
-                    if(!data)
-                    {
-                        // remove the old glyph completely
-                        d3.select(elem).remove();
-                        return;
-                    }
 
                     /** map the domains into the correct format for the pie chart **/
                     _.toPairs(data).forEach(function (obj) {

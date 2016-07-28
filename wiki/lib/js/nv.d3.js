@@ -7113,6 +7113,7 @@
         //------------------------------------------------------------
 
         lines.dispatch.on('elementMouseover.tooltip', function(evt) {
+
             if(!evt.series.disableTooltip){
                 tooltip.data(evt).hidden(false);
             }
@@ -9856,6 +9857,7 @@
                 }
 
                 function mouseover_scatter(evt) {
+
                     var yaxis = data[evt.seriesIndex].yAxis === 2 ? yAxis2 : yAxis1;
                     evt.value = evt.point.x;
                     evt.series = {
@@ -12200,8 +12202,6 @@
                                 var series = data[seriesIndex];
                                 var point  = series.values[i];
 
-
-
                                 dispatch.elementMouseover({
                                     point: point,
                                     series: series,
@@ -12213,7 +12213,8 @@
                                 });
                             })
                             .on('mouseout', function(d,i) {
-                                var seriesIndex = d[0].series; // probably should check to ensure d has 1 <= d.length
+                                var seriesIndex = d[0].series || 0; // probably should check to ensure d has 1 <= d.length
+
                                 if (needsUpdate || seriesIndex === undefined ) return 0; //check if this is a dummy point
                                 var series = data[seriesIndex];
                                 var point  = series.values[i];
@@ -12223,7 +12224,7 @@
                                     series: series,
                                     pos: [x(getX(point, i)) + margin.left, y(getY(point, i)) + margin.top],//TODO: make this pos base on the page
                                     relativePos: [x(getX(point, i)) + margin.left, y(getY(point, i)) + margin.top],
-                                    seriesIndex: d.series,
+                                    seriesIndex: seriesIndex,
                                     pointIndex: i,
                                     color: color(d, i)
                                 });
@@ -13367,6 +13368,7 @@
                         return zeroArea(d.values, d.seriesIndex);
                     })
                     .on('mouseover', function(d,i) {
+
                         d3.select(this).classed('hover', true);
                         dispatch.areaMouseover({
                             point: d,
@@ -13409,6 +13411,7 @@
                 //------------------------------------------------------------
 
                 scatter.dispatch.on('elementMouseover.area', function(e) {
+
                     g.select('.nv-chart-' + id + ' .nv-area-' + e.seriesIndex).classed('hover', true);
                 });
                 scatter.dispatch.on('elementMouseout.area', function(e) {
@@ -14313,7 +14316,6 @@
             nodes.forEach(function(n){
                 var k = key(n);
                 var pP = prevPositions[k];
-                //console.log(k,n,pP);
                 if( pP ){
                     n.dx0 = pP.dx;
                     n.x0 = pP.x;
