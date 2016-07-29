@@ -110,6 +110,8 @@ $(function() {
             d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
             d3.select('.taskDiv').classed({'col-md-3': false, 'col-md-4': true});
             d3.select('.typeDiv').classed({'col-md-3': false, 'col-md-4': true});
+            d3.select('.evalDiv').classed({'col-md-3': false, 'col-md-4': true});
+
         }
 
         // plot the task analysis
@@ -119,6 +121,10 @@ $(function() {
         // plot the data type analysis
         App.engGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
             ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[1]);
+
+        // plot the data type analysis
+        App.engGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
+            ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[2]);
     }
 
     function setupTable(data) {

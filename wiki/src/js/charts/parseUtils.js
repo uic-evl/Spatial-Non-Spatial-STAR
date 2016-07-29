@@ -225,7 +225,7 @@ var Parser = function() {
                 });
 
                 value.evaluation.forEach(function(type){
-                    
+
                     type = type.trim();
 
                     if(value.domain === 'Both'){
@@ -310,6 +310,19 @@ var Parser = function() {
             mappedTypes.push(map);
         });
 
-        return {tasks: mappedTasks, dataTypes: mappedTypes, groups: taskNames, authors: authors};
+        var mappedEval = [];
+        _.map(data[2], function(obj, task) {
+
+            var map = {Evaluation: task, evaluation: []};
+
+            _.forIn(obj, function(value, key) {
+                map[key] = value;
+                map.evaluation.push({label: key, value: value})
+            });
+
+            mappedEval.push(map);
+        });
+
+        return {tasks: mappedTasks, dataTypes: mappedTypes, evaluation: mappedEval, groups: taskNames, authors: authors};
     };
 };

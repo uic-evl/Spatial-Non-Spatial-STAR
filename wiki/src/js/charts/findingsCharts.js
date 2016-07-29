@@ -466,7 +466,6 @@ var Graph = function () {
                 // x-axis
                 chart.xAxis.tickFormat(function (d) {
                     return nonSpat[d][0];
-                    //return nonSpat[d][0];
                 });
 
                 // y-axis
@@ -593,7 +592,7 @@ var Graph = function () {
     self.graphTaskBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         var totWidth = d3.select('.taskDiv').node().clientWidth,
-            totHeight =  totWidth * 0.6;
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
 
         var chart;
 
@@ -684,10 +683,8 @@ var Graph = function () {
      */
     self.graphTypeBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
-        console.log(data);
-
         var totWidth = d3.select('.typeDiv').node().clientWidth,
-            totHeight = totWidth * 0.6;
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
 
         var chart;
 
@@ -778,32 +775,31 @@ var Graph = function () {
 
     self.graphEvaluationNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
-        var totWidth = d3.select('.typeDiv').node().clientWidth,
-            totHeight = totWidth * 0.6;
+        var totWidth = d3.select('.evalDiv').node().clientWidth,
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
 
         var chart;
-
 
         var datum = _.reduce(data, function (result, value, key) {
 
                 result[0].values.push({
-                    label: value.DataType,
+                    label: value.Evaluation,
                     value: value["Natural Science"],
-                    authors: authors["Natural Science"][value.DataType],
+                    authors: authors["Natural Science"][value.Evaluation],
                     color: "#beaed4"
                 });
 
                 result[1].values.push({
-                    label: value.DataType,
+                    label: value.Evaluation,
                     value: value["Physical Science"],
-                    authors: authors["Physical Science"][value.DataType],
+                    authors: authors["Physical Science"][value.Evaluation],
                     color: "#fdc086"
                 });
 
                 result[2].values.push({
-                    label: value.DataType,
+                    label: value.Evaluation,
                     value: value["Simulation"],
-                    authors: authors["Simulation"][value.DataType],
+                    authors: authors["Simulation"][value.Evaluation],
                     color: "#7fc97f"
                 });
 
@@ -837,10 +833,17 @@ var Graph = function () {
 
                 /* Set the header formatter */
                 chart.tooltip.headerFormatter(function(d,i){
-                    return "Data Type: " + d;
+                    return "Evaluation: " + d;
                 });
 
-                d3.select('#dataTypes svg')
+                chart.xAxis.tickFormat(function (d) {
+                    if(d == "Quantitative Analysis")
+                        return "Quantitative";
+                    else
+                        return d;
+                });
+
+                d3.select('#evaluation svg')
                     .datum(datum)
                     .call(chart)
                 ;
@@ -850,7 +853,7 @@ var Graph = function () {
                 return chart;
 
             }, function () {
-                $("#dataTypes svg .nv-bar").each(function (i, elem) {
+                $("#evaluation svg .nv-bar").each(function (i, elem) {
 
                     $(elem).hover(function () {
                         hoveringCB.call({
