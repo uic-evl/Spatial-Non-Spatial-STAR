@@ -60,6 +60,10 @@ $(function() {
 
             o["Tasks"] = o["Tasks"].split(", ");
             _.map(o["Tasks"], _.trimEnd);
+
+            o["Evaluation Type"] = o["Evaluation Type"].split(", ");
+            _.map(o["Evaluation Type"], _.trimEnd);
+
         });
 
         /** create the new database for the session **/

@@ -20,7 +20,7 @@ var DB = DB || {};
 
                 // Define your database schema
                 self.db.version(1).stores({
-                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators, *evaluation'
                 });
 
                 // version 2 with the modified data
@@ -34,6 +34,36 @@ var DB = DB || {};
                    return t.papers.toCollection().modify(function(paper) {
 
                        /** select the paper and remove it from the temporary list **/
+                       var updatedRecord = _.find(incomingRecords, {Paper: paper.title});
+                       incomingRecords = _.without(incomingRecords, updatedRecord);
+
+                        // update the records
+                        paper.title =      updatedRecord["Paper"] ;
+                        paper.author  =    updatedRecord["Author"] ;
+                        paper.dataTypes =  updatedRecord["Data Types"] ;
+                        paper.encodings =  updatedRecord["Encodings"] ;
+                        paper.tasks =      updatedRecord["Tasks"] ;
+                        paper.paradigms =  updatedRecord["Paradigm"] ;
+                        paper.domain =     updatedRecord["SubDomain"] ;
+                        paper.evaluators = updatedRecord["Evaluators"] ;
+                        paper.evaluation = updatedRecord["Evaluation Type"] ;
+                        paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
+                        paper.year =       updatedRecord["Year"] ;
+                        paper.url =        updatedRecord["URL"];
+                    });
+                });
+
+                // version 2 with the modified data
+                self.db.version(3).stores({
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators, *evaluation'
+                }).upgrade(function(t)
+                {
+                    var incomingRecords = _.cloneDeep(records);
+
+                    // update the records that exist
+                    return t.papers.toCollection().modify(function(paper) {
+
+                        /** select the paper and remove it from the temporary list **/
                         var updatedRecord = _.find(incomingRecords, {Paper: paper.title});
                         incomingRecords = _.without(incomingRecords, updatedRecord);
 
@@ -50,42 +80,8 @@ var DB = DB || {};
                         paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
                         paper.year =       updatedRecord["Year"] ;
                         paper.url =        updatedRecord["URL"];
-
                     });
-
                 });
-
-                // version 3 with the modified data
-                // self.db.version(3).stores({
-                //     papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
-                // }).upgrade(function(t)
-                // {
-                //     var incomingRecords = _.cloneDeep(records);
-                //
-                //     // update the records that exist
-                //     return t.papers.toCollection().modify(function(paper) {
-                //
-                //         /** select the paper and remove it from the temporary list **/
-                //         var updatedRecord = _.find(incomingRecords, {Paper: paper.title});
-                //         incomingRecords = _.without(incomingRecords, updatedRecord);
-                //
-                //         // update the records
-                //         paper.title =      updatedRecord["Paper"] ;
-                //         paper.author  =    updatedRecord["Author"] ;
-                //         paper.dataTypes =  updatedRecord["Data Types"] ;
-                //         paper.encodings =  updatedRecord["Encodings"] ;
-                //         paper.tasks =      updatedRecord["Tasks"] ;
-                //         paper.paradigms =  updatedRecord["Paradigm"] ;
-                //         paper.domain =     updatedRecord["SubDomain"] ;
-                //         paper.evaluators = updatedRecord["Evaluators"] ;
-                //         paper.evaluation = updatedRecord["Evaluation Type"] ;
-                //         paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
-                //         paper.year =       updatedRecord["Year"] ;
-                //         paper.url =        updatedRecord["URL"];
-                //
-                //     });
-                //
-                // });
 
                 // Open the DB
                 self.db.open()
@@ -155,12 +151,10 @@ var DB = DB || {};
                                 });
                         });
                     });
-
-
                 }
 
             }).catch(function (error) {
-                console.error("Oops, an error occurred when trying to check database existance");
+                console.error("Oops, an error occurred when trying to check database existence");
             });
         },
 

@@ -162,6 +162,11 @@ var Parser = function() {
                 'Simulation': {},
                 'Physical Science': {},
                 'Natural Science': {}
+            },
+            {
+                'Simulation': {},
+                'Physical Science': {},
+                'Natural Science': {}
             }
         ];
 
@@ -219,27 +224,60 @@ var Parser = function() {
                     }
                 });
 
+                value.evaluation.forEach(function(type){
+                    
+                    type = type.trim();
+
+                    if(value.domain === 'Both'){
+
+                        // increment the data type count
+                        result[2][type]["Physical Science"] += 1;
+                        result[2][type]["Natural Science"] += 1;
+
+                        // store the corresponding authors in another array
+                        authors[2]["Physical Science"][type] = authors[2]["Physical Science"][type] || [];
+                        authors[2]["Natural Science"][type] = authors[2]["Natural Science"][type] || [];
+
+                        authors[2]["Natural Science"][type].push({label: value['author'].trim(), year: value['year']});
+                        authors[2]["Physical Science"][type].push({label: value['author'].trim(), year: value['year']});
+                    }
+                    else {
+                        // increment the data type count
+                        result[2][type][value.domain] += 1;
+
+                        // store the corresponding authors in another array
+                        authors[2][value.domain][type] = authors[2][value.domain][type] || [];
+                        authors[2][value.domain][type].push({label: value['author'].trim(), year: value['year']});
+                    }
+                });
                 return result;
             },
-            [{
-                "Discover"  : _.cloneDeep(taskTemplate),
-                "Present"   : _.cloneDeep(taskTemplate),
-                "Annotate"  : _.cloneDeep(taskTemplate),
-                "Record"    : _.cloneDeep(taskTemplate),
-                "Derive"    : _.cloneDeep(taskTemplate),
-                "Browse"    : _.cloneDeep(taskTemplate),
-                "Explore"   : _.cloneDeep(taskTemplate),
-                "Lookup"    : _.cloneDeep(taskTemplate),
-                "Locate"    : _.cloneDeep(taskTemplate),
-                "Identify"  : _.cloneDeep(taskTemplate),
-                "Compare"   : _.cloneDeep(taskTemplate),
-                "Summarize" : _.cloneDeep(taskTemplate)
-            },
+            [
+                {
+                    "Discover"  : _.cloneDeep(taskTemplate),
+                    "Present"   : _.cloneDeep(taskTemplate),
+                    "Annotate"  : _.cloneDeep(taskTemplate),
+                    "Record"    : _.cloneDeep(taskTemplate),
+                    "Derive"    : _.cloneDeep(taskTemplate),
+                    "Browse"    : _.cloneDeep(taskTemplate),
+                    "Explore"   : _.cloneDeep(taskTemplate),
+                    "Lookup"    : _.cloneDeep(taskTemplate),
+                    "Locate"    : _.cloneDeep(taskTemplate),
+                    "Identify"  : _.cloneDeep(taskTemplate),
+                    "Compare"   : _.cloneDeep(taskTemplate),
+                    "Summarize" : _.cloneDeep(taskTemplate)
+                },
                 {
                     "Table"     : _.cloneDeep(taskTemplate),
                     "Network"   : _.cloneDeep(taskTemplate),
                     "Field"     : _.cloneDeep(taskTemplate),
                     "Geometry"  : _.cloneDeep(taskTemplate)
+                },
+                {
+                    "Case Study"            : _.cloneDeep(taskTemplate),
+                    "Quantitative Analysis" : _.cloneDeep(taskTemplate),
+                    "Feedback"              : _.cloneDeep(taskTemplate),
+                    "User Study"            : _.cloneDeep(taskTemplate)
                 }
             ]);
 

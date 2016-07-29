@@ -377,7 +377,7 @@ var Graph = function () {
             spatialMap[value.Spatial] = i++;
             value.groups.forEach(function (obj) {
                 result.values.push({
-                    size: obj.value * 10,
+                    size: obj.value * 100,
                     y: spatialMap[value.Spatial],
                     x: nonSpatialMap[obj.label],
                     domains: subDomains[value.Spatial][obj.label]
@@ -407,7 +407,7 @@ var Graph = function () {
                     // .reduceXTicks(false)
                     .showLegend(false)
                     .margin({bottom: 100, left: 150, right: 20})
-                    .pointRange([0, (parseInt(totWidth * 0.075) * 45)])
+                    .pointRange([0, (parseInt(totWidth * 0.075) * 50)])
                     .useVoronoi(false)
                 ;
 
@@ -684,6 +684,8 @@ var Graph = function () {
      */
     self.graphTypeBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
+        console.log(data);
+
         var totWidth = d3.select('.typeDiv').node().clientWidth,
             totHeight = totWidth * 0.6;
 
@@ -772,6 +774,100 @@ var Graph = function () {
             }
         );
     };
+
+
+    self.graphEvaluationNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
+
+        var totWidth = d3.select('.typeDiv').node().clientWidth,
+            totHeight = totWidth * 0.6;
+
+        var chart;
+
+
+        var datum = _.reduce(data, function (result, value, key) {
+
+                result[0].values.push({
+                    label: value.DataType,
+                    value: value["Natural Science"],
+                    authors: authors["Natural Science"][value.DataType],
+                    color: "#beaed4"
+                });
+
+                result[1].values.push({
+                    label: value.DataType,
+                    value: value["Physical Science"],
+                    authors: authors["Physical Science"][value.DataType],
+                    color: "#fdc086"
+                });
+
+                result[2].values.push({
+                    label: value.DataType,
+                    value: value["Simulation"],
+                    authors: authors["Simulation"][value.DataType],
+                    color: "#7fc97f"
+                });
+
+                return result;
+            },
+            [
+                {key: "Natural Science", values: [], color: "#beaed4"},
+                {key: "Physical Science", values: [], color: "#fdc086"},
+                {key: "Simulation", values: [], color: "#7fc97f"}
+            ]);
+
+        nv.addGraph(function () {
+
+                d3.select(chartDiv)
+                    .append("svg").attr("width", totWidth)
+                    .attr("height", totHeight);
+
+                chart = nv.models.multiBarChart()
+                    .x(function (d) {
+                        return d.label
+                    })
+                    .y(function (d) {
+                        return d.value
+                    })
+                    .showLegend(totHeight > 300)
+                    .reduceXTicks(false)
+                    .rotateLabels(-45)
+                    .groupSpacing(0.2)
+                    .showControls(false)
+                    .margin({left: 30, bottom: 60});
+
+                /* Set the header formatter */
+                chart.tooltip.headerFormatter(function(d,i){
+                    return "Data Type: " + d;
+                });
+
+                d3.select('#dataTypes svg')
+                    .datum(datum)
+                    .call(chart)
+                ;
+
+                nv.utils.windowResize(chart.update);
+
+                return chart;
+
+            }, function () {
+                $("#dataTypes svg .nv-bar").each(function (i, elem) {
+
+                    $(elem).hover(function () {
+                        hoveringCB.call({
+                            authors: authors, groups: grpNames,
+                            chart: d3.select("#results"), selector: '.nv-bar'
+                        }, d3.select(elem).data()[0], 0, i)
+                    }, function () {
+                        endCB.call({authors: authors});
+                    });
+                });
+
+                d3.select(chartDiv).selectAll(".nv-bar")
+                    .on('click', clickCB);
+            }
+        );
+    };
+
 
     return self;
 };
