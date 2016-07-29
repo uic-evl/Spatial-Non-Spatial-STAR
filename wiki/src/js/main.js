@@ -108,10 +108,7 @@ $(function() {
         if($('.col-md-6').width() > 600)
         {
             d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
-            d3.select('.taskDiv').classed({'col-md-3': false, 'col-md-4': true});
-            d3.select('.typeDiv').classed({'col-md-3': false, 'col-md-4': true});
-            d3.select('.evalDiv').classed({'col-md-3': false, 'col-md-4': true});
-
+            d3.select('.barCharts').classed({'col-md-6': false, 'col-md-4': true});
         }
 
         // plot the task analysis
