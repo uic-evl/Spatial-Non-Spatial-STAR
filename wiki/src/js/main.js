@@ -99,6 +99,12 @@ $(function() {
         App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
             encodingData.max, encodingData.groups, _.values(encodingData.authors), encodingData.subDomains);
 
+        if($('.col-md-6').width() > 600)
+        {
+            d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
+            d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
+        }
+
         // plot the task analysis
         App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
             subDomains, taskData.authors[0]);
