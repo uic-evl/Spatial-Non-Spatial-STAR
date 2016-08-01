@@ -152,6 +152,12 @@ var Parser = function() {
                 return result;
             }, {});
 
+        var totalCounts = {
+            "Natural Science": 0,
+            "Physical Science": 0,
+            "Simulation": 0
+        };
+
         var authors = [
             {
                 'Simulation': {},
@@ -191,6 +197,10 @@ var Parser = function() {
 
                         authors[0]["Natural Science"][task].push({label: value['author'].trim(), year: value['year']});
                         authors[0]["Physical Science"][task].push({label: value['author'].trim(), year: value['year']});
+
+                        totalCounts["Natural Science"] += 1;
+                        totalCounts["Physical Science"] += 1;
+
                     }
                     else{
                         // increment the task count
@@ -199,6 +209,8 @@ var Parser = function() {
                         // store the corresponding authors in another array
                         authors[0][value.domain][task] = authors[0][value.domain][task] || [];
                         authors[0][value.domain][task].push({label: value['author'].trim(), year: value['year']});
+
+                        totalCounts[value.domain] += 1;
                     }
                 });
 
@@ -307,8 +319,6 @@ var Parser = function() {
                 }
             ]);
 
-        console.log(authors[3]);
-
         /** Map the data into the correct format for use **/
         var mappedTasks = [];
         _.map(data[0], function(obj, task) {
@@ -364,6 +374,6 @@ var Parser = function() {
         });
 
         return {tasks: mappedTasks, dataTypes: mappedTypes, evaluation: mappedEval, evaluators: mappedEvaluators,
-            groups: taskNames, authors: authors};
+            groups: taskNames, authors: authors, count: totalCounts};
     };
 };

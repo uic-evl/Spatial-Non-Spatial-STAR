@@ -105,7 +105,7 @@ $(function() {
 
         // plot the task analysis
         App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
-            subDomains, taskData.authors[0]);
+            subDomains, taskData.authors[0], taskData.count);
 
         // plot the data type analysis
         App.engGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
