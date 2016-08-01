@@ -149,6 +149,7 @@ $(function() {
                 d3.select("#tasks svg").remove();
                 d3.select("#encodings svg").remove();
                 d3.select("#evaluation svg").remove();
+                d3.select("#evaluators svg").remove();
 
                 /* Add new data */
                 App.table.rows.add(data);
