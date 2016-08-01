@@ -407,7 +407,7 @@ var Graph = function () {
                     // .reduceXTicks(false)
                     .showLegend(false)
                     .margin({bottom: 100, left: 150, right: 20})
-                    .pointRange([0, (parseInt(totWidth * 0.075) * 50)])
+                    .pointRange([0, (parseInt(totWidth * 0.06) * 50)])
                     .useVoronoi(false)
                 ;
 
