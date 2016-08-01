@@ -97,7 +97,7 @@ $(function() {
 
         // plot the bubble scatter plots
         App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-            encodingData.max, encodingData.groups, _.values(encodingData.authors), encodingData.subDomains);
+            encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
 
         if($('.col-md-6').width() > 600)
         {

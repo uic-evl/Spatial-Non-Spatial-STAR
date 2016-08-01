@@ -24,8 +24,8 @@ var Graph = function () {
             return;
 
         // set the authors and chart to be used
-        self.authors = (_.isObject(this.authors[row]))
-            ? this.authors[row][obj.label] : this.authors[obj.key][obj.label];
+        self.authors = (this.authors)
+            ? this.authors[obj.key][obj.label] : obj.authors;
 
         self.chart = this.chart;
         self.selector = this.selector;
@@ -93,7 +93,8 @@ var Graph = function () {
             .removeClass('row_selected');
     };
 
-    var clickCB = function (obj) {
+    var clickCB = function (obj, i) {
+
         // if the circle is hidden, no tooltip should be shown
         if (obj.value === 0) return;
 
@@ -113,10 +114,13 @@ var Graph = function () {
 
             self.selected.push(obj);
 
+            console.log(obj);
+
             // grey out the circles that are not selected
             self.chart.selectAll(self.selector)
                 .filter(
                     function (d) {
+                        console.log(d);
                         if (_.indexOf(self.selected, d) < 0)
                             return d;
                     })
@@ -380,7 +384,8 @@ var Graph = function () {
                     size: obj.value * 100,
                     y: spatialMap[value.Spatial],
                     x: nonSpatialMap[obj.label],
-                    domains: subDomains[value.Spatial][obj.label]
+                    domains: subDomains[value.Spatial][obj.label],
+                    authors: authors[value.Spatial][obj.label]
                 });
             });
             return result;
@@ -482,22 +487,6 @@ var Graph = function () {
         },
             function () {
 
-                // function update()
-                // {
-                //
-                //     var totWidth = d3.select('.chartDiv6').node().clientWidth * 0.9,
-                //         totHeight = totWidth * 0.85;
-                //
-                //     // resize the points
-                //     chart.pointRange([0, (parseInt(totWidth * 0.075) * 50)]);
-                //
-                //     // resize the svg and redraw
-                //     d3.select('#encodings svg')
-                //         .attr("width", totWidth)
-                //         .attr("height", totHeight)
-                //         .call(chart);
-                // }
-
                 // wrap the text of the y-axis
                 d3.selectAll('#encodings svg .nv-y text')
                     .call(wrap, chart.yRange())
@@ -511,68 +500,26 @@ var Graph = function () {
                     .style({"text-anchor": "end", "font-weight": "bolder"})
                     .attr("transform", "rotate(-45)");
 
-                // on window update
-                //nv.utils.windowResize(update);
+                $("#encodings svg .nv-point").each(function (i, elem) {
 
-                // call update
-                //update();
+                    $(elem).hover(function () {
+                        hoveringCB.call(
+                            {
+                                groups: grpNames,
+                                chart: d3.select("#results"), selector: '.nv-point'
+                            }, d3.select(elem).data()[0][0], 0, i)
+                    },
+                        function () {
+                            endCB.call({authors: authors});
+                    })
+                        .click(function(){
+                            clickCB.call(elem, d3.select(elem).data()[0]);
+                        });
+                });
 
-                /* iterate over every scatter bubble point and create a pie chart in its stead */
-                //$("#encodings").find("svg .nv-groups path").each(function (i, elem) {
+                // d3.select(chartDiv).selectAll(".nv-groups .nv-point")
+                //     .on('click', clickCB);
 
-                    // console.log(d3.select(elem).selectAll('div'));
-                    // regex to parse the glyph path
-                    // var cmdRegEx = /[A][0-9]*/gi;
-                    // var commands = d3.select(elem).attr('d').match(cmdRegEx);
-                    //
-                    // // the position and radius of the glyph
-                    // var position = d3.transform(d3.select(elem).attr('transform')).translate;
-                    // var r = parseInt(commands[0].split('A')[1]);
-                    //
-                    // // the classes attached to each glyph
-                    // var pointClass = d3.select(elem).attr('class');
-                    //
-                    // /** Map the sub domains into an array to use for the pie charts **/
-                    // var data = d3.select(elem).data()[0][0].domains;
-                    // var datum = [];
-                    //
-                    // /** map the domains into the correct format for the pie chart **/
-                    // _.toPairs(data).forEach(function (obj) {
-                    //     datum.push({label: obj[0], value: obj[1], color: colorMap[obj[0]]})
-                    // });
-
-                    // create the pie glyph
-                    // var pieGlyph = d3.select(d3.select(elem).node().parentNode)
-                    //     .append('g')
-                    //     .data([datum])
-                    //     .attr('transform', 'translate(' + position[0] + ',' + position[1] + ')')
-                    //     .attr("class", pointClass)
-                    //     .on('mouseout', function(){ d3.select('.nvtooltip').style('visibility', 'hidden');});
-                    //
-                    // // crate the total arc and function to map the curves
-                    // var arc = d3.svg.arc().outerRadius(r);
-                    // var pie = d3.layout.pie().value(function (d) {
-                    //     return d.value;
-                    // });
-                    //
-                    // // add the arcs to the glyph
-                    // var arcs = pieGlyph.selectAll("g.slice")
-                    //     .data(pie).enter()
-                    //     .append("svg:g")
-                    //     .attr("class", "slice");
-                    //
-                    // // color the slices accordingly
-                    // arcs.append('svg:path')
-                    //     .attr("fill", function (d, i) {
-                    //         return d.data.color;
-                    //     })
-                    //     .attr("d", function (d) {
-                    //         return arc(d);
-                    //     });
-                    //
-                    // //remove the old glyph completely
-                    // d3.select(elem).remove();
-               //// });
             }
         );
     };
@@ -772,7 +719,6 @@ var Graph = function () {
         );
     };
 
-
     self.graphEvaluationNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
@@ -870,7 +816,6 @@ var Graph = function () {
             }
         );
     };
-
 
     return self;
 };
