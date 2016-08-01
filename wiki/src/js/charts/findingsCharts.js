@@ -8,6 +8,8 @@ var Graph = function () {
     // list of the selected nodes
     self.selected = [];
 
+    self.selectors = ['.nv-bar', '.nv-point'];
+
     var colorMap =
     {
         "Natural Science": "#beaed4",
@@ -114,13 +116,19 @@ var Graph = function () {
 
             self.selected.push(obj);
 
-            console.log(obj);
-
             // grey out the circles that are not selected
             self.chart.selectAll(self.selector)
                 .filter(
                     function (d) {
-                        console.log(d);
+                        if (_.indexOf(self.selected, d) < 0)
+                            return d;
+                    })
+                .classed("unSelected", true);
+
+            /* grey out all other points from other charts that aren't selected */
+            self.chart.selectAll(_.difference(self.selectors,[self.selector])[0])
+                .filter(
+                    function (d) {
                         if (_.indexOf(self.selected, d) < 0)
                             return d;
                     })
@@ -149,6 +157,9 @@ var Graph = function () {
 
             // make all of the circle their original color
             self.chart.selectAll(self.selector)
+                .classed("unSelected", false);
+
+            self.chart.selectAll(_.difference(self.selectors,[self.selector])[0])
                 .classed("unSelected", false);
 
             // clear the old rows
