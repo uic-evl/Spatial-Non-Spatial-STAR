@@ -572,8 +572,9 @@ var Graph = function () {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
+     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphTypeBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
+    self.graphTypeBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
         var totWidth = d3.select('.typeDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -610,6 +611,69 @@ var Graph = function () {
                 {key: "Physical Science", values: [], color: "#fdc086"},
                 {key: "Simulation", values: [], color: "#7fc97f"}
             ]);
+
+        $("#typeEval a")
+            .popover({
+                container: "body",
+                title: 'Chart Settings',
+                placement: 'left',
+                html: true,
+                content: "<input id='normalizeType' type='checkbox' name='normalize' value='task'> Normalize Data"
+            })
+            .on('shown.bs.popover', function(){
+
+                $("#normalizeType").change(function() {
+
+                    // normalize the data
+                    if(this.checked) {
+
+                        datum.forEach(function(o){
+
+                            o.values.forEach(function(v){
+                                v.value /= count[v.key];
+                            });
+
+                        });
+
+                    }
+                    // un-normalize the data
+                    else {
+                        datum.forEach(function(o){
+
+                            o.values.forEach(function(v){
+                                v.value *= count[v.key];
+                            });
+
+                        });
+                    }
+
+                    // redraw the chart
+                    d3.select(chartDiv + ' svg')
+                        .datum(datum)
+                        .call(chart);
+
+                    $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+
+                        $(elem).hover(function () {
+
+                            hoveringCB.call({
+                                authors: authors, groups: grpNames,
+                                chart: d3.select("#results"), selector: '.nv-bar'
+                            }, d3.select(elem).data()[0], 0, i)
+
+                        }, function () {
+
+                            endCB.call({authors: authors});
+
+                        });
+                    });
+
+                    d3.select(chartDiv).selectAll(".nv-bar")
+                        .on('click', clickCB);
+
+                });
+
+            });
 
         nv.addGraph(function () {
 
@@ -675,8 +739,9 @@ var Graph = function () {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
+     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphEvaluationNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
+    self.graphEvaluationNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -713,6 +778,69 @@ var Graph = function () {
                 {key: "Physical Science", values: [], color: "#fdc086"},
                 {key: "Simulation", values: [], color: "#7fc97f"}
             ]);
+
+        $("#cogEval a")
+            .popover({
+                container: "body",
+                title: 'Chart Settings',
+                placement: 'left',
+                html: true,
+                content: "<input id='normalizeEval' type='checkbox' name='normalize' value='task'> Normalize Data"
+            })
+            .on('shown.bs.popover', function(){
+
+                $("#normalizeEval").change(function() {
+
+                    // normalize the data
+                    if(this.checked) {
+
+                        datum.forEach(function(o){
+
+                            o.values.forEach(function(v){
+                                v.value /= count[v.key];
+                            });
+
+                        });
+
+                    }
+                    // un-normalize the data
+                    else {
+                        datum.forEach(function(o){
+
+                            o.values.forEach(function(v){
+                                v.value *= count[v.key];
+                            });
+
+                        });
+                    }
+
+                    // redraw the chart
+                    d3.select(chartDiv + ' svg')
+                        .datum(datum)
+                        .call(chart);
+
+                    $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+
+                        $(elem).hover(function () {
+
+                            hoveringCB.call({
+                                authors: authors, groups: grpNames,
+                                chart: d3.select("#results"), selector: '.nv-bar'
+                            }, d3.select(elem).data()[0], 0, i)
+
+                        }, function () {
+
+                            endCB.call({authors: authors});
+
+                        });
+                    });
+
+                    d3.select(chartDiv).selectAll(".nv-bar")
+                        .on('click', clickCB);
+
+                });
+
+            });
 
         nv.addGraph(function () {
 
@@ -785,8 +913,9 @@ var Graph = function () {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
+     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphEvaluatorsNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
+    self.graphEvaluatorsNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -815,6 +944,68 @@ var Graph = function () {
                 {key: "Domain Experts", values: [], color: "#fbb4ae"},
                 {key: "Visualization Experts", values: [], color: "#b3cde3"}
             ]);
+
+        // $("#cogEvalu a")
+        //     .popover({
+        //         container: "body",
+        //         title: 'Chart Settings',
+        //         placement: 'left',
+        //         html: true,
+        //         content: "<input id='normalizeEvalu' type='checkbox' name='normalize' value='task'> Normalize Data"
+        //     })
+        //     .on('shown.bs.popover', function() {
+        //
+        //         $("#normalizeEvalu").change(function () {
+        //
+        //             // normalize the data
+        //             if (this.checked) {
+        //
+        //                 datum.forEach(function (o) {
+        //
+        //                     o.values.forEach(function (v) {
+        //                         v.value /= count[v.key];
+        //                     });
+        //
+        //                 });
+        //
+        //             }
+        //             // un-normalize the data
+        //             else {
+        //                 datum.forEach(function (o) {
+        //
+        //                     o.values.forEach(function (v) {
+        //                         v.value *= count[v.key];
+        //                     });
+        //
+        //                 });
+        //             }
+        //
+        //             // redraw the chart
+        //             d3.select(chartDiv + ' svg')
+        //                 .datum(datum)
+        //                 .call(chart);
+        //
+        //             $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+        //
+        //                 $(elem).hover(function () {
+        //
+        //                     hoveringCB.call({
+        //                         authors: authors, groups: grpNames,
+        //                         chart: d3.select("#results"), selector: '.nv-bar'
+        //                     }, d3.select(elem).data()[0], 0, i)
+        //
+        //                 }, function () {
+        //
+        //                     endCB.call({authors: authors});
+        //
+        //                 });
+        //             });
+        //
+        //             d3.select(chartDiv).selectAll(".nv-bar")
+        //                 .on('click', clickCB);
+        //
+        //         });
+        //     });
 
         nv.addGraph(function () {
 

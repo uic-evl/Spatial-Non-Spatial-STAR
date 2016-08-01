@@ -182,6 +182,14 @@ var Parser = function() {
 
         var data = _.reduce(rows, function(result, value, key) {
 
+            if(value.domain === 'Both'){
+                totalCounts["Natural Science"] += 1;
+                totalCounts["Physical Science"] += 1;
+            }
+            else{
+                totalCounts[value.domain] += 1;
+            }
+
             /* Parse the User Tasks */
             value.tasks.forEach(function(task){
 
@@ -198,9 +206,6 @@ var Parser = function() {
                         authors[0]["Natural Science"][task].push({label: value['author'].trim(), year: value['year']});
                         authors[0]["Physical Science"][task].push({label: value['author'].trim(), year: value['year']});
 
-                        totalCounts["Natural Science"] += 1;
-                        totalCounts["Physical Science"] += 1;
-
                     }
                     else{
                         // increment the task count
@@ -209,8 +214,6 @@ var Parser = function() {
                         // store the corresponding authors in another array
                         authors[0][value.domain][task] = authors[0][value.domain][task] || [];
                         authors[0][value.domain][task].push({label: value['author'].trim(), year: value['year']});
-
-                        totalCounts[value.domain] += 1;
                     }
                 });
 
