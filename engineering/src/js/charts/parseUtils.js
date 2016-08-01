@@ -167,12 +167,17 @@ var Parser = function() {
                 'Simulation': {},
                 'Physical Science': {},
                 'Natural Science': {}
+            },
+            {
+                "Domain Experts" : {},
+                "Visualization Experts" : {}
             }
         ];
 
         var data = _.reduce(rows, function(result, value, key) {
 
-                value.tasks.forEach(function(task){
+            /* Parse the User Tasks */
+            value.tasks.forEach(function(task){
 
                     if(value.domain === 'Both'){
 
@@ -186,7 +191,6 @@ var Parser = function() {
 
                         authors[0]["Natural Science"][task].push({label: value['author'].trim(), year: value['year']});
                         authors[0]["Physical Science"][task].push({label: value['author'].trim(), year: value['year']});
-
                     }
                     else{
                         // increment the task count
@@ -198,7 +202,8 @@ var Parser = function() {
                     }
                 });
 
-                value.dataTypes.forEach(function(type){
+            /* Parse the data types */
+            value.dataTypes.forEach(function(type){
 
                     if(value.domain === 'Both'){
 
@@ -224,7 +229,8 @@ var Parser = function() {
                     }
                 });
 
-                value.evaluation.forEach(function(type){
+            /* Parse the evaluation types */
+            value.evaluation.forEach(function(type){
 
                     type = type.trim();
 
@@ -250,6 +256,14 @@ var Parser = function() {
                         authors[2][value.domain][type].push({label: value['author'].trim(), year: value['year']});
                     }
                 });
+
+            /* Parse the Evaluators */
+            result[3][value.year][value.evaluators] += 1;
+
+            /* Parse the author for the evaluator year */
+            authors[3][value.evaluators][value.year] = [value.evaluators][value.year] || [];
+            authors[3][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
+
                 return result;
             },
             [
@@ -278,6 +292,18 @@ var Parser = function() {
                     "Quantitative Analysis" : _.cloneDeep(taskTemplate),
                     "Feedback"              : _.cloneDeep(taskTemplate),
                     "User Study"            : _.cloneDeep(taskTemplate)
+                },
+                {
+                    "2006": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2007": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2008": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2009": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2010": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2011": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2012": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2013": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2014": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2015": {"Domain Experts" : 0, "Visualization Experts" : 0}
                 }
             ]);
 
@@ -323,6 +349,19 @@ var Parser = function() {
             mappedEval.push(map);
         });
 
-        return {tasks: mappedTasks, dataTypes: mappedTypes, evaluation: mappedEval, groups: taskNames, authors: authors};
+        var mappedEvaluators = [];
+        _.toPairs(data[3]).forEach(function(pair) {
+
+            var map = {Year: pair[0], evaluators: []};
+            _.forIn(pair[1], function(value, key) {
+                map[key] = value;
+                map.evaluators.push({label: key, value: value})
+            });
+
+            mappedEvaluators.push(map);
+        });
+
+        return {tasks: mappedTasks, dataTypes: mappedTypes, evaluation: mappedEval, evaluators: mappedEvaluators,
+            groups: taskNames, authors: authors};
     };
 };

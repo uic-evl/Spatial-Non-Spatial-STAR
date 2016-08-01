@@ -358,7 +358,7 @@ var Graph = function () {
                 });
 
                 // add the data to the chart
-                d3.select('#encodings svg')
+                d3.select(chartDiv + ' svg')
                     .datum([datum])
                     .call(chart);
 
@@ -463,7 +463,7 @@ var Graph = function () {
                     return "Task: " + d;
                 });
 
-                d3.select('#tasks svg')
+                d3.select(chartDiv + ' svg')
                     .datum(datum)
                     .call(chart)
                 ;
@@ -570,7 +570,7 @@ var Graph = function () {
                     return "Data Type: " + d;
                 });
 
-                d3.select('#dataTypes svg')
+                d3.select(chartDiv + ' svg')
                     .datum(datum)
                     .call(chart)
                 ;
@@ -598,6 +598,18 @@ var Graph = function () {
         );
     };
 
+    /**
+     * Creates and plots the Evaluation Type Bar Chart
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} data The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} subDomains The values for the y-axis
+     * @param {Array} authors The authors corresponding to the data
+     */
     self.graphEvaluationNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
@@ -668,7 +680,7 @@ var Graph = function () {
                         return d;
                 });
 
-                d3.select('#evaluation svg')
+                d3.select(chartDiv + ' svg')
                     .datum(datum)
                     .call(chart)
                 ;
@@ -695,6 +707,110 @@ var Graph = function () {
             }
         );
     };
+
+    /**
+     * Creates and plots the Evaluation Type Bar Chart
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} data The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} subDomains The values for the y-axis
+     * @param {Array} authors The authors corresponding to the data
+     */
+    self.graphEvaluatorsNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors) {
+
+        var totWidth = d3.select('.evalDiv').node().clientWidth,
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
+
+        var chart;
+
+        var datum = _.reduce(data, function (result, value, key) {
+
+                result[0].values.push({
+                    label: value.Year,
+                    value: value["Domain Experts"],
+                    authors: authors["Domain Experts"][value.Year],
+                    color: "#fbb4ae"
+                });
+
+                result[1].values.push({
+                    label: value.Year,
+                    value: value["Visualization Experts"],
+                    authors: authors["Visualization Experts"][value.Year],
+                    color: "#b3cde3"
+                });
+
+                return result;
+            },
+            [
+                {key: "Domain Experts", values: [], color: "#fbb4ae"},
+                {key: "Visualization Experts", values: [], color: "#b3cde3"}
+            ]);
+
+        nv.addGraph(function () {
+
+                d3.select(chartDiv)
+                    .append("svg").attr("width", totWidth)
+                    .attr("height", totHeight);
+
+                chart = nv.models.multiBarChart()
+                    .x(function (d) {
+                        return d.label
+                    })
+                    .y(function (d) {
+                        return d.value
+                    })
+                    .showLegend(totHeight > 300)
+                    .reduceXTicks(false)
+                    .rotateLabels(-45)
+                    .groupSpacing(0.2)
+                    .showControls(false)
+                    .margin({left: 30, bottom: 60});
+
+                /* Set the header formatter */
+                chart.tooltip.headerFormatter(function(d,i){
+                    return "Evaluation: " + d;
+                });
+
+                chart.xAxis.tickFormat(function (d) {
+                    if(d == "Quantitative Analysis")
+                        return "Quantitative";
+                    else
+                        return d;
+                });
+
+                d3.select(chartDiv + ' svg')
+                    .datum(datum)
+                    .call(chart)
+                ;
+
+                nv.utils.windowResize(chart.update);
+
+                return chart;
+
+            }, function () {
+                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+
+                    $(elem).hover(function () {
+                        hoveringCB.call({
+                            authors: authors, groups: grpNames,
+                            chart: d3.select("#results"), selector: '.nv-bar'
+                        }, d3.select(elem).data()[0], 0, i)
+                    }, function () {
+                        endCB.call({authors: authors});
+                    });
+                });
+
+                d3.select(chartDiv).selectAll(".nv-bar")
+                    .on('click', clickCB);
+            }
+        );
+    };
+
+
 
     return self;
 };
