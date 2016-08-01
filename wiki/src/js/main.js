@@ -83,8 +83,6 @@ $(function() {
 
     function setupCharts(data){
 
-        // TODO Check if there was a previous query and clear the old results
-
         /** initialize a new bubble graph **/
         App.engGraph = new Graph();
         App.dataParser = new Parser();
@@ -146,6 +144,7 @@ $(function() {
                 d3.select("#dataTypes svg").remove();
                 d3.select("#tasks svg").remove();
                 d3.select("#encodings svg").remove();
+                d3.select("#evaluation svg").remove();
 
                 /* Add new data */
                 App.table.rows.add(data);
