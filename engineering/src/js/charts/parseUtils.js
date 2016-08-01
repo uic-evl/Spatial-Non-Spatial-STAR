@@ -261,7 +261,7 @@ var Parser = function() {
             result[3][value.year][value.evaluators] += 1;
 
             /* Parse the author for the evaluator year */
-            authors[3][value.evaluators][value.year] = [value.evaluators][value.year] || [];
+            authors[3][value.evaluators][value.year] = authors[3][value.evaluators][value.year] || [];
             authors[3][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
 
                 return result;
@@ -306,6 +306,8 @@ var Parser = function() {
                     "2015": {"Domain Experts" : 0, "Visualization Experts" : 0}
                 }
             ]);
+
+        console.log(authors[3]);
 
         /** Map the data into the correct format for use **/
         var mappedTasks = [];

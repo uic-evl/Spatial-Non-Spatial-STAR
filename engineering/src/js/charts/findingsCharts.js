@@ -367,7 +367,7 @@ var Graph = function () {
             function () {
 
                 // wrap the text of the y-axis
-                d3.selectAll('#encodings svg .nv-y text')
+                d3.selectAll(chartDiv + ' svg .nv-y text')
                     .call(wrap, chart.yRange())
                     .attr('transform', 'translate(' + -75 + ',' + '0)')
                     .style({"text-anchor": "end", "font-weight": "bold"});
@@ -379,7 +379,7 @@ var Graph = function () {
                     .style({"text-anchor": "end", "font-weight": "bolder"})
                     .attr("transform", "rotate(-45)");
 
-                $("#encodings svg .nv-point").each(function (i, elem) {
+                $(chartDiv + " svg .nv-point").each(function (i, elem) {
 
                     $(elem).hover(function () {
                         hoveringCB.call(
@@ -473,7 +473,7 @@ var Graph = function () {
                 return chart;
             }, function () {
 
-                $("#tasks svg .nv-bar").each(function (i, elem) {
+                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
 
                     $(elem).hover(function () {
 
@@ -580,7 +580,7 @@ var Graph = function () {
                 return chart;
 
             }, function () {
-                $("#dataTypes svg .nv-bar").each(function (i, elem) {
+                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
 
                     $(elem).hover(function () {
                         hoveringCB.call({
@@ -690,7 +690,7 @@ var Graph = function () {
                 return chart;
 
             }, function () {
-                $("#evaluation svg .nv-bar").each(function (i, elem) {
+                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
 
                     $(elem).hover(function () {
                         hoveringCB.call({
@@ -795,12 +795,13 @@ var Graph = function () {
                 $(chartDiv + " svg .nv-bar").each(function (i, elem) {
 
                     $(elem).hover(function () {
+
                         hoveringCB.call({
-                            authors: authors, groups: grpNames,
+                            groups: grpNames,
                             chart: d3.select("#results"), selector: '.nv-bar'
                         }, d3.select(elem).data()[0], 0, i)
                     }, function () {
-                        endCB.call({authors: authors});
+                        endCB.call({authors: d3.select(elem).data()[0].authors});
                     });
                 });
 
