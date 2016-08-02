@@ -226,6 +226,14 @@ var Graph = function (options) {
         });
     }
 
+
+    function updateLegendPosition(chartDiv) {
+
+        d3.select(chartDiv +" svg").selectAll(".nv-series")[0].forEach(function(d, i) {
+            d3.select(d).attr("transform", "translate(0," + i * 15 + ")");
+        })
+    }
+
     /**
      * Creates and plots the Bubble Scatter Plot
      *
@@ -468,6 +476,7 @@ var Graph = function (options) {
                     d3.select(chartDiv).selectAll(".nv-bar")
                         .on('click', clickCB);
 
+                    chart.legend.updateState(false);
                 });
 
             });
@@ -493,7 +502,7 @@ var Graph = function (options) {
                         return d.value
                     })
                     .margin({left: 30, bottom: 60})
-                    .showLegend(totHeight > 300)
+                    .showLegend(true)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
@@ -532,6 +541,11 @@ var Graph = function (options) {
 
                 d3.select(chartDiv).selectAll(".nv-bar")
                     .on('click', clickCB);
+
+                chart.legend.updateState(false);
+
+                updateLegendPosition(chartDiv);
+
             }
         );
     };
@@ -620,7 +634,7 @@ var Graph = function (options) {
                     .y(function (d) {
                         return d.value
                     })
-                    .showLegend(totHeight > 300)
+                    .showLegend(true)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
@@ -642,19 +656,29 @@ var Graph = function (options) {
                 return chart;
 
             }, function () {
-                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-                    $(elem).hover(function () {
-                        hoveringCB.call({
-                            authors: authors, groups: grpNames,
-                            chart: d3.select("#results"), selector: '.nv-bar'
-                        }, d3.select(elem).data()[0], 0, i)
-                    }, function () {
-                        endCB.call({authors: authors});
-                    });
+            $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+                $(elem).hover(function () {
+                    hoveringCB.call({
+                        authors: authors, groups: grpNames,
+                        chart: d3.select("#results"), selector: '.nv-bar'
+                    }, d3.select(elem).data()[0], 0, i)
+                }, function () {
+                    endCB.call({authors: authors});
                 });
+            });
 
-                d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('click', clickCB);
+            d3.select(chartDiv).selectAll(".nv-bar")
+                .on('click', clickCB);
+
+            chart.legend.updateState(false);
+
+            // var t =d3.transform(d3.select(chartDiv + ' .nv-legendWrap').attr("transform")),
+            //     x = t.translate[0],
+            //     y = t.translate[1];
+            //
+            // d3.select(chartDiv + ' .nv-legendWrap').attr("transform", "translate(" + (x+20) + "," + (y) + ")")
+
+            updateLegendPosition(chartDiv);
             }
         );
     };
@@ -740,7 +764,7 @@ var Graph = function (options) {
                     .y(function (d) {
                         return d.value
                     })
-                    .showLegend(totHeight > 300)
+                    .showLegend(true)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
@@ -781,6 +805,11 @@ var Graph = function (options) {
 
                 d3.select(chartDiv).selectAll(".nv-bar")
                     .on('click', clickCB);
+
+                chart.legend.updateState(false);
+
+                updateLegendPosition(chartDiv);
+
             }
         );
     };
@@ -817,7 +846,7 @@ var Graph = function (options) {
                     .y(function (d) {
                         return d.value
                     })
-                    .showLegend(totHeight > 300)
+                    .showLegend(true)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
@@ -859,6 +888,10 @@ var Graph = function (options) {
 
                 d3.select(chartDiv).selectAll(".nv-bar")
                     .on('click', clickCB);
+
+                chart.legend.updateState(false);
+
+                updateLegendPosition(chartDiv);
             }
         );
     };
