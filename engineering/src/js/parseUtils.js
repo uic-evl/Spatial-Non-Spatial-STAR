@@ -107,7 +107,6 @@ var Parser = function(options) {
         var max = 0;
         encodings = _.map(encodings, function(d, k, o)
         {
-            // console.log(d);
             var localMax = _.max(_.values(d));
             max = Math.max(max, localMax);
 
@@ -124,6 +123,71 @@ var Parser = function(options) {
         });
 
         return {encodings: encodings, authors: authors, subDomains: subDomains, max: max, groups: nonSpatial};
+    };
+
+    /**
+     * Parses the data from the Google Sheets for use in the charts
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} rows The data to be parsed
+     * @returns {Object} The mapped encodings and their properties
+     **/
+
+    self.parseHybridParadigms = function(rows){
+
+        /** iterate over the resutls to combine the encodings **/
+        var hybrid = _.reduce(rows, function(result, value, key) {
+
+            if(value.paradigms.length > 1)
+            {
+                value.paradigms.sort().reverse();
+
+                for(var i = 0; i < value.paradigms.length -1; i++)
+               {
+                   var para1 = value.paradigms[i];
+                   for(var j = i+1; j < value.paradigms.length; j++)
+                   {
+                       var para2 = value.paradigms[j];
+
+                       result[para1][para2] += 1;
+                   }
+               }
+            }
+
+            return result;
+        },
+        {
+            "Spatial Nesting" : {"Overlays": 0, "Linked Views": 0},
+            "Overlays" : {"Linked Views": 0, "Non-Spatial Nesting": 0},
+            "Non-Spatial Nesting" : {"Linked Views": 0}
+        }
+        );
+
+        // Finally, map to the format needed for the chart
+        var max = 0;
+        hybrid = _.map(hybrid, function(d, k, o)
+        {
+
+            console.log(d,k,o);
+
+             var localMax = _.max(_.values(d));
+             max = Math.max(max, localMax);
+
+            var obj = {};
+            obj.groups = [];
+            obj.Spatial = k;
+
+            var pairs = _.toPairs(d);
+            pairs.forEach(function(arr){
+                obj.groups.push({label: arr[0], value: parseInt(arr[1])});
+            });
+
+            return obj;
+        });
+
+        return {hybrids: hybrid, max: max};
+
     };
 
     /**

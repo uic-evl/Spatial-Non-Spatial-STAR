@@ -114,8 +114,11 @@ $(function() {
 
         var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('domain'))) ), "Both");
 
-        // get the parsed encodings
+        // get the parsed encodings and paradigms
         var encodingData = App.dataParser.parseEncodings(data);
+        var hybridData = App.dataParser.parseHybridParadigms(data);
+
+        // get the task, data set, and evaluations fields
         var taskData = App.dataParser.parseFields(data, subDomains);
 
         // plot the bubble scatter plots
