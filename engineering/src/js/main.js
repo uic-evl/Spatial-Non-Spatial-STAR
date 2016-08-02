@@ -67,7 +67,7 @@ $(function() {
         });
 
         /** create the new database for the session **/
-        App.db = DB.initializeDB('BioMed', App.rows);
+        App.db = DB.initializeDB('Engineering', App.rows);
     }
 
     App.initDB = function() {

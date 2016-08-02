@@ -323,58 +323,104 @@ var Parser = function() {
             ]);
 
         /** Map the data into the correct format for use **/
-        var mappedTasks = [];
-        _.map(data[0], function(obj, task) {
 
-            var map = {Task: task, tasks: []};
+        var mappedTasks = _.reduce(data[0], function (result, value, key) {
 
-            _.forIn(obj, function(value, key) {
+                result[0].values.push({label: key, value: value["Natural Science"], color: "#beaed4"});
+                result[1].values.push({label: key, value: value["Physical Science"], color: "#fdc086"});
+                result[2].values.push({label:  key, value: value["Simulation"], color: "#7fc97f"});
 
-                map[key] = value;
-                map.tasks.push({label: key, value: value})
-            });
+                return result;
+            },
+            [
+                {key: "Natural Science", values: [], color: "#beaed4"},
+                {key: "Physical Science", values: [], color: "#fdc086"},
+                {key: "Simulation", values: [], color: "#7fc97f"}
+            ]);
 
-            mappedTasks.push(map);
-        });
+        var mappedTypes = _.reduce(data[1], function (result, value, key) {
 
-        var mappedTypes = [];
-        _.map(data[1], function(obj, task) {
+                result[0].values.push({
+                    label: key,
+                    value: value["Natural Science"],
+                    authors: authors[1]["Natural Science"][value.DataType],
+                    color: "#beaed4"
+                });
 
-            var map = {DataType: task, dataType: []};
+                result[1].values.push({
+                    label: key,
+                    value: value["Physical Science"],
+                    authors: authors[1]["Physical Science"][value.DataType],
+                    color: "#fdc086"
+                });
 
-            _.forIn(obj, function(value, key) {
+                result[2].values.push({
+                    label: key,
+                    value: value["Simulation"],
+                    authors: authors[1]["Simulation"][value.DataType],
+                    color: "#7fc97f"
+                });
 
-                map[key] = value;
-                map.dataType.push({label: key, value: value})
-            });
+                return result;
+            },
+            [
+                {key: "Natural Science", values: [], color: "#beaed4"},
+                {key: "Physical Science", values: [], color: "#fdc086"},
+                {key: "Simulation", values: [], color: "#7fc97f"}
+            ]);
 
-            mappedTypes.push(map);
-        });
+        var mappedEval = _.reduce(data[2], function (result, value, key) {
 
-        var mappedEval = [];
-        _.map(data[2], function(obj, task) {
+                result[0].values.push({
+                    label: key,
+                    value: value["Natural Science"],
+                    authors: authors[2]["Natural Science"][value.Evaluation],
+                    color: "#beaed4"
+                });
 
-            var map = {Evaluation: task, evaluation: []};
+                result[1].values.push({
+                    label: key,
+                    value: value["Physical Science"],
+                    authors: authors[2]["Physical Science"][value.Evaluation],
+                    color: "#fdc086"
+                });
 
-            _.forIn(obj, function(value, key) {
-                map[key] = value;
-                map.evaluation.push({label: key, value: value})
-            });
+                result[2].values.push({
+                    label: key,
+                    value: value["Simulation"],
+                    authors: authors[2]["Simulation"][value.Evaluation],
+                    color: "#7fc97f"
+                });
+                return result;
+            },
+            [
+                {key: "Natural Science", values: [], color: "#beaed4"},
+                {key: "Physical Science", values: [], color: "#fdc086"},
+                {key: "Simulation", values: [], color: "#7fc97f"}
+            ]);
 
-            mappedEval.push(map);
-        });
+        var mappedEvaluators = _.reduce(data[3], function (result, value, key) {
 
-        var mappedEvaluators = [];
-        _.toPairs(data[3]).forEach(function(pair) {
+                result[0].values.push({
+                    label: key,
+                    value: value["Domain Experts"],
+                    authors: authors[3]["Domain Experts"][value.Year],
+                    color: "#fbb4ae"
+                });
 
-            var map = {Year: pair[0], evaluators: []};
-            _.forIn(pair[1], function(value, key) {
-                map[key] = value;
-                map.evaluators.push({label: key, value: value})
-            });
+                result[1].values.push({
+                    label: key,
+                    value: value["Visualization Experts"],
+                    authors: authors[3]["Visualization Experts"][value.Year],
+                    color: "#b3cde3"
+                });
 
-            mappedEvaluators.push(map);
-        });
+                return result;
+            },
+            [
+                {key: "Domain Experts", values: [], color: "#fbb4ae"},
+                {key: "Visualization Experts", values: [], color: "#b3cde3"}
+            ]);
 
         return {tasks: mappedTasks, dataTypes: mappedTypes, evaluation: mappedEval, evaluators: mappedEvaluators,
             groups: taskNames, authors: authors, count: totalCounts};

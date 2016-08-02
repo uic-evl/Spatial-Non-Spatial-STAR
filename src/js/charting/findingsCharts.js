@@ -403,7 +403,7 @@ var Graph = function (options) {
      *
      * @constructor
      * @this {Graph}
-     * @param {Object} data The data to be mapped
+     * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
      * @param {number} maxValue The count of that the largest circle will possess
      * @param {Array} grpNames The values for the x-axis
@@ -411,35 +411,16 @@ var Graph = function (options) {
      * @param {Array} authors The authors corresponding to the data,
      * @param {Array} count number of papers in each sub-domain
      */
-    self.graphTaskBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors, count) {
-
-        var totWidth = d3.select('.taskDiv').node().clientWidth,
-            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
-
-
-        var datum = _.reduce(data, function (result, value, key) {
-
-                result[0].values.push({label: value.Task, value: value["Natural Science"], color: "#beaed4"});
-                result[1].values.push({label: value.Task, value: value["Physical Science"], color: "#fdc086"});
-                result[2].values.push({label: value.Task, value: value["Simulation"], color: "#7fc97f"});
-
-                return result;
-
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
+    self.graphTaskBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
         $("#cogTask a")
             .popover({
-            container: "body",
-            title: 'Chart Settings',
-            placement: 'left',
-            html: true,
-            content: "<input id='normalizeTask' type='checkbox' name='normalize' value='task'> Normalize Data"
-        })
+                container: "body",
+                title: 'Chart Settings',
+                placement: 'left',
+                html: true,
+                content: "<input id='normalizeTask' type='checkbox' name='normalize' value='task'> Normalize Data"
+            })
             .on('shown.bs.popover', function(){
 
                 $("#normalizeTask").change(function() {
@@ -447,12 +428,12 @@ var Graph = function (options) {
                     // normalize the data
                     if(this.checked) {
 
-                       datum.forEach(function(o){
+                        datum.forEach(function(o){
 
-                           o.values.forEach(function(v){
-                               v.value /= count[v.key];
-                           });
-                       });
+                            o.values.forEach(function(v){
+                                v.value /= count[v.key];
+                            });
+                        });
                     }
                     // un-normalize the data
                     else {
@@ -491,6 +472,10 @@ var Graph = function (options) {
                 });
 
             });
+
+
+        var totWidth = d3.select('.taskDiv').node().clientWidth,
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
 
         var chart;
 
@@ -557,7 +542,7 @@ var Graph = function (options) {
      *
      * @constructor
      * @this {Graph}
-     * @param {Object} data The data to be mapped
+     * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
      * @param {number} maxValue The count of that the largest circle will possess
      * @param {Array} grpNames The values for the x-axis
@@ -565,43 +550,7 @@ var Graph = function (options) {
      * @param {Array} authors The authors corresponding to the data
      * @param {Array} count number of papers in each sub-domain
      */
-    self.graphTypeBarNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors, count) {
-
-        var totWidth = d3.select('.typeDiv').node().clientWidth,
-            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
-
-        var chart;
-
-        var datum = _.reduce(data, function (result, value, key) {
-
-                result[0].values.push({
-                    label: value.DataType,
-                    value: value["Natural Science"],
-                    authors: authors["Natural Science"][value.DataType],
-                    color: "#beaed4"
-                });
-
-                result[1].values.push({
-                    label: value.DataType,
-                    value: value["Physical Science"],
-                    authors: authors["Physical Science"][value.DataType],
-                    color: "#fdc086"
-                });
-
-                result[2].values.push({
-                    label: value.DataType,
-                    value: value["Simulation"],
-                    authors: authors["Simulation"][value.DataType],
-                    color: "#7fc97f"
-                });
-
-                return result;
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
+    self.graphTypeBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
         $("#typeEval a")
             .popover({
@@ -652,6 +601,12 @@ var Graph = function (options) {
                         .on('click', clickCB);
                 });
             });
+
+
+        var totWidth = d3.select('.typeDiv').node().clientWidth,
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
+
+        var chart;
 
         nv.addGraph(function () {
 
@@ -710,7 +665,7 @@ var Graph = function (options) {
      *
      * @constructor
      * @this {Graph}
-     * @param {Object} data The data to be mapped
+     * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
      * @param {number} maxValue The count of that the largest circle will possess
      * @param {Array} grpNames The values for the x-axis
@@ -718,42 +673,7 @@ var Graph = function (options) {
      * @param {Array} authors The authors corresponding to the data
      * @param {Array} count number of papers in each sub-domain
      */
-    self.graphEvaluationNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors, count) {
-
-        var totWidth = d3.select('.evalDiv').node().clientWidth,
-            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
-        var chart;
-
-        var datum = _.reduce(data, function (result, value, key) {
-
-                result[0].values.push({
-                    label: value.Evaluation,
-                    value: value["Natural Science"],
-                    authors: authors["Natural Science"][value.Evaluation],
-                    color: "#beaed4"
-                });
-
-                result[1].values.push({
-                    label: value.Evaluation,
-                    value: value["Physical Science"],
-                    authors: authors["Physical Science"][value.Evaluation],
-                    color: "#fdc086"
-                });
-
-                result[2].values.push({
-                    label: value.Evaluation,
-                    value: value["Simulation"],
-                    authors: authors["Simulation"][value.Evaluation],
-                    color: "#7fc97f"
-                });
-
-                return result;
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
+    self.graphEvaluationNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
         $("#cogEval a")
             .popover({
@@ -804,6 +724,10 @@ var Graph = function (options) {
                 });
             });
 
+        var totWidth = d3.select('.evalDiv').node().clientWidth,
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
+
+        var chart;
         nv.addGraph(function () {
 
                 d3.select(chartDiv)
@@ -867,7 +791,7 @@ var Graph = function (options) {
      *
      * @constructor
      * @this {Graph}
-     * @param {Object} data The data to be mapped
+     * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
      * @param {number} maxValue The count of that the largest circle will possess
      * @param {Array} grpNames The values for the x-axis
@@ -875,34 +799,12 @@ var Graph = function (options) {
      * @param {Array} authors The authors corresponding to the data
      * @param {Array} count number of papers in each sub-domain
      */
-    self.graphEvaluatorsNVD3Chart = function (data, chartDiv, maxValue, grpNames, subDomains, authors, count) {
+    self.graphEvaluatorsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
+
         var chart;
-
-        var datum = _.reduce(data, function (result, value, key) {
-                result[0].values.push({
-                    label: value.Year,
-                    value: value["Domain Experts"],
-                    authors: authors["Domain Experts"][value.Year],
-                    color: "#fbb4ae"
-                });
-
-                result[1].values.push({
-                    label: value.Year,
-                    value: value["Visualization Experts"],
-                    authors: authors["Visualization Experts"][value.Year],
-                    color: "#b3cde3"
-                });
-
-                return result;
-            },
-            [
-                {key: "Domain Experts", values: [], color: "#fbb4ae"},
-                {key: "Visualization Experts", values: [], color: "#b3cde3"}
-            ]);
-
         nv.addGraph(function () {
 
                 d3.select(chartDiv)
