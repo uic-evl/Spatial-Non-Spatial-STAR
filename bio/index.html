@@ -29,7 +29,7 @@
     <link  href="../src/css/findingsCharts.css" rel="stylesheet" type="text/css">
     <link href="../src/css/custom.css" rel="stylesheet" type="text/css">
     <link href="../src/css/accordian.css" rel="stylesheet" type="text/css" >
-    <link href="src/css/main.css"       rel="stylesheet" type="text/css" >
+    <link href="../src/css/main.css"       rel="stylesheet" type="text/css" >
 
     <!---- JS Libraries ---->
     <script type="text/javascript" src="../lib/js/jquery-2.2.4.min.js"></script>
@@ -110,10 +110,10 @@
         <div id="searchContainer" class="container">
 
             <div class="row">
-                <div class="col-md-7 col-md-offset-3">
+                <div class="col-md-12">
 
                     <div class="row" style="padding-bottom: 10px;">
-                        <div class="col-md-12">
+                        <div class="col-md-offset-3 col-md-17">
                             <!--Set class "wowsearchform" to start wowsearchform plugin-->
                             <form id="myform" class="wowsearchform form-inline" method="post" onsubmit="event.preventDefault(); App.getResults(event);">
 
@@ -139,7 +139,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-offset-2 col-md-9">
                             <ul id="accordion" class="accordion">
                                 <li>
                                     <div class="link"><i class="fa fa-database"></i>Advanced<i class="fa fa-chevron-down"></i></div>
@@ -151,7 +151,14 @@
                                                     <!-- Multiple Checkboxes -->
                                                     <div class="form-group col-md-4">
                                                         <div class="row">
-                                                            <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
+                                                            <!-- Check if there is a name. If not, it's a continued col-->
+                                                            <div data-bind="if: name.length > 0">
+                                                                <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
+                                                            </div>
+                                                            <div data-bind="if: name.length == 0">
+                                                                <br>
+                                                            </div>
+
                                                         </div>
                                                         <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
                                                             <div class="col-md-12">

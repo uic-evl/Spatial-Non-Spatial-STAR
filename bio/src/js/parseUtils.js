@@ -92,7 +92,6 @@ var Parser = function() {
                             subDomains[s][n][value.domain] = 1;
                         }
                     }
-
                 });
             });
 
@@ -105,7 +104,6 @@ var Parser = function() {
             'Glyph': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Animation': _.cloneDeep(nonSpatialTemplate)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
         });
-
 
         // Finally, map to the format needed for the chart
         var max = 0;

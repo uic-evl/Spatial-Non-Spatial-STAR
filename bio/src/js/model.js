@@ -11,9 +11,31 @@ function Papers() {
             {
                 name: 'Domain',
                 elements: [
-                    {text: "Natural Science", category: "domain"},
-                    {text: "Physical Science", category: "domain" },
-                    {text: "Simulation", category: "domain"}
+                    {text: "Bioinformatics", category: "domain"},
+                    {text: "BioMedical", category: "domain" }
+                ]
+            },
+            {
+                name: 'Domain',
+                elements: [
+                    {text: "Gene Expression", category: "subDomain"},
+                    {text: "Microscopy", category: "subDomain" },
+                    {text: "Protein", category: "subDomain"},
+                    {text: "Biochemical", category: "subDomain"},
+                    {text: "Animal", category: "subDomain"},
+                    {text: "Molecular", category: "subDomain"}
+                ]
+            },
+            {
+                name: '',
+                elements: [
+                    {text: "Biomolecular Features", category: "subDomain"},
+                    {text: "Cell", category: "subDomain"},
+                    {text: "Epidemiology", category: "subDomain"},
+                    {text: "Neuroscience", category: "subDomain"},
+                    {text: "Blood Flow", category: "subDomain"},
+                    {text: "Medical Image Analysis", category: "subDomain"},
+                    {text: "Clinical Research", category: "subDomain"}
                 ]
             },
             {
@@ -38,10 +60,12 @@ function Papers() {
             {
                 name: 'Spatial Encodings',
                 elements: [
+                    {text:"Simple Map", category: "encodings"},
                     {text:"Chloropheth / Heatmap", category: "encodings"},
                     {text:"Ball and Stick / Mesh", category: "encodings"},
                     {text:"Isosurface / Streamlines", category: "encodings"},
                     {text:"Volume / Images", category: "encodings"},
+                    {text:"Contour", category: "encodings"},
                     {text:"Glyphs", category: "encodings"},
                     {text:"Animation", category: "encodings"}
                 ]
@@ -50,12 +74,22 @@ function Papers() {
                 name: 'Non-Spatial Encodings',
                 elements: [
                     {text:"Color", category: "encodings"},
+                    {text:"Label", category: "encodings"},
+                    {text:"Bar Chart", category: "encodings"},
                     {text:"Line Chart", category: "encodings"},
-                    {text:"Histogram", category: "encodings"},
+                    {text:"Sequence", category: "encodings"},
+                    {text:"Pie Chart", category: "encodings"},
+                    {text:"Histogram", category: "encodings"}
+                ]},
+            {
+                name: '',
+                elements: [
                     {text:"Scatterplot", category: "encodings"},
+                    {text:"Box Plot", category: "encodings"},
                     {text:"Node-Link", category: "encodings"},
+                    {text:"Scatterplot Matrix", category: "encodings"},
                     {text:"Parallel Coordinates", category: "encodings"},
-                    {text:"Star-Plot", category: "encodings"}
+                    {text:"Matrix", category: "encodings"}
                 ]
             },
             {

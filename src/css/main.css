@@ -109,3 +109,8 @@ tr.shown td.details-control:before {
     /*font-size: 34px;*/
     font-weight: bold;
 }
+
+.checkbox {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
