@@ -30,7 +30,7 @@ $(function() {
 
 (function() {
 
-    var engineering_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1b5_Yy_cGvcL6Uec3rYaEgT4NSi29OgP8tU1mV43DcFE/pubhtml';
+    var biology_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1KRStNdz1NR1yvZv00l5g1kUnIrpPP0BPSXH_riYCtWk/pubhtml';
 
     App.table = null;
     App.rows = null;
@@ -52,16 +52,16 @@ $(function() {
             delete o["Bibtex Entry"];
 
             // split the fields that are lists
-            o["Data Types"] = o["Data Types"].split(" / ");
+            o["Data Types"] = o["Data Types"].split(",");
             _.map(o["Data Types"], _.trimEnd);
 
-            o["Encodings"] = o["Encodings"].split(", ");
+            o["Encodings"] = o["Encodings"].split(",");
             _.map(o["Encodings"], _.trimEnd);
 
-            o["Tasks"] = o["Tasks"].split(", ");
+            o["Tasks"] = o["Tasks"].split(",");
             _.map(o["Tasks"], _.trimEnd);
 
-            o["Evaluation Type"] = o["Evaluation Type"].split(", ");
+            o["Evaluation Type"] = o["Evaluation Type"].split(",");
             _.map(o["Evaluation Type"], _.trimEnd);
 
         });
@@ -74,7 +74,7 @@ $(function() {
 
         /** Access the Google Doc and select grab the  data **/
         Tabletop.init({
-            key: engineering_spreadsheet_url,
+            key: biology_spreadsheet_url,
             callback: setupDB,
             wanted: ["Papers", "Tasks", "Encodings"],
             debug: true
@@ -103,30 +103,30 @@ $(function() {
         var taskData = App.dataParser.parseFields(data, subDomains);
 
         // plot the bubble scatter plots
-        App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-            encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
-
-        if($('.col-md-6').width() > 600)
-        {
-            d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
-            d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
-        }
-
-        // plot the task analysis
-        App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
-            subDomains, taskData.authors[0], taskData.count);
-
-        // plot the data type analysis
-        App.engGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
-            ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[1], taskData.count);
-
-        // plot the data type analysis
-        App.engGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
-            ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[2], taskData.count);
-
-        // plot the data type analysis
-        App.engGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
-            ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
+        // App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
+        //     encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+        //
+        // if($('.col-md-6').width() > 600)
+        // {
+        //     d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
+        //     d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
+        // }
+        //
+        // // plot the task analysis
+        // App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
+        //     subDomains, taskData.authors[0], taskData.count);
+        //
+        // // plot the data type analysis
+        // App.engGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
+        //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[1], taskData.count);
+        //
+        // // plot the data type analysis
+        // App.engGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
+        //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[2], taskData.count);
+        //
+        // // plot the data type analysis
+        // App.engGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
+        //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
     }
 
     function setupTable(data) {
