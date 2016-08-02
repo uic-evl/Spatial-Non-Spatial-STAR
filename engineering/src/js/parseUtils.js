@@ -403,7 +403,9 @@ var Parser = function(options) {
                 {key: "Visualization Experts", values: [], color: "#b3cde3"}
             ]);
 
-        return {tasks: maps[0], dataTypes: maps[1], evaluation: maps[2], evaluators: mappedEvaluators, paradigms: maps[3],
-            groups: taskNames, authors: authors, count: totalCounts};
+        return {
+            tasks: maps[0], dataTypes: maps[1], evaluation: maps[2], evaluators: mappedEvaluators, paradigms: maps[3],
+            groups: taskNames, authors: authors, count: totalCounts
+        };
     };
 };

@@ -142,7 +142,7 @@ $(function() {
 
         // plot the data type analysis
         App.engGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
-            ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
+            ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[4], taskData.count);
     }
 
     function setupTable(data) {

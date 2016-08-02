@@ -19,7 +19,8 @@ var Graph = function (options) {
         // show the tooptip if the circle is visible
         if (obj.value === 0)
             return;
-// set the authors and chart to be used
+
+        // set the authors and chart to be used
         self.authors = (this.authors)
             ? this.authors[obj.key][obj.label] : obj.authors;
 
@@ -601,7 +602,7 @@ var Graph = function (options) {
                     $(chartDiv + " svg .nv-bar").each(function (i, elem) {
                         $(elem).hover(function () {
                             hoveringCB.call({
-                                authors: authors, groups: grpNames,
+                                groups: grpNames,
                                 chart: d3.select("#results"), selector: '.nv-bar'
                             }, d3.select(elem).data()[0], 0, i)
 
@@ -885,6 +886,137 @@ var Graph = function (options) {
                 // disable legend actions
                 chart.legend.updateState(false);
                 updateLegendPosition(chartDiv);
+            }
+        );
+    };
+
+    /**
+     * Creates and plots the Evaluation Type Bar Chart
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} datum The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} subDomains The values for the y-axis
+     * @param {Array} authors The authors corresponding to the data
+     * @param {Array} count number of papers in each sub-domain
+     */
+    self.graphParadigmsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
+
+        $("#cogEval a")
+            .popover({
+                container: "body",
+                title: 'Chart Settings',
+                placement: 'left',
+                html: true,
+                content: "<input id='normalizeEval' type='checkbox' name='normalize' value='task'> Normalize Data"
+            })
+            .on('shown.bs.popover', function(){
+
+                $("#normalizeEval").change(function() {
+                    // normalize the data
+                    if(this.checked) {
+                        datum.forEach(function(o){
+                            o.values.forEach(function(v){
+                                v.value /= count[v.key];
+                            });
+                        });
+                    }
+                    // un-normalize the data
+                    else {
+                        datum.forEach(function(o){
+                            o.values.forEach(function(v){
+                                v.value *= count[v.key];
+                            });
+                        });
+                    }
+
+                    // redraw the chart
+                    d3.select(chartDiv + ' svg')
+                        .datum(datum)
+                        .call(chart);
+
+                    $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+                        $(elem).hover(function () {
+                            hoveringCB.call({
+                                authors: authors, groups: grpNames,
+                                chart: d3.select("#results"), selector: '.nv-bar'
+                            }, d3.select(elem).data()[0], 0, i)
+                        }, function () {
+                            endCB.call({authors: authors});
+                        });
+                    });
+
+                    d3.select(chartDiv).selectAll(".nv-bar")
+                        .on('click', clickCB);
+                });
+            });
+
+        var totWidth = d3.select('.evalDiv').node().clientWidth,
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
+
+        var chart;
+        nv.addGraph(function () {
+
+                d3.select(chartDiv)
+                    .append("svg").attr("width", totWidth)
+                    .attr("height", totHeight);
+
+                chart = nv.models.multiBarChart()
+                    .x(function (d) {
+                        return d.label
+                    })
+                    .y(function (d) {
+                        return d.value
+                    })
+                    .showLegend(true)
+                    .reduceXTicks(false)
+                    .rotateLabels(-45)
+                    .groupSpacing(0.2)
+                    .showControls(false)
+                    .margin({left: 30, bottom: 60});
+
+                /* Set the header formatter */
+                chart.tooltip.headerFormatter(function(d,i){
+                    return "Evaluation: " + d;
+                });
+
+                chart.xAxis.tickFormat(function (d) {
+                    if(d == "Quantitative Analysis")
+                        return "Quantitative";
+                    else
+                        return d;
+                });
+
+                d3.select(chartDiv + ' svg')
+                    .datum(datum)
+                    .call(chart);
+
+                nv.utils.windowResize(chart.update);
+
+                return chart;
+            }, function () {
+                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+
+                    $(elem).hover(function () {
+                        hoveringCB.call({
+                            authors: authors, groups: grpNames,
+                            chart: d3.select("#results"), selector: '.nv-bar'
+                        }, d3.select(elem).data()[0], 0, i)
+                    }, function () {
+                        endCB.call({authors: authors});
+                    });
+                });
+
+                d3.select(chartDiv).selectAll(".nv-bar")
+                    .on('click', clickCB);
+
+                // disable legend actions
+                chart.legend.updateState(false);
+                updateLegendPosition(chartDiv);
+
             }
         );
     };
