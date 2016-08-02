@@ -1,5 +1,5 @@
 'use strict';
-var Graph = function () {
+var Graph = function (options) {
 
     var self = this;
 
@@ -10,12 +10,7 @@ var Graph = function () {
 
     self.selectors = ['.nv-bar', '.nv-point'];
 
-    var colorMap =
-    {
-        "Natural Science": "#beaed4",
-        "Physical Science": "#fdc086",
-        "Simulation": "#7fc97f"
-    };
+    var colorMap = options.colorMap;
 
     // the hover callback to be used when the user
     // hovers over one of the circles
@@ -243,9 +238,8 @@ var Graph = function () {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} authors The authors corresponding to the data
      * @param {Array} subDomains Subdomains mapped to the encoding pairings
-     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphEncodingBubbleNVD3Chart = function (data, chartDiv, maxValue, grpNames, authors, subDomains, count) {
+    self.graphEncodingBubbleNVD3Chart = function (data, chartDiv, maxValue, grpNames, authors, subDomains) {
         /* define the maps that will be used for the labels of the scatter plot bubble */
         var nonSpatialMap = {}, spatialMap = {}, i = 0;
 
@@ -374,7 +368,7 @@ var Graph = function () {
                     .style({"text-anchor": "end", "font-weight": "bold"});
 
                 // move the text of the x-axis down and rotate it
-                d3.select('#encodings svg .nv-x .nv-axis')
+                d3.select(chartDiv + ' svg .nv-x .nv-axis')
                     .attr('transform', 'translate(' + -10 + ',' + chart.margin().bottom / 3.0 + ')')
                     .selectAll('text')
                     .style({"text-anchor": "end", "font-weight": "bolder"})
@@ -458,9 +452,7 @@ var Graph = function () {
                            o.values.forEach(function(v){
                                v.value /= count[v.key];
                            });
-
                        });
-
                     }
                     // un-normalize the data
                     else {
@@ -469,7 +461,6 @@ var Graph = function () {
                             o.values.forEach(function(v){
                                 v.value *= count[v.key];
                             });
-
                         });
                     }
 
@@ -623,27 +614,20 @@ var Graph = function () {
             .on('shown.bs.popover', function(){
 
                 $("#normalizeType").change(function() {
-
                     // normalize the data
                     if(this.checked) {
-
                         datum.forEach(function(o){
-
                             o.values.forEach(function(v){
                                 v.value /= count[v.key];
                             });
-
                         });
-
                     }
                     // un-normalize the data
                     else {
                         datum.forEach(function(o){
-
                             o.values.forEach(function(v){
                                 v.value *= count[v.key];
                             });
-
                         });
                     }
 
@@ -653,26 +637,20 @@ var Graph = function () {
                         .call(chart);
 
                     $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-
                         $(elem).hover(function () {
-
                             hoveringCB.call({
                                 authors: authors, groups: grpNames,
                                 chart: d3.select("#results"), selector: '.nv-bar'
                             }, d3.select(elem).data()[0], 0, i)
 
                         }, function () {
-
                             endCB.call({authors: authors});
-
                         });
                     });
 
                     d3.select(chartDiv).selectAll(".nv-bar")
                         .on('click', clickCB);
-
                 });
-
             });
 
         nv.addGraph(function () {
@@ -711,7 +689,6 @@ var Graph = function () {
 
             }, function () {
                 $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-
                     $(elem).hover(function () {
                         hoveringCB.call({
                             authors: authors, groups: grpNames,
@@ -745,7 +722,6 @@ var Graph = function () {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
-
         var chart;
 
         var datum = _.reduce(data, function (result, value, key) {
@@ -790,27 +766,20 @@ var Graph = function () {
             .on('shown.bs.popover', function(){
 
                 $("#normalizeEval").change(function() {
-
                     // normalize the data
                     if(this.checked) {
-
                         datum.forEach(function(o){
-
                             o.values.forEach(function(v){
                                 v.value /= count[v.key];
                             });
-
                         });
-
                     }
                     // un-normalize the data
                     else {
                         datum.forEach(function(o){
-
                             o.values.forEach(function(v){
                                 v.value *= count[v.key];
                             });
-
                         });
                     }
 
@@ -820,26 +789,19 @@ var Graph = function () {
                         .call(chart);
 
                     $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-
                         $(elem).hover(function () {
-
                             hoveringCB.call({
                                 authors: authors, groups: grpNames,
                                 chart: d3.select("#results"), selector: '.nv-bar'
                             }, d3.select(elem).data()[0], 0, i)
-
                         }, function () {
-
                             endCB.call({authors: authors});
-
                         });
                     });
 
                     d3.select(chartDiv).selectAll(".nv-bar")
                         .on('click', clickCB);
-
                 });
-
             });
 
         nv.addGraph(function () {
@@ -876,13 +838,11 @@ var Graph = function () {
 
                 d3.select(chartDiv + ' svg')
                     .datum(datum)
-                    .call(chart)
-                ;
+                    .call(chart);
 
                 nv.utils.windowResize(chart.update);
 
                 return chart;
-
             }, function () {
                 $(chartDiv + " svg .nv-bar").each(function (i, elem) {
 
@@ -919,11 +879,9 @@ var Graph = function () {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
-
         var chart;
 
         var datum = _.reduce(data, function (result, value, key) {
-
                 result[0].values.push({
                     label: value.Year,
                     value: value["Domain Experts"],
@@ -944,68 +902,6 @@ var Graph = function () {
                 {key: "Domain Experts", values: [], color: "#fbb4ae"},
                 {key: "Visualization Experts", values: [], color: "#b3cde3"}
             ]);
-
-        // $("#cogEvalu a")
-        //     .popover({
-        //         container: "body",
-        //         title: 'Chart Settings',
-        //         placement: 'left',
-        //         html: true,
-        //         content: "<input id='normalizeEvalu' type='checkbox' name='normalize' value='task'> Normalize Data"
-        //     })
-        //     .on('shown.bs.popover', function() {
-        //
-        //         $("#normalizeEvalu").change(function () {
-        //
-        //             // normalize the data
-        //             if (this.checked) {
-        //
-        //                 datum.forEach(function (o) {
-        //
-        //                     o.values.forEach(function (v) {
-        //                         v.value /= count[v.key];
-        //                     });
-        //
-        //                 });
-        //
-        //             }
-        //             // un-normalize the data
-        //             else {
-        //                 datum.forEach(function (o) {
-        //
-        //                     o.values.forEach(function (v) {
-        //                         v.value *= count[v.key];
-        //                     });
-        //
-        //                 });
-        //             }
-        //
-        //             // redraw the chart
-        //             d3.select(chartDiv + ' svg')
-        //                 .datum(datum)
-        //                 .call(chart);
-        //
-        //             $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-        //
-        //                 $(elem).hover(function () {
-        //
-        //                     hoveringCB.call({
-        //                         authors: authors, groups: grpNames,
-        //                         chart: d3.select("#results"), selector: '.nv-bar'
-        //                     }, d3.select(elem).data()[0], 0, i)
-        //
-        //                 }, function () {
-        //
-        //                     endCB.call({authors: authors});
-        //
-        //                 });
-        //             });
-        //
-        //             d3.select(chartDiv).selectAll(".nv-bar")
-        //                 .on('click', clickCB);
-        //
-        //         });
-        //     });
 
         nv.addGraph(function () {
 
@@ -1041,13 +937,11 @@ var Graph = function () {
 
                 d3.select(chartDiv + ' svg')
                     .datum(datum)
-                    .call(chart)
-                ;
+                    .call(chart);
 
                 nv.utils.windowResize(chart.update);
 
                 return chart;
-
             }, function () {
                 $(chartDiv + " svg .nv-bar").each(function (i, elem) {
 
