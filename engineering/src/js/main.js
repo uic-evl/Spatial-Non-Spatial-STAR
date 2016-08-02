@@ -64,6 +64,9 @@ $(function() {
             o["Evaluation Type"] = o["Evaluation Type"].split(", ");
             _.map(o["Evaluation Type"], _.trimEnd);
 
+            o["Paradigm"] = o["Paradigm"].split(", ");
+            _.map(o["Paradigm"], _.trimEnd);
+
         });
 
         /** create the new database for the session **/
@@ -228,7 +231,10 @@ $(function() {
                                 '<td class="title">Tasks :</td>'+
                                 '<td>' + d.tasks.join(', ') +'</td>'+
                             '</tr>'+
-
+                            '<tr>'+
+                                '<td class="title">Paradigms :</td>'+
+                                '<td>' + d.paradigms.join(', ') +'</td>'+
+                            '</tr>'+
                         '</table>'+
                     '</div>';
 

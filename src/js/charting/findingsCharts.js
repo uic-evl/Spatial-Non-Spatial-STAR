@@ -19,8 +19,7 @@ var Graph = function (options) {
         // show the tooptip if the circle is visible
         if (obj.value === 0)
             return;
-
-        // set the authors and chart to be used
+// set the authors and chart to be used
         self.authors = (this.authors)
             ? this.authors[obj.key][obj.label] : obj.authors;
 
@@ -850,7 +849,7 @@ var Graph = function (options) {
                     $(elem).hover(function () {
 
                         hoveringCB.call({
-                            groups: grpNames,
+                            authors: authors, groups: grpNames,
                             chart: d3.select("#results"), selector: '.nv-bar'
                         }, d3.select(elem).data()[0], 0, i)
                     }, function () {

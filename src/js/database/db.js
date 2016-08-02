@@ -20,12 +20,12 @@ var DB = DB || {};
 
                 // Define your database schema
                 self.db.version(1).stores({
-                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators, *evaluation'
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, evaluators, *evaluation'
                 });
 
                 // version 2 with the modified data
                 self.db.version(2).stores({
-                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators'
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, evaluators'
                 }).upgrade(function(t)
                 {
                     var incomingRecords = _.cloneDeep(records);
@@ -55,7 +55,7 @@ var DB = DB || {};
 
                 // version 2 with the modified data
                 self.db.version(3).stores({
-                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, paradigms, domain, evaluators, *evaluation'
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, evaluators, *evaluation'
                 }).upgrade(function(t)
                 {
                     var incomingRecords = _.cloneDeep(records);
