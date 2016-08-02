@@ -68,12 +68,11 @@ var Parser = function(options) {
                     // create a count of the sub domains per encoding pair
                     subDomains[s][n] = subDomains[s][n] || {};
 
-                    if(subDomains[s][n][value.domain] && value.domain != 'Both')
+                    if(subDomains[s][n][value.domain])
                     {
                         if(value.domain == 'Both')
                         {
-                            subDomains[s][n]['Natural Science'] += 1;
-                            subDomains[s][n]['Physical Science'] += 1;
+                            subDomains[s][n]['Phys. + Nat. Science'] += 1;
                         }
                         else
                         {
@@ -84,8 +83,7 @@ var Parser = function(options) {
                     {
                         if(value.domain == 'Both')
                         {
-                            subDomains[s][n]['Natural Science'] = 1;
-                            subDomains[s][n]['Physical Science'] = 1;
+                            subDomains[s][n]['Phys. + Nat. Science'] = 1;
                         }
                         else
                         {
@@ -94,6 +92,8 @@ var Parser = function(options) {
                     }
                 });
             });
+
+            console.log(subDomains);
 
             return result;
         }, {

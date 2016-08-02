@@ -234,10 +234,9 @@ var Graph = function (options) {
 
 
     function updateLegendPosition(chartDiv) {
-
-        d3.select(chartDiv +" svg").selectAll(".nv-series")[0].forEach(function(d, i) {
-            d3.select(d).attr("transform", "translate(0," + i * 15 + ")");
-        })
+        // d3.select(chartDiv +" svg").selectAll(".nv-series")[0].forEach(function(d, i) {
+        //     d3.select(d).attr("transform", "translate(0," + i * 15 + ")");
+        // })
     }
 
     /**
@@ -329,6 +328,8 @@ var Graph = function (options) {
                     // remove the old series value
                     d.series = [];
 
+                    console.log(d.point);
+
                     // iterate over the sub domain data to populate the tooltip
                     _.toPairs(d.point.domains).forEach(function(pair){
 
@@ -390,6 +391,11 @@ var Graph = function (options) {
                 $(chartDiv + " svg .nv-point").each(function (i, elem) {
 
                     $(elem).hover(function () {
+
+                        console.log(this);
+                        console.log(d3.select(elem).data());
+
+
                         hoveringCB.call(
                             {
                                 groups: grpNames,
