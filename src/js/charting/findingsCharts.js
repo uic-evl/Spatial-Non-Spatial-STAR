@@ -17,8 +17,10 @@ var Graph = function (options) {
     var hoveringCB = function (obj, col, row) {
 
         // show the tooptip if the circle is visible
-        if (obj.value === 0)
+        if (obj.value === 0){
+            self.authors = [];
             return;
+        }
 
         // set the authors and chart to be used
         self.authors = (this.authors)
@@ -32,7 +34,7 @@ var Graph = function (options) {
         }
 
         // remove the highlighting class if the selection is empty
-        if (self.authors.length == 0) {
+        if (self.authors && self.authors.length == 0) {
             $("#papers tbody tr")
                 .removeClass('row_selected');
             return;
@@ -176,6 +178,9 @@ var Graph = function (options) {
 
     function wrap(text, width) {
 
+        if(!width)
+            width = 20;
+
         text.each(function () {
             var text = d3.select(this),
                 words = text.text().split(/\//).reverse(),
@@ -190,7 +195,7 @@ var Graph = function (options) {
                     .attr("x", -15)
                     .attr("y", y)
                     .attr("dy", function (dy) {
-                        if (dy)
+                        if (_.isNumber(dy))
                             return dy + "em"
                     })
                     .attr("text-anchor", "middle");
@@ -545,7 +550,7 @@ var Graph = function (options) {
 
                 chart.legend.updateState(false);
 
-                updateLegendPosition(chartDiv);
+                //updateLegendPosition(chartDiv);
 
             }
         );
@@ -613,6 +618,8 @@ var Graph = function (options) {
 
                     d3.select(chartDiv).selectAll(".nv-bar")
                         .on('click', clickCB);
+
+                    updateLegendPosition(chartDiv);
                 });
             });
 
@@ -738,6 +745,8 @@ var Graph = function (options) {
 
                     d3.select(chartDiv).selectAll(".nv-bar")
                         .on('click', clickCB);
+                    updateLegendPosition(chartDiv);
+
                 });
             });
 
@@ -852,13 +861,6 @@ var Graph = function (options) {
                     return "Evaluation: " + d;
                 });
 
-                chart.xAxis.tickFormat(function (d) {
-                    if(d == "Quantitative Analysis")
-                        return "Quantitative";
-                    else
-                        return d;
-                });
-
                 d3.select(chartDiv + ' svg')
                     .datum(datum)
                     .call(chart);
@@ -905,17 +907,17 @@ var Graph = function (options) {
      */
     self.graphParadigmsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
-        $("#cogEval a")
+        $("#cogPara a")
             .popover({
                 container: "body",
                 title: 'Chart Settings',
                 placement: 'left',
                 html: true,
-                content: "<input id='normalizeEval' type='checkbox' name='normalize' value='task'> Normalize Data"
+                content: "<input id='normalizePara' type='checkbox' name='normalize' value='task'> Normalize Data"
             })
             .on('shown.bs.popover', function(){
 
-                $("#normalizeEval").change(function() {
+                $("#normalizePara").change(function() {
                     // normalize the data
                     if(this.checked) {
                         datum.forEach(function(o){
@@ -951,6 +953,14 @@ var Graph = function (options) {
 
                     d3.select(chartDiv).selectAll(".nv-bar")
                         .on('click', clickCB);
+
+                    // wrap the text of the x-axis
+                    d3.selectAll(chartDiv + ' svg .nv-x text')
+                        .attr('transform', function(d,i,j) { return 'translate (-10, 10) rotate(-45 0,0)' })
+                        .call(wrap, chart.xRange())
+                        .style({"text-anchor": "end"});
+
+                    updateLegendPosition(chartDiv);
                 });
             });
 
@@ -973,21 +983,25 @@ var Graph = function (options) {
                     })
                     .showLegend(true)
                     .reduceXTicks(false)
-                    .rotateLabels(-45)
+                    //.rotateLabels(-45)
                     .groupSpacing(0.2)
                     .showControls(false)
-                    .margin({left: 30, bottom: 60});
+                    .margin({left: 30, bottom: 70});
+
+            chart.xAxis.tickFormat(function (d) {
+                if(d == "Spatial Nesting")
+                    return "Spat. / Nesting";
+                else if(d == "Non-Spatial Nesting")
+                    return "Non-Spat. / Nesting";
+                else if(d == "Linked Views")
+                    return "Linked / Views";
+                else
+                    return d;
+            });
 
                 /* Set the header formatter */
                 chart.tooltip.headerFormatter(function(d,i){
-                    return "Evaluation: " + d;
-                });
-
-                chart.xAxis.tickFormat(function (d) {
-                    if(d == "Quantitative Analysis")
-                        return "Quantitative";
-                    else
-                        return d;
+                    return "Paradigms: " + d;
                 });
 
                 d3.select(chartDiv + ' svg')
@@ -998,6 +1012,13 @@ var Graph = function (options) {
 
                 return chart;
             }, function () {
+
+                // wrap the text of the x-axis
+                d3.selectAll(chartDiv + ' svg .nv-x text')
+                    .attr('transform', function(d,i,j) { return 'translate (-10, 10) rotate(-45 0,0)' })
+                    .call(wrap, chart.xRange())
+                    .style({"text-anchor": "end"});
+
                 $(chartDiv + " svg .nv-bar").each(function (i, elem) {
 
                     $(elem).hover(function () {
