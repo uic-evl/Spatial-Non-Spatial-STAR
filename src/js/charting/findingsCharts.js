@@ -671,13 +671,6 @@ var Graph = function (options) {
                 .on('click', clickCB);
 
             chart.legend.updateState(false);
-
-            // var t =d3.transform(d3.select(chartDiv + ' .nv-legendWrap').attr("transform")),
-            //     x = t.translate[0],
-            //     y = t.translate[1];
-            //
-            // d3.select(chartDiv + ' .nv-legendWrap').attr("transform", "translate(" + (x+20) + "," + (y) + ")")
-
             updateLegendPosition(chartDiv);
             }
         );
@@ -806,8 +799,8 @@ var Graph = function (options) {
                 d3.select(chartDiv).selectAll(".nv-bar")
                     .on('click', clickCB);
 
+                // disable legend actions
                 chart.legend.updateState(false);
-
                 updateLegendPosition(chartDiv);
 
             }
@@ -889,8 +882,8 @@ var Graph = function (options) {
                 d3.select(chartDiv).selectAll(".nv-bar")
                     .on('click', clickCB);
 
+                // disable legend actions
                 chart.legend.updateState(false);
-
                 updateLegendPosition(chartDiv);
             }
         );
