@@ -64,7 +64,7 @@ $(function() {
             o["Evaluation Type"] = o["Evaluation Type"].split(", ");
             _.map(o["Evaluation Type"], _.trimEnd);
 
-            o["Paradigm"] = o["Paradigm"].split(", ");
+            o["Paradigm"] = o["Paradigm"].split(" / ");
             _.map(o["Paradigm"], _.trimEnd);
 
         });
@@ -97,7 +97,20 @@ $(function() {
             }
         );
 
-        App.dataParser = new Parser();
+        App.dataParser = new Parser({
+                colorMap:
+                    [{
+                        "Natural Science": "#beaed4",
+                        "Physical Science": "#fdc086",
+                        "Simulation": "#7fc97f"
+                    },
+                    {
+                        "Domain Experts" : "#fbb4ae",
+                        "Visualization Experts" : "#b3cde3"
+                    }
+                ]
+        }
+        );
 
         var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('domain'))) ), "Both");
 

@@ -1,5 +1,5 @@
 'use strict';
-var Parser = function() {
+var Parser = function(options) {
 
     var self = this;
 
@@ -173,6 +173,11 @@ var Parser = function() {
                 'Natural Science': {}
             },
             {
+                'Simulation': {},
+                'Physical Science': {},
+                'Natural Science': {}
+            },
+            {
                 "Domain Experts" : {},
                 "Visualization Experts" : {}
             }
@@ -271,13 +276,39 @@ var Parser = function() {
                 });
 
             /* Parse the Evaluators */
-            result[3][value.year][value.evaluators] += 1;
+            result[4][value.year][value.evaluators] += 1;
 
-            /* Parse the author for the evaluator year */
-            authors[3][value.evaluators][value.year] = authors[3][value.evaluators][value.year] || [];
-            authors[3][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
+            /* Parse the author for the paradigms year */
+            authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
+            authors[4][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
 
-                return result;
+            value.paradigms.forEach(function(paradigm){
+
+                if(value.domain === 'Both'){
+
+                    // increment the task count
+                    result[3][paradigm]["Physical Science"] += 1;
+                    result[3][paradigm]["Natural Science"] += 1;
+
+                    // store the corresponding authors in another array
+                    authors[3]["Physical Science"][paradigm] = authors[3]["Physical Science"][paradigm] || [];
+                    authors[3]["Natural Science"][paradigm] = authors[3]["Natural Science"][paradigm] || [];
+
+                    authors[3]["Natural Science"][paradigm].push({label: value['author'].trim(), year: value['year']});
+                    authors[3]["Physical Science"][paradigm].push({label: value['author'].trim(), year: value['year']});
+
+                }
+                else{
+                    // increment the task count
+                    result[3][paradigm][value.domain] += 1;
+
+                    // store the corresponding authors in another array
+                    authors[3][value.domain][paradigm] = authors[3][value.domain][paradigm] || [];
+                    authors[3][value.domain][paradigm].push({label: value['author'].trim(), year: value['year']});
+                }
+            });
+
+            return result;
             },
             [
                 {
@@ -307,6 +338,13 @@ var Parser = function() {
                     "User Study"            : _.cloneDeep(taskTemplate)
                 },
                 {
+                    "Hybrid"                : _.cloneDeep(taskTemplate),
+                    "Overlays"              : _.cloneDeep(taskTemplate),
+                    "Linked Views"          : _.cloneDeep(taskTemplate),
+                    "Spatial Nesting"       : _.cloneDeep(taskTemplate),
+                    "Non-Spatial Nesting"   : _.cloneDeep(taskTemplate)
+                },
+                {
                     "2006": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2007": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2008": {"Domain Experts" : 0, "Visualization Experts" : 0},
@@ -320,98 +358,43 @@ var Parser = function() {
                 }
             ]);
 
-        /** Map the data into the correct format for use **/
+        var maps = [ ];
+        for(var i = 0; i < 4; i++){
 
-        var mappedTasks = _.reduce(data[0], function (result, value, key) {
+            maps.push(_.reduce(data[i], function (result, value, key) {
 
-                result[0].values.push({label: key, value: value["Natural Science"], color: "#beaed4"});
-                result[1].values.push({label: key, value: value["Physical Science"], color: "#fdc086"});
-                result[2].values.push({label:  key, value: value["Simulation"], color: "#7fc97f"});
+                    _.keys(value).forEach(function(k, j){
 
-                return result;
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
+                        result[j].values.push({
+                            label: key,
+                            value: value[k],
+                            authors: authors[j][k][key],
+                            color: options.colorMap[0][k]
+                        });
 
-        var mappedTypes = _.reduce(data[1], function (result, value, key) {
+                    });
 
-                result[0].values.push({
+                    return result;
+                },
+                [
+                    {key: "Natural Science", values: [], color: "#beaed4"},
+                    {key: "Physical Science", values: [], color: "#fdc086"},
+                    {key: "Simulation", values: [], color: "#7fc97f"}
+                ])
+            );
+        }
+
+        var mappedEvaluators = _.reduce(data[4], function (result, value, key) {
+
+            _.keys(value).forEach(function(k, i){
+
+                result[i].values.push({
                     label: key,
-                    value: value["Natural Science"],
-                    authors: authors[1]["Natural Science"][value.DataType],
-                    color: "#beaed4"
+                    value: value[k],
+                    authors: authors[4][k][key],
+                    color: options.colorMap[1][k]
                 });
-
-                result[1].values.push({
-                    label: key,
-                    value: value["Physical Science"],
-                    authors: authors[1]["Physical Science"][value.DataType],
-                    color: "#fdc086"
-                });
-
-                result[2].values.push({
-                    label: key,
-                    value: value["Simulation"],
-                    authors: authors[1]["Simulation"][value.DataType],
-                    color: "#7fc97f"
-                });
-
-                return result;
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
-
-        var mappedEval = _.reduce(data[2], function (result, value, key) {
-
-                result[0].values.push({
-                    label: key,
-                    value: value["Natural Science"],
-                    authors: authors[2]["Natural Science"][value.Evaluation],
-                    color: "#beaed4"
-                });
-
-                result[1].values.push({
-                    label: key,
-                    value: value["Physical Science"],
-                    authors: authors[2]["Physical Science"][value.Evaluation],
-                    color: "#fdc086"
-                });
-
-                result[2].values.push({
-                    label: key,
-                    value: value["Simulation"],
-                    authors: authors[2]["Simulation"][value.Evaluation],
-                    color: "#7fc97f"
-                });
-                return result;
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
-
-        var mappedEvaluators = _.reduce(data[3], function (result, value, key) {
-
-                result[0].values.push({
-                    label: key,
-                    value: value["Domain Experts"],
-                    authors: authors[3]["Domain Experts"][value.Year],
-                    color: "#fbb4ae"
-                });
-
-                result[1].values.push({
-                    label: key,
-                    value: value["Visualization Experts"],
-                    authors: authors[3]["Visualization Experts"][value.Year],
-                    color: "#b3cde3"
-                });
+            });
 
                 return result;
             },
@@ -420,7 +403,7 @@ var Parser = function() {
                 {key: "Visualization Experts", values: [], color: "#b3cde3"}
             ]);
 
-        return {tasks: mappedTasks, dataTypes: mappedTypes, evaluation: mappedEval, evaluators: mappedEvaluators,
+        return {tasks: maps[0], dataTypes: maps[1], evaluation: maps[2], evaluators: mappedEvaluators, paradigms: maps[3],
             groups: taskNames, authors: authors, count: totalCounts};
     };
 };
