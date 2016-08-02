@@ -328,8 +328,6 @@ var Graph = function (options) {
                     // remove the old series value
                     d.series = [];
 
-                    console.log(d.point);
-
                     // iterate over the sub domain data to populate the tooltip
                     _.toPairs(d.point.domains).forEach(function(pair){
 
@@ -391,10 +389,6 @@ var Graph = function (options) {
                 $(chartDiv + " svg .nv-point").each(function (i, elem) {
 
                     $(elem).hover(function () {
-
-                        console.log(this);
-                        console.log(d3.select(elem).data());
-
 
                         hoveringCB.call(
                             {
@@ -966,7 +960,6 @@ var Graph = function (options) {
                         .call(wrap, chart.xRange())
                         .style({"text-anchor": "end"});
 
-                    updateLegendPosition(chartDiv);
                 });
             });
 
@@ -1042,7 +1035,6 @@ var Graph = function (options) {
 
                 // disable legend actions
                 chart.legend.updateState(false);
-                updateLegendPosition(chartDiv);
 
             }
         );

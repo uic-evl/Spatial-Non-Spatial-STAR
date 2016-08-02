@@ -93,8 +93,6 @@ var Parser = function(options) {
                 });
             });
 
-            console.log(subDomains);
-
             return result;
         }, {
             'Choropleth / Heatmap': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
@@ -338,7 +336,6 @@ var Parser = function(options) {
                     "User Study"            : _.cloneDeep(taskTemplate)
                 },
                 {
-                    "Hybrid"                : _.cloneDeep(taskTemplate),
                     "Overlays"              : _.cloneDeep(taskTemplate),
                     "Linked Views"          : _.cloneDeep(taskTemplate),
                     "Spatial Nesting"       : _.cloneDeep(taskTemplate),
