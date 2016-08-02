@@ -38,7 +38,7 @@ function Papers() {
             {
                 name: 'Spatial Encodings',
                 elements: [
-                    {text:"Chloropheth / Heatmap", category: "encodings"},
+                    {text:"Choropheth / Heatmap", category: "encodings"},
                     {text:"Ball and Stick / Mesh", category: "encodings"},
                     {text:"Isosurface / Streamlines", category: "encodings"},
                     {text:"Volume / Images", category: "encodings"},

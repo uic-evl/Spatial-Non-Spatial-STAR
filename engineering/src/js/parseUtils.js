@@ -16,7 +16,7 @@ var Parser = function(options) {
 
         // Spatial columns
         var spatial = [
-            'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
+            'Choropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
         ];
 
         // Non-Spatial columns
@@ -31,7 +31,7 @@ var Parser = function(options) {
 
         /* Author / Paper Affiliation */
         var authors = {
-            'Chloropleth / Heatmap': {},
+            'Choropleth / Heatmap': {},
             'Ball and Stick / Mesh': {},
             'Isosurface / Streamlines': {},
             'Volume / Images': {},
@@ -40,7 +40,7 @@ var Parser = function(options) {
         };
 
         var subDomains = {
-            'Chloropleth / Heatmap': {},
+            'Choropleth / Heatmap': {},
             'Ball and Stick / Mesh': {},
             'Isosurface / Streamlines': {},
             'Volume / Images': {},
@@ -97,7 +97,7 @@ var Parser = function(options) {
 
             return result;
         }, {
-            'Chloropleth / Heatmap': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Choropleth / Heatmap': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Ball and Stick / Mesh': _.cloneDeep(nonSpatialTemplate),//{ enc odings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Isosurface / Streamlines': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Volume / Images': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
