@@ -16,11 +16,15 @@ var Parser = function() {
 
         // Spatial columns
         var spatial = [
-            'Chloropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
+            'Simple Map', 'Choropleth / Heatmap',
+            'Ball and Stick / Mesh','Isosurface / Streamlines',
+            'Volume / Images', 'Contour', 'Glyph', 'Animation'
         ];
 
         // Non-Spatial columns
         var nonSpatial = _.keys(_.omit(App.encodings[0], _.flatten(['Author','Sub-Domain', 'Year', spatial])));
+
+        //console.log(spatial);
 
         // Set up the data structure for reduce to clone
         var nonSpatialTemplate = _.reduce(nonSpatial,
@@ -31,19 +35,23 @@ var Parser = function() {
 
         /* Author / Paper Affiliation */
         var authors = {
-            'Chloropleth / Heatmap': {},
+            'Simple Map': {},
+            'Choropleth / Heatmap': {},
             'Ball and Stick / Mesh': {},
             'Isosurface / Streamlines': {},
             'Volume / Images': {},
+            'Contour': {},
             'Glyph': {},
             'Animation': {}
         };
 
         var subDomains = {
-            'Chloropleth / Heatmap': {},
+            'Simple Map': {},
+            'Choropleth / Heatmap': {},
             'Ball and Stick / Mesh': {},
             'Isosurface / Streamlines': {},
             'Volume / Images': {},
+            'Contour': {},
             'Glyph': {},
             'Animation': {}
         };
@@ -68,39 +76,25 @@ var Parser = function() {
                     // create a count of the sub domains per encoding pair
                     subDomains[s][n] = subDomains[s][n] || {};
 
-                    if(subDomains[s][n][value.domain] && value.domain != 'Both')
+                    if(subDomains[s][n][value.domain])
                     {
-                        if(value.domain == 'Both')
-                        {
-                            subDomains[s][n]['Natural Science'] += 1;
-                            subDomains[s][n]['Physical Science'] += 1;
-                        }
-                        else
-                        {
-                            subDomains[s][n][value.domain] += 1;
-                        }
+                        subDomains[s][n][value.domain] += 1;
                     }
                     else
                     {
-                        if(value.domain == 'Both')
-                        {
-                            subDomains[s][n]['Natural Science'] = 1;
-                            subDomains[s][n]['Physical Science'] = 1;
-                        }
-                        else
-                        {
-                            subDomains[s][n][value.domain] = 1;
-                        }
+                        subDomains[s][n][value.domain] = 1;
                     }
                 });
             });
 
             return result;
         }, {
-            'Chloropleth / Heatmap': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Simple Map': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Choropleth / Heatmap': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Ball and Stick / Mesh': _.cloneDeep(nonSpatialTemplate),//{ enc odings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Isosurface / Streamlines': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Volume / Images': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Contour' : _.cloneDeep(nonSpatialTemplate),
             'Glyph': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Animation': _.cloneDeep(nonSpatialTemplate)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
         });
@@ -183,8 +177,6 @@ var Parser = function() {
 
                 totalCounts[value.domain] += 1;
 
-            console.log(value);
-
                 /* Parse the User Tasks */
                 value.tasks.forEach(function(task){
 
@@ -192,8 +184,8 @@ var Parser = function() {
                     result[0][task][value.domain] += 1;
 
                     // store the corresponding authors in another array
-                    authors[0][value.domain][task] = authors[0][value.domain][task] || [];
-                    authors[0][value.domain][task].push({label: value['author'].trim(), year: value['year']});
+                    //authors[0][value.domain][task] = authors[0][value.domain][task] || [];
+                    //authors[0][value.domain][task].push({label: value['author'].trim(), year: value['year']});
 
                 });
 
@@ -204,8 +196,8 @@ var Parser = function() {
                     result[1][type][value.domain] += 1;
 
                     // store the corresponding authors in another array
-                    authors[1][value.domain][type] = authors[1][value.domain][type] || [];
-                    authors[1][value.domain][type].push({label: value['author'].trim(), year: value['year']});
+                    //authors[1][value.domain][type] = authors[1][value.domain][type] || [];
+                    //authors[1][value.domain][type].push({label: value['author'].trim(), year: value['year']});
 
                 });
 
@@ -218,8 +210,8 @@ var Parser = function() {
                         result[2][type][value.domain] += 1;
 
                         // store the corresponding authors in another array
-                        authors[2][value.domain][type] = authors[2][value.domain][type] || [];
-                        authors[2][value.domain][type].push({label: value['author'].trim(), year: value['year']});
+                        //authors[2][value.domain][type] = authors[2][value.domain][type] || [];
+                        //authors[2][value.domain][type].push({label: value['author'].trim(), year: value['year']});
 
                 });
 
@@ -227,8 +219,8 @@ var Parser = function() {
                 result[3][value.year][value.evaluators] += 1;
 
                 /* Parse the author for the evaluator year */
-                authors[3][value.evaluators][value.year] = authors[3][value.evaluators][value.year] || [];
-                authors[3][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
+                //authors[3][value.evaluators][value.year] = authors[3][value.evaluators][value.year] || [];
+                //authors[3][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
 
                 return result;
             },

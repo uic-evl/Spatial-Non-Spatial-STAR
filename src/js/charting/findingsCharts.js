@@ -350,7 +350,7 @@ var Graph = function (options) {
 
                 // x-axis
                 chart.xAxis.tickFormat(function (d) {
-                    return nonSpat[d][0];
+                    if (_.isInteger(d)) return nonSpat[d][0];
                 });
 
                 // y-axis

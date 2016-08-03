@@ -53,16 +53,16 @@ $(function() {
 
             // split the fields that are lists
             o["Data Types"] = o["Data Types"].split(",");
-            _.map(o["Data Types"], _.trimEnd);
+            _.map(o["Data Types"], _.trim);
 
-            o["Encodings"] = o["Encodings"].split(",");
-            _.map(o["Encodings"], _.trimEnd);
+            o["Encodings"] = o["Encodings"].split(", ");
+            _.map(o["Encodings"], _.trim);
 
             o["Tasks"] = o["Tasks"].split(",");
-            _.map(o["Tasks"], _.trimEnd);
+            _.map(o["Tasks"], _.trim);
 
             o["Evaluation Type"] = o["Evaluation Type"].split(",");
-            _.map(o["Evaluation Type"], _.trimEnd);
+            _.map(o["Evaluation Type"], _.trim);
 
         });
 
@@ -100,11 +100,11 @@ $(function() {
 
         // get the parsed encodings
         var encodingData = App.dataParser.parseEncodings(data);
-        var taskData = App.dataParser.parseFields(data, subDomains);
+        //var taskData = App.dataParser.parseFields(data, subDomains);
 
         // plot the bubble scatter plots
-        // App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-        //     encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+        App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
+             encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
         //
         // if($('.col-md-6').width() > 600)
         // {
