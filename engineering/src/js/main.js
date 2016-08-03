@@ -112,7 +112,7 @@ $(function() {
         }
         );
 
-        var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('domain'))) ), "Both");
+        var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('subDomain'))) ), "Both");
 
         // get the parsed encodings and paradigms
         var encodingData = App.dataParser.parseEncodings(data);

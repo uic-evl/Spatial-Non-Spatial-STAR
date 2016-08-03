@@ -16,7 +16,7 @@ function Papers() {
                 ]
             },
             {
-                name: 'Domain',
+                name: 'SubDomain',
                 elements: [
                     {text: "Gene Expression", category: "subDomain"},
                     {text: "Microscopy", category: "subDomain" },
@@ -106,5 +106,6 @@ function Papers() {
 
 /*** IFE to load the data and apply the KO bindings ***/
 (function(){
+    App.papers = new Papers;
     ko.applyBindings(new Papers());
 })();

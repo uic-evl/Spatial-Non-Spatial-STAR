@@ -659,6 +659,7 @@ var Graph = function (options) {
 
             });
 
+        console.log(datum);
 
         var totWidth = d3.select('.taskDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -680,7 +681,7 @@ var Graph = function (options) {
                         return d.value
                     })
                     .margin({left: 30, bottom: 60})
-                    .showLegend(true)
+                    .showLegend(false)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
@@ -809,7 +810,7 @@ var Graph = function (options) {
                     .y(function (d) {
                         return d.value
                     })
-                    .showLegend(true)
+                    .showLegend(false)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)

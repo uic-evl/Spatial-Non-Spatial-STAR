@@ -20,12 +20,12 @@ var DB = DB || {};
 
                 // Define your database schema
                 self.db.version(1).stores({
-                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, evaluators, *evaluation'
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, *subDomain, evaluators, *evaluation'
                 });
 
                 // version 2 with the modified data
                 self.db.version(2).stores({
-                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, evaluators'
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, *subDomain, evaluators'
                 }).upgrade(function(t)
                 {
                     var incomingRecords = _.cloneDeep(records);
@@ -44,7 +44,8 @@ var DB = DB || {};
                         paper.encodings =  updatedRecord["Encodings"] ;
                         paper.tasks =      updatedRecord["Tasks"] ;
                         paper.paradigms =  updatedRecord["Paradigm"] ;
-                        paper.domain =     updatedRecord["SubDomain"] ;
+                        paper.domain =     updatedRecord["Domain"] ;
+                        paper.subDomain =  updatedRecord["SubDomain"] ;
                         paper.evaluators = updatedRecord["Evaluators"] ;
                         paper.evaluation = updatedRecord["Evaluation Type"] ;
                         paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
@@ -55,7 +56,7 @@ var DB = DB || {};
 
                 // version 2 with the modified data
                 self.db.version(3).stores({
-                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, evaluators, *evaluation'
+                    papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, *subDomain, evaluators, *evaluation'
                 }).upgrade(function(t)
                 {
                     var incomingRecords = _.cloneDeep(records);
@@ -74,7 +75,8 @@ var DB = DB || {};
                         paper.encodings =  updatedRecord["Encodings"] ;
                         paper.tasks =      updatedRecord["Tasks"] ;
                         paper.paradigms =  updatedRecord["Paradigm"] ;
-                        paper.domain =     updatedRecord["SubDomain"] ;
+                        paper.domain =     updatedRecord["Domain"] ;
+                        paper.subDomain =  updatedRecord["SubDomain"] ;
                         paper.evaluators = updatedRecord["Evaluators"] ;
                         paper.evaluation = updatedRecord["Evaluation Type"] ;
                         paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
@@ -104,7 +106,8 @@ var DB = DB || {};
                         encodings:  record["Encodings"],
                         tasks:      record["Tasks"],
                         paradigms:  record["Paradigm"],
-                        domain:     record["SubDomain"],
+                        subDomain:     record["SubDomain"],
+                        domain:     record["Domain"],
                         evaluators: record["Evaluators"],
                         evaluation: record["Evaluation Type"],
                         expertise:  record["Single/Mixed Expertise"],

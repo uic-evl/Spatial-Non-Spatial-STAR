@@ -52,18 +52,20 @@ $(function() {
             delete o["Bibtex Entry"];
 
             // split the fields that are lists
-            o["Data Types"] = o["Data Types"].split(",");
+            o["Data Types"] = o["Data Types"].split(", ");
             _.map(o["Data Types"], _.trim);
 
             o["Encodings"] = o["Encodings"].split(", ");
             _.map(o["Encodings"], _.trim);
 
-            o["Tasks"] = o["Tasks"].split(",");
+            o["Tasks"] = o["Tasks"].split(", ");
             _.map(o["Tasks"], _.trim);
 
             o["Evaluation Type"] = o["Evaluation Type"].split(",");
             _.map(o["Evaluation Type"], _.trim);
 
+            o["SubDomain"] = o["SubDomain"].split(", ");
+            _.map(o["SubDomain"], _.trim);
         });
 
         /** create the new database for the session **/
@@ -84,7 +86,7 @@ $(function() {
     function setupCharts(data){
 
         /** initialize a new bubble graph **/
-        App.engGraph = new Graph(
+        App.bioGraph = new Graph(
             {
                 colorMap: {
                     "Natural Science": "#beaed4",
@@ -96,36 +98,38 @@ $(function() {
 
         App.dataParser = new Parser();
 
-        var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('domain'))) ), "Both");
+        var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('subDomain'))) ), "Both");
 
         // get the parsed encodings
         var encodingData = App.dataParser.parseEncodings(data);
-        //var taskData = App.dataParser.parseFields(data, subDomains);
+        var taskData = App.dataParser.parseFields(data, subDomains);
+
+        console.log(taskData.subDomains);
 
         // plot the bubble scatter plots
-        App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
+        App.bioGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
              encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
-        //
-        // if($('.col-md-6').width() > 600)
-        // {
-        //     d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
-        //     d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
-        // }
+
+        if($('.col-md-6').width() > 600)
+        {
+            d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
+            d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
+        }
         //
         // // plot the task analysis
-        // App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
-        //     subDomains, taskData.authors[0], taskData.count);
-        //
+        App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
+            taskData.subDomains, taskData.authors[0], taskData.count);
+
         // // plot the data type analysis
-        // App.engGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
-        //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[1], taskData.count);
-        //
+        //App.bioGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
+        //    ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[1], taskData.count);
+
         // // plot the data type analysis
-        // App.engGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
+        // App.bioGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
         //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[2], taskData.count);
         //
         // // plot the data type analysis
-        // App.engGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
+        // App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
         //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
     }
 

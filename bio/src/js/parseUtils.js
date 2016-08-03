@@ -140,87 +140,103 @@ var Parser = function() {
         /* creates a template for parsing the data */
         var taskTemplate = _.reduce(subDomains,
             function(result, value, key){
-                result[value] = 0;
+                value.forEach(function(v){
+                    if(v.length > 0) result[v] = 0;
+                });
                 return result;
             }, {});
 
-        var totalCounts = {
-            "Natural Science": 0,
-            "Physical Science": 0,
-            "Simulation": 0
-        };
+        var totalCounts = {},
+            subDomainTemplate = {},
+            template = [], templateMap = {},
+            parsedSubDomains = [], j = 0;
+
+        subDomains.forEach(function(domains){
+            domains.forEach(function(domain){
+                var d = domain.trim();
+                if(d.length > 0 && totalCounts[d] == null)
+                {
+                    totalCounts[d] = 0;
+                    subDomainTemplate[d] = {};
+
+                    template.push({key: d, values: []});
+                    templateMap[d] = j++;
+
+                    parsedSubDomains.push(domain);
+                }
+            });
+        });
 
         var authors = [
+            _.cloneDeep(subDomainTemplate),
+            _.cloneDeep(subDomainTemplate),
+            _.cloneDeep(subDomainTemplate),
             {
-                'Simulation': {},
-                'Physical Science': {},
-                'Natural Science': {}
-            },
-            {
-                'Simulation': {},
-                'Physical Science': {},
-                'Natural Science': {}
-            },
-            {
-                'Simulation': {},
-                'Physical Science': {},
-                'Natural Science': {}
-            },
-            {
-                "Domain Experts" : {},
+                "Domain Experts"        : {},
                 "Visualization Experts" : {}
             }
         ];
 
         var data = _.reduce(rows, function(result, value, key) {
 
+            /* iterate over the domains */
 
-                totalCounts[value.domain] += 1;
+                value.subDomain.forEach(function(domain) {
+                    if(domain.length === 0) return;
+                    totalCounts[domain] += 1;
+                });
 
                 /* Parse the User Tasks */
                 value.tasks.forEach(function(task){
-
-                    // increment the task count
-                    result[0][task][value.domain] += 1;
-
                     // store the corresponding authors in another array
-                    //authors[0][value.domain][task] = authors[0][value.domain][task] || [];
-                    //authors[0][value.domain][task].push({label: value['author'].trim(), year: value['year']});
+                    value.subDomain.forEach(function(domain) {
 
+                        if(domain.length === 0) return;
+
+                        // increment the task count
+                        result[0][task][domain] += 1;
+                        authors[0][domain][task] = authors[0][domain][task] || [];
+                        authors[0][domain][task].push({label: value['author'].trim(), year: value['year']});
+                    });
                 });
 
                 /* Parse the data types */
                 value.dataTypes.forEach(function(type){
 
-                    // increment the data type count
-                    result[1][type][value.domain] += 1;
+                    type = type.trim();
+
 
                     // store the corresponding authors in another array
-                    //authors[1][value.domain][type] = authors[1][value.domain][type] || [];
-                    //authors[1][value.domain][type].push({label: value['author'].trim(), year: value['year']});
+                    value.subDomain.forEach(function(domain) {
+                        if(domain.length === 0) return;
+                        // increment the data type count
+                        result[1][type][domain] += 1;
+                        authors[1][domain][type] = authors[1][domain][type] || [];
+                        authors[1][domain][type].push({label: value['author'].trim(), year: value['year']});
+                    });
 
                 });
 
                 /* Parse the evaluation types */
-                value.evaluation.forEach(function(type){
-
-                    type = type.trim();
-
-                        // increment the data type count
-                        result[2][type][value.domain] += 1;
-
-                        // store the corresponding authors in another array
-                        //authors[2][value.domain][type] = authors[2][value.domain][type] || [];
-                        //authors[2][value.domain][type].push({label: value['author'].trim(), year: value['year']});
-
-                });
+                // value.evaluation.forEach(function(type){
+                //
+                //     type = type.trim();
+                //
+                //     // increment the data type count
+                //     result[2][type][domain] += 1;
+                //
+                //     // store the corresponding authors in another array
+                //     authors[2][domain][type] = authors[2][domain][type] || [];
+                //     authors[2][domain][type].push({label: value['author'].trim(), year: value['year']});
+                //
+                // });
 
                 /* Parse the Evaluators */
                 result[3][value.year][value.evaluators] += 1;
 
                 /* Parse the author for the evaluator year */
-                //authors[3][value.evaluators][value.year] = authors[3][value.evaluators][value.year] || [];
-                //authors[3][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
+                authors[3][value.evaluators][value.year] = authors[3][value.evaluators][value.year] || [];
+                authors[3][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
 
                 return result;
             },
@@ -252,6 +268,7 @@ var Parser = function() {
                     "User Study"            : _.cloneDeep(taskTemplate)
                 },
                 {
+                    "2005": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2006": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2007": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2008": {"Domain Experts" : 0, "Visualization Experts" : 0},
@@ -261,111 +278,37 @@ var Parser = function() {
                     "2012": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2013": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2014": {"Domain Experts" : 0, "Visualization Experts" : 0},
-                    "2015": {"Domain Experts" : 0, "Visualization Experts" : 0}
+                    "2015": {"Domain Experts" : 0, "Visualization Experts" : 0},
+                    "2016": {"Domain Experts" : 0, "Visualization Experts" : 0}
                 }
             ]);
 
         /** Map the data into the correct format for use **/
 
-        var mappedTasks = _.reduce(data[0], function (result, value, key) {
+        var maps = [ ];
+        for(var i = 0; i < 1; i++){
 
-                result[0].values.push({label: key, value: value["Natural Science"], color: "#beaed4"});
-                result[1].values.push({label: key, value: value["Physical Science"], color: "#fdc086"});
-                result[2].values.push({label:  key, value: value["Simulation"], color: "#7fc97f"});
+            maps.push(_.reduce(data[i], function (result, value, key) {
 
-                return result;
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
+                    _.keys(value).forEach(function(k, j){
 
-        var mappedTypes = _.reduce(data[1], function (result, value, key) {
+                        console.log(value[k]);
 
-                result[0].values.push({
-                    label: key,
-                    value: value["Natural Science"],
-                    authors: authors[1]["Natural Science"][value.DataType],
-                    color: "#beaed4"
-                });
+                        result[i].values.push({
+                            label: key,
+                            value: value[k],
+                            authors: authors[i][k][key]
+                            //color: "#beaed4"//options.colorMap[0][k]
+                        });
+                    });
 
-                result[1].values.push({
-                    label: key,
-                    value: value["Physical Science"],
-                    authors: authors[1]["Physical Science"][value.DataType],
-                    color: "#fdc086"
-                });
+                    return result;
+                }, template )
+            );
+        }
 
-                result[2].values.push({
-                    label: key,
-                    value: value["Simulation"],
-                    authors: authors[1]["Simulation"][value.DataType],
-                    color: "#7fc97f"
-                });
-
-                return result;
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
-
-        var mappedEval = _.reduce(data[2], function (result, value, key) {
-
-                result[0].values.push({
-                    label: key,
-                    value: value["Natural Science"],
-                    authors: authors[2]["Natural Science"][value.Evaluation],
-                    color: "#beaed4"
-                });
-
-                result[1].values.push({
-                    label: key,
-                    value: value["Physical Science"],
-                    authors: authors[2]["Physical Science"][value.Evaluation],
-                    color: "#fdc086"
-                });
-
-                result[2].values.push({
-                    label: key,
-                    value: value["Simulation"],
-                    authors: authors[2]["Simulation"][value.Evaluation],
-                    color: "#7fc97f"
-                });
-                return result;
-            },
-            [
-                {key: "Natural Science", values: [], color: "#beaed4"},
-                {key: "Physical Science", values: [], color: "#fdc086"},
-                {key: "Simulation", values: [], color: "#7fc97f"}
-            ]);
-
-        var mappedEvaluators = _.reduce(data[3], function (result, value, key) {
-
-                result[0].values.push({
-                    label: key,
-                    value: value["Domain Experts"],
-                    authors: authors[3]["Domain Experts"][value.Year],
-                    color: "#fbb4ae"
-                });
-
-                result[1].values.push({
-                    label: key,
-                    value: value["Visualization Experts"],
-                    authors: authors[3]["Visualization Experts"][value.Year],
-                    color: "#b3cde3"
-                });
-
-                return result;
-            },
-            [
-                {key: "Domain Experts", values: [], color: "#fbb4ae"},
-                {key: "Visualization Experts", values: [], color: "#b3cde3"}
-            ]);
-
-        return {tasks: mappedTasks, dataTypes: mappedTypes, evaluation: mappedEval, evaluators: mappedEvaluators,
-            groups: taskNames, authors: authors, count: totalCounts};
+        return { tasks: maps[0], dataTypes: maps[1], evaluation: maps[2],
+            //evaluators: mappedEvaluators, paradigms: maps[3],
+            groups: taskNames, authors: authors, count: totalCounts, subDomains: parsedSubDomains};
     };
 };
