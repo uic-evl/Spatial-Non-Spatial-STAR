@@ -102,9 +102,7 @@ $(function() {
 
         // get the parsed encodings
         var encodingData = App.dataParser.parseEncodings(data);
-        var taskData = App.dataParser.parseFields(data, subDomains);
-
-        console.log(taskData.subDomains);
+        //var taskData = App.dataParser.parseFields(data, subDomains);
 
         // plot the bubble scatter plots
         App.bioGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
@@ -117,8 +115,8 @@ $(function() {
         }
         //
         // // plot the task analysis
-        App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
-            taskData.subDomains, taskData.authors[0], taskData.count);
+        //App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
+        //    taskData.subDomains, taskData.authors[0], taskData.count);
 
         // // plot the data type analysis
         //App.bioGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
