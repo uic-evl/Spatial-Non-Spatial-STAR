@@ -106,7 +106,7 @@ var DB = DB || {};
                         encodings:  record["Encodings"],
                         tasks:      record["Tasks"],
                         paradigms:  record["Paradigm"],
-                        subDomain:     record["SubDomain"],
+                        subDomain:  record["SubDomain"],
                         domain:     record["Domain"],
                         evaluators: record["Evaluators"],
                         evaluation: record["Evaluation Type"],
@@ -234,7 +234,7 @@ var DB = DB || {};
         queryPapers : function(query, cb) {
 
             // Store the papers that are found
-            var dataTypes = [], encodings = [], paradigms = [], evaluators = [], domain = [];
+            var dataTypes = [], encodings = [], paradigms = [], evaluators = [], domain = [], subDomain = [];
             // Promise array
             var promises = [];
 
@@ -247,6 +247,11 @@ var DB = DB || {};
                 promises.push(self.db.papers
                     .where("domain")
                     .anyOf(query.or.domain)
+                    .toArray());
+
+                promises.push(self.db.papers
+                    .where("subDomain")
+                    .anyOf(query.or.subDomain)
                     .toArray());
 
                 // Data Types

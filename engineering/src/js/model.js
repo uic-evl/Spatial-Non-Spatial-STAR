@@ -9,11 +9,11 @@ function Papers() {
     self.fields = ko.observableArray(
         [
             {
-                name: 'Domain',
+                name: 'Sub-Domain',
                 elements: [
-                    {text: "Natural Science", category: "domain"},
-                    {text: "Physical Science", category: "domain" },
-                    {text: "Simulation", category: "domain"}
+                    {text: "Natural Science", category: "subDomain"},
+                    {text: "Physical Science", category: "subDomain" },
+                    {text: "Simulation", category: "subDomain"}
                 ]
             },
             {

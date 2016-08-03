@@ -291,7 +291,7 @@ var Graph = function (options) {
                 chart = nv.models.scatterChart()
                     // .reduceXTicks(false)
                     .showLegend(false)
-                    .margin({bottom: 100, left: 100, right: 20})
+                    .margin({bottom: 100, left: 150, right: 20})
                     .pointRange([0, (parseInt(totWidth * 0.06) * 50)])
                     .useVoronoi(false)
                 ;
@@ -350,12 +350,22 @@ var Graph = function (options) {
 
                 // x-axis
                 chart.xAxis.tickFormat(function (d) {
-                    if (_.isInteger(d)) return nonSpat[d][0];
+                    if (_.isInteger(d))  return nonSpat[d][0];
                 });
 
                 // y-axis
                 chart.yAxis.tickFormat(function (d) {
-                    if (_.isInteger(d)) return spat[d][0];
+                    if (_.isInteger(d))
+                    {
+                        if(spat[d][0] === "Non-Spatial Nesting")
+                        {
+                            return "Non-Spatial / Nesting"
+                        }
+                        else
+                        {
+                            return nonSpat[d][0];
+                        }
+                    }
                 });
 
                 // add the data to the chart
@@ -363,7 +373,7 @@ var Graph = function (options) {
                     .datum([datum])
                     .call(chart);
 
-                nv.utils.windowResize(chart.update);
+                //nv.utils.windowResize(chart.update);
 
 
                 return chart;

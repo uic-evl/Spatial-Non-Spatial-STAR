@@ -67,6 +67,9 @@ $(function() {
             o["Paradigm"] = o["Paradigm"].split(" / ");
             _.map(o["Paradigm"], _.trimEnd);
 
+            o["SubDomain"] = o["SubDomain"].split(", ");
+            _.map(o["SubDomain"], _.trim);
+
         });
 
         /** create the new database for the session **/
@@ -136,8 +139,8 @@ $(function() {
 
         if($('.col-md-6').width() > 600)
         {
-            d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
-            d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
+            d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-5': true});
+            //d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
         }
 
         // plot the task analysis
@@ -218,7 +221,7 @@ $(function() {
                         {title: "Paper Title", data: "title", className: "dt-center",  "targets": [ 0 ]},
                         // {title: "Url", data: "url"},
                         // {title: "Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
-                        {title: "Sub-Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
+                        {title: "Sub-Domain", data: "subDomain", className: "dt-center",  "targets": [ 0 ]},
                         // {title: "No. of Users", data: "# of Users"},
                         // {title: "Users", data: "Users"},
                         {title: "Level of Expertise", data: "expertise", className: "dt-center",  "targets": [ 0 ]},
@@ -338,6 +341,7 @@ $(function() {
         var input = [], operator = [], values = [],
             advanced = {
                 domain: [],
+                subDomain: [],
                 dataTypes: [],
                 paradigms: [],
                 encodings: [],
