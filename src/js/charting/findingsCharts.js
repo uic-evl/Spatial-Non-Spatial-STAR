@@ -258,14 +258,14 @@ var Graph = function (options) {
         // reset the iterator and create the spatial map
         i = 0;
         var datum = _.reduce(data, function (result, value, key) {
-            spatialMap[value.Spatial] = i++;
+            spatialMap[value.yProp] = i++;
             value.groups.forEach(function (obj) {
                 result.values.push({
                     size: obj.value * 100,
-                    y: spatialMap[value.Spatial],
+                    y: spatialMap[value.yProp],
                     x: nonSpatialMap[obj.label],
-                    domains: subDomains[value.Spatial][obj.label],
-                    authors: authors[value.Spatial][obj.label]
+                    domains: subDomains[value.yProp][obj.label],
+                    authors: authors[value.yProp][obj.label]
                 });
             });
             return result;
@@ -291,7 +291,7 @@ var Graph = function (options) {
                 chart = nv.models.scatterChart()
                     // .reduceXTicks(false)
                     .showLegend(false)
-                    .margin({bottom: 100, left: 150, right: 20})
+                    .margin({bottom: 100, left: 100, right: 20})
                     .pointRange([0, (parseInt(totWidth * 0.06) * 50)])
                     .useVoronoi(false)
                 ;
@@ -362,6 +362,9 @@ var Graph = function (options) {
                 d3.select(chartDiv + ' svg')
                     .datum([datum])
                     .call(chart);
+
+                nv.utils.windowResize(chart.update);
+
 
                 return chart;
         },
@@ -658,8 +661,6 @@ var Graph = function (options) {
                 });
 
             });
-
-        console.log(datum);
 
         var totWidth = d3.select('.taskDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;

@@ -3,6 +3,28 @@ var Parser = function(options) {
 
     var self = this;
 
+    function formatBubbleData(data){
+
+        // Finally, map to the format needed for the chart
+        var max = 0;
+        return _.map(data, function(d, k, o)
+        {
+            var localMax = _.max(_.values(d));
+            max = Math.max(max, localMax);
+
+            var obj = {};
+            obj.groups = [];
+            obj.yProp = k;
+
+            var pairs = _.toPairs(d);
+            pairs.forEach(function(arr){
+                obj.groups.push({label: arr[0], value: parseInt(arr[1])});
+            });
+
+            return obj;
+        });
+    }
+
     /**
      * Parses the data from the Google Sheets for use in the charts
      *
@@ -197,6 +219,86 @@ var Parser = function(options) {
         });
 
         return {hybrids: hybrid, max: max};
+
+    };
+
+    self.parseArbFields = function(rows, xProp, yProp) {
+
+        var authors = {}, subDomains = {};
+
+        var template = {},
+            xDomain = [],
+            yDomain = [];
+
+        /* construct the template for the parsing and the x/y domains */
+        rows.forEach(function(row){
+
+            if(_.isArray(row[xProp]))
+            {
+                row[xProp].forEach(function(x){
+                    if (xDomain.indexOf(x) < 0) xDomain.push(x);
+                });
+            }
+            else
+            {
+                if (xDomain.indexOf(row[xProp]) < 0) xDomain.push(row[xProp]);
+            }
+
+            if(_.isArray(row[yProp]))
+            {
+                row[yProp].forEach(function(y){
+
+                    template[y] = {};
+                    authors[y] = {};
+                    subDomains[y] = {};
+
+                    if (yDomain.indexOf(y) < 0) yDomain.push(y);
+                });
+            }
+            else
+            {
+                authors[row[yProp]] = {};
+                template[row[yProp]] = {};
+                subDomains[row[yProp]] = {};
+
+                if (yDomain.indexOf(row[yProp]) < 0) yDomain.push(row[yProp]);
+            }
+        });
+
+        /** iterate over the resutls to combine the encodings **/
+        var output = _.reduce(rows, function(result, value, key) {
+
+                /** Separate the spatial and non-spatial encodings **/
+                var x  = _.intersection(value[xProp], xDomain);
+                var y  = _.intersection(value[yProp], yDomain);
+
+                y.forEach(function(s){
+                    x.forEach(function(n){
+
+                        // increment the result
+                        result[s][n] = result[s][n] || 0;
+                        result[s][n] += 1;
+
+                        // store the corresponding authors in another array
+                        authors[s][n] = authors[s][n] || [];
+                        authors[s][n].push({label: value['author'].trim(), year: value['year']});
+
+                        // create a count of the sub domains per encoding pair
+                        subDomains[s][n] = subDomains[s][n] || {};
+                        subDomains[s][n][value.subDomain] = subDomains[s][n][value.subDomain] || 0;
+                        subDomains[s][n][value.subDomain] += 1;
+
+                    });
+                });
+                return result;
+            },
+            _.cloneDeep(template)
+        );
+
+        // Format the data to fit into the bubble chart
+        output = formatBubbleData(output, yProp);
+
+        return {pairings : output, authors: authors, xDomain : xDomain, yDomain : yDomain, subDomains: subDomains};
 
     };
 
