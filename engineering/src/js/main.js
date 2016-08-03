@@ -123,7 +123,11 @@ $(function() {
 
         // plot the bubble scatter plots
         App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-            encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+           encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+
+        // plot the bubble scatter plots
+        // App.engGraph.graphParadigmBubbleNVD3Chart(hybridData.hybrids, "#encodings", hybridData.max,
+        //     [ "1. Linked Views", "2. Overlays",  "3. Non-Spatial Nesting"]);
 
         if($('.col-md-6').width() > 600)
         {
@@ -150,7 +154,6 @@ $(function() {
         // plot the data type analysis
         App.engGraph.graphParadigmsNVD3Chart(taskData.paradigms, "#paradigms", 0,
             ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
-
     }
 
     function setupTable(data) {

@@ -158,9 +158,9 @@ var Parser = function(options) {
             return result;
         },
         {
-            "Spatial Nesting" : {"Overlays": 0, "Linked Views": 0},
-            "Overlays" : {"Linked Views": 0, "Non-Spatial Nesting": 0},
-            "Non-Spatial Nesting" : {"Linked Views": 0}
+            "Spatial Nesting" : {"Overlays": 0, "Linked Views": 0, "Non-Spatial Nesting" : 0},
+            "Overlays" : {"Linked Views": 0, "Non-Spatial Nesting": 0, "Spatial Nesting" : 0},
+            "Non-Spatial Nesting" : {"Linked Views": 0, "Overlays": 0, "Spatial Nesting" : 0}
         }
         );
 
@@ -168,19 +168,29 @@ var Parser = function(options) {
         var max = 0;
         hybrid = _.map(hybrid, function(d, k, o)
         {
-
-            console.log(d,k,o);
-
-             var localMax = _.max(_.values(d));
-             max = Math.max(max, localMax);
+            var localMax = _.max(_.values(d));
+            max = Math.max(max, localMax);
 
             var obj = {};
             obj.groups = [];
-            obj.Spatial = k;
+
+            switch(k){
+                case "Spatial Nesting": obj.Paradigm      =  "4. Spatial Nesting"; break;
+                case "Non-Spatial Nesting": obj.Paradigm  =  "3. Non-Spatial Nesting"; break;
+                case "Overlays": obj.Paradigm             =  "2. Overlays"; break;
+            }
 
             var pairs = _.toPairs(d);
             pairs.forEach(function(arr){
-                obj.groups.push({label: arr[0], value: parseInt(arr[1])});
+
+                var label = "";
+                switch(arr[0]){
+                    case "Spatial Nesting":      label =  "4. Spatial Nesting"; break;
+                    case "Non-Spatial Nesting":  label =  "3. Non-Spatial Nesting"; break;
+                    case "Overlays":             label =  "2. Overlays"; break;
+                    case "Linked Views":         label =  "1. Linked Views"; break;
+                }
+                obj.groups.push({label: label, value: parseInt(arr[1])});
             });
 
             return obj;
