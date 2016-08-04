@@ -145,7 +145,6 @@ var Parser = function(options) {
         return {encodings: encodings, authors: authors, subDomains: subDomains, max: max, groups: nonSpatial};
     };
 
-
     self.parseArbFields = function(rows, xProp, yProp) {
 
         var authors = {}, subDomains = {};
