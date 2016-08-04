@@ -234,6 +234,26 @@ var Graph = function (options) {
         });
     }
 
+    function truncate(text, width) {
+
+        text.each(function(d){
+
+            var text = d3.select(this);
+            var label = text.text();
+            if(label.length < 1) return;
+
+            var textSize = text.style('font-size').split('px')[0];
+            var numLetters = width / textSize;
+
+            if(text.node().getComputedTextLength() > (width-25)){
+                text.text(label.substring(0, parseInt(numLetters))+'...');
+
+                d3.select(text.node().parentNode).append("svg:title")
+                    .text(label);
+            }
+        });
+    }
+
     /**
      * Creates and plots the Bubble Scatter Plot
      *
@@ -257,7 +277,7 @@ var Graph = function (options) {
 
         // reset the iterator and create the spatial map
         i = 0;
-        var datum = _.reduce(data, function (result, value, key) {
+        var datum = _.reduce(data, function (result, value) {
             spatialMap[value.yProp] = i++;
             value.groups.forEach(function (obj) {
                 result.values.push({
@@ -276,7 +296,8 @@ var Graph = function (options) {
 
         /* the width and height of the chart */
         var totWidth = d3.select('.chartDivBubbles').node().clientWidth,
-            totHeight = totWidth * 0.9,
+            totHeight = totWidth * 0.8,
+
             chart = null;
 
         var nonSpat = _.toPairs(nonSpatialMap);
@@ -284,17 +305,15 @@ var Graph = function (options) {
 
         nv.addGraph(function () {
 
-                d3.select(chartDiv).append("svg")
-                    .attr("width", totWidth)
-                    .attr("height", totHeight);
+            d3.select(chartDiv).append("svg")
+                .attr("width", totWidth)
+                .attr("height", totHeight);
 
-                chart = nv.models.scatterChart()
-                    // .reduceXTicks(false)
-                    .showLegend(false)
-                    .margin({bottom: 100, left: 150, right: 20})
-                    .pointRange([0, (parseInt(totWidth * 0.06) * 50)])
-                    .useVoronoi(false)
-                ;
+            chart = nv.models.scatterChart()
+                .showLegend(false)
+                .margin({bottom: 100, left: totWidth / 4, right: 20})
+                .pointRange([0, (parseInt(totWidth * 0.06) * 50)])
+                .useVoronoi(false);
 
                 /* Set the header formatter */
                 chart.tooltip.headerFormatter(function(d,i){
@@ -307,7 +326,6 @@ var Graph = function (options) {
                 });
 
                 var previousTooltip = chart.tooltip.contentGenerator();
-
                 chart.tooltip.contentGenerator(function (d) {
 
                     if(!d.point.domains) return;
@@ -364,23 +382,21 @@ var Graph = function (options) {
                     .call(chart);
 
                 //nv.utils.windowResize(chart.update);
-
-
                 return chart;
         },
             function () {
 
                 // wrap the text of the y-axis
                 d3.selectAll(chartDiv + ' svg .nv-y text')
-                    .call(wrap, chart.yRange())
-                    .attr('transform', 'translate(' + -75 + ',' + '0)')
+                    .call(truncate, chart.margin().left)
+                    .attr('transform', 'translate(' + -20 + ',' + '0)')
                     .style({"text-anchor": "end", "font-weight": "bold"});
 
                 // move the text of the x-axis down and rotate it
                 d3.select(chartDiv + ' svg .nv-x .nv-axis')
                     .attr('transform', 'translate(' + -10 + ',' + chart.margin().bottom / 3.0 + ')')
                     .selectAll('text')
-                    .style({"text-anchor": "end", "font-weight": "bolder"})
+                    .style({"text-anchor": "end", "font-weight": "bold"})
                     .attr("transform", "rotate(-45)");
 
                 $(chartDiv + " svg .nv-point").each(function (i, elem) {
@@ -403,188 +419,6 @@ var Graph = function (options) {
             }
         );
     };
-
-    /**
-     * Creates and plots the Bubble Scatter Plot
-     *
-     * @constructor
-     * @this {Graph}
-     * @param {Object} data The data to be mapped
-     * @param {String} chartDiv ID if the div the chart is created in
-     * @param {number} maxValue The count of that the largest circle will possess
-     * @param {Array} paradigmNames The values for the x-axis
-     * @param {Array} authors The authors corresponding to the data
-     * @param {Array} subDomains Subdomains mapped to the encoding pairings
-     */
-    self.graphParadigmBubbleNVD3Chart = function (data, chartDiv, maxValue, paradigmNames, authors, subDomains) {
-
-        /* define the maps that will be used for the labels of the scatter plot bubble */
-        var xMap = {}, yMap = {
-            "1. Linked Views" : 0,
-            "2. Overlays": 1,
-            "3. Non-Spatial Nesting" : 2,
-            "4. Spatial Nesting" : 3
-        }, i = 0;
-
-        // create the X-Axis
-        paradigmNames.forEach(function (grp) {
-            xMap[grp] = i++;
-        });
-
-        console.log(data);
-
-        // reset the iterator and create the spatial map
-        var datum = _.reduce(data, function (result, value, key) {
-            //yMap[value.Paradigm] = i++;
-
-            value.groups.forEach(function (obj) {
-
-                 result.values.push({
-                     size: (obj.value > 0) ? Math.log(obj.value) * 100 : 0,
-                     x: xMap[obj.label],
-                     y: yMap[value.Paradigm],
-                     //     domains: subDomains[value.Paradigm][obj.label],
-                //     //authors: authors[value.Spatial][obj.label]
-                 });
-            });
-            return result;
-        }, {
-            key: "Group 1", values: []
-        });
-
-        /* the width and height of the chart */
-        var totWidth = d3.select('.chartDivBubbles').node().clientWidth,
-            totHeight = totWidth * 0.9,
-            chart = null;
-
-        var xPairs = _.toPairs(xMap);
-        var yPairs = _.toPairs(yMap);
-
-        nv.addGraph(function () {
-
-            d3.select(chartDiv).append("svg")
-                .attr("width", totWidth)
-                .attr("height", totHeight);
-
-            chart = nv.models.scatterChart()
-            // .reduceXTicks(false)
-                .showLegend(false)
-                .margin({bottom: 100, left: 150, right: 50})
-                .pointRange([0, (parseInt(totWidth * 0.06) * 50)])
-                .useVoronoi(false)
-            ;
-
-            /* Set the header formatter */
-            chart.tooltip.headerFormatter(function(d,i){
-                return "";
-            });
-
-            /* Set the value formatter to output the number of papers*/
-            chart.tooltip.valueFormatter(function(d,i){
-                return d;
-            });
-
-            // var previousTooltip = chart.tooltip.contentGenerator();
-            //
-            // chart.tooltip.contentGenerator(function (d) {
-            //
-            //     if(!d.point.domains) return;
-            //
-            //     d3.select('.nvtooltip').style('visibility', 'visible');
-            //
-            //     // clone the series data that the tooltip uses
-            //     var templateSeries = _.cloneDeep(d.series[0]);
-            //     // set the total number of papers
-            //     d.value = templateSeries.value;
-            //
-            //     // remove the old series value
-            //     d.series = [];
-            //
-            //     // iterate over the sub domain data to populate the tooltip
-            //     _.toPairs(d.point.domains).forEach(function(pair){
-            //
-            //         // create a copy of the template
-            //         var series = _.cloneDeep(templateSeries);
-            //
-            //         // series label
-            //         series.key = pair[0];
-            //         // series value
-            //         series.value = pair[1];
-            //         // series color
-            //         series.color = colorMap[series.key];
-            //
-            //         // add the label to the tooltip
-            //         d.series.push(series);
-            //     });
-            //
-            //     // clean up
-            //     templateSeries = null;
-            //
-            //     // call the default tooltip function with the newly modified data
-            //     return previousTooltip(d);
-            // });
-
-            /*** substitute the numerical labels for the ordinal values x-axis ***/
-
-            // x-axis
-            chart.xAxis.tickFormat(function (d) {
-                if (_.isInteger(d))
-                {
-                    return xPairs[d][0];
-                }
-            });
-
-            // y-axis
-            chart.yAxis.tickFormat(function (d) {
-                if (_.isInteger(d))
-                {
-                    return yPairs[d][0];
-                }
-            });
-
-            // add the data to the chart
-            d3.select(chartDiv + ' svg')
-                .datum([datum])
-                .call(chart);
-
-            return chart;
-        },
-            function () {
-
-                // wrap the text of the y-axis
-                d3.selectAll(chartDiv + ' svg .nv-y text')
-                    .call(wrap, chart.yRange())
-                    .attr('transform', 'translate(' + -75 + ',' + '0)')
-                    .style({"text-anchor": "end", "font-weight": "bold"});
-
-                // move the text of the x-axis down and rotate it
-                // d3.select(chartDiv + ' svg .nv-x .nv-axis')
-                //     .attr('transform', 'translate(' + -10 + ',' + chart.margin().bottom / 3.0 + ')')
-                //     .selectAll('text')
-                //     .style({"text-anchor": "end", "font-weight": "bolder"})
-                //     .attr("transform", "rotate(-45)");
-
-                // $(chartDiv + " svg .nv-point").each(function (i, elem) {
-                //
-                //     $(elem).hover(function () {
-                //
-                //             hoveringCB.call(
-                //                 {
-                //                     groups: grpNames,
-                //                     chart: d3.select("#results"), selector: '.nv-point'
-                //                 }, d3.select(elem).data()[0][0], 0, i)
-                //         },
-                //         function () {
-                //             endCB.call({authors: authors});
-                //         })
-                //         .click(function(){
-                //             clickCB.call(elem, d3.select(elem).data()[0]);
-                //         });
-                // });
-            }
-        );
-    };
-
 
     /**
      * Creates and plots the Task Bar Chart

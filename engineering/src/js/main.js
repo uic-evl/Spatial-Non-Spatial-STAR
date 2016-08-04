@@ -134,11 +134,11 @@ $(function() {
         // App.engGraph.graphParadigmBubbleNVD3Chart(hybridData.hybrids, "#encodings", hybridData.max,
         //     [ "1. Linked Views", "2. Overlays",  "3. Non-Spatial Nesting"]);
 
-        if($('.col-md-6').width() > 600)
-        {
-            d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-5': true});
+        //if($('.col-md-6').width() > 600)
+        //{
+            //d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-5': true});
             //d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
-        }
+        //}
 
         // plot the task analysis
         App.engGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
