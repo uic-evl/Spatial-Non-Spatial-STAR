@@ -93,6 +93,15 @@ function Papers() {
                 ]
             },
             {
+                name: 'Evaluation',
+                elements: [
+                    {text:"Case Study", category: "evaluation"},
+                    {text:"User Study", category: "evaluation"},
+                    {text:"Feedback", category: "evaluation"},
+                    {text:"Quantitative Analysis", category: "evaluation"}
+                ]
+            },
+            {
                 name: 'Evaluators',
                 elements: [
                     {text:"Domain Experts", category: "evaluators"},

@@ -38,10 +38,12 @@ function Papers() {
             {
                 name: 'Spatial Encodings',
                 elements: [
+                    {text:"Simple Map", category: "encodings"},
                     {text:"Choropheth / Heatmap", category: "encodings"},
                     {text:"Ball and Stick / Mesh", category: "encodings"},
                     {text:"Isosurface / Streamlines", category: "encodings"},
                     {text:"Volume / Images", category: "encodings"},
+                    {text:"Contour", category: "encodings"},
                     {text:"Glyphs", category: "encodings"},
                     {text:"Animation", category: "encodings"}
                 ]
@@ -50,12 +52,22 @@ function Papers() {
                 name: 'Non-Spatial Encodings',
                 elements: [
                     {text:"Color", category: "encodings"},
+                    {text:"Label", category: "encodings"},
+                    {text:"Bar Chart", category: "encodings"},
                     {text:"Line Chart", category: "encodings"},
+                    {text:"Sequence", category: "encodings"},
+                    {text:"Pie Chart", category: "encodings"}
+                ]},
+            {
+                name: '',
+                elements: [
                     {text:"Histogram", category: "encodings"},
                     {text:"Scatterplot", category: "encodings"},
+                    {text:"Box Plot", category: "encodings"},
                     {text:"Node-Link", category: "encodings"},
+                    {text:"Scatterplot Matrix", category: "encodings"},
                     {text:"Parallel Coordinates", category: "encodings"},
-                    {text:"Star-Plot", category: "encodings"}
+                    {text:"Matrix", category: "encodings"}
                 ]
             },
             {
@@ -64,10 +76,28 @@ function Papers() {
                     {text:"Domain Experts", category: "evaluators"},
                     {text:"Visualization Experts", category: "evaluators"}
                 ]
-            }
+            },
+            {
+                name: 'Evaluation',
+                elements: [
+                    {text:"Case Study", category: "evaluation"},
+                    {text:"User Study", category: "evaluation"},
+                    {text:"Feedback", category: "evaluation"},
+                    {text:"Quantitative Analysis", category: "evaluation"}
+                ]
+            },
         ]
     );
 
+    self.attributes = ko.observableArray(
+        [
+            "Tasks",
+            "Paradigms",
+            "DataTypes",
+            "Spatial Encodings",
+            "Non-Spatial Encodings"
+        ]
+    );
 }
 
 /*** IFE to load the data and apply the KO bindings ***/

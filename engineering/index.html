@@ -110,10 +110,10 @@
         <div id="searchContainer" class="container">
 
             <div class="row">
-                <div class="col-md-7 col-md-offset-3">
+                <div class="col-md-12">
 
                     <div class="row" style="padding-bottom: 10px;">
-                        <div class="col-md-12">
+                        <div class="col-md-offset-3 col-md-7">
                             <!--Set class "wowsearchform" to start wowsearchform plugin-->
                             <form id="myform" class="wowsearchform form-inline" method="post" onsubmit="event.preventDefault(); App.getResults(event);">
 
@@ -139,19 +139,24 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-offset-2 col-md-9">
                             <ul id="accordion" class="accordion">
                                 <li>
                                     <div class="link"><i class="fa fa-database"></i>Advanced<i class="fa fa-chevron-down"></i></div>
                                     <ul class="submenu">
                                         <li>
                                             <div class="container-fluid" data-bind="foreach: fields">
-
                                                 <div class="row" data-bind="css: { row: $index%3 >= 0 }">
                                                     <!-- Multiple Checkboxes -->
                                                     <div class="form-group col-md-4">
                                                         <div class="row">
-                                                            <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
+                                                            <!-- Check if there is a name. If not, it's a continued col-->
+                                                            <div data-bind="if: name.length > 0">
+                                                                <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
+                                                            </div>
+                                                            <div data-bind="if: name.length == 0">
+                                                                <br>
+                                                            </div>
                                                         </div>
                                                         <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
                                                             <div class="col-md-12">
@@ -164,6 +169,9 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <!--<div class="row">-->
+                                                            <!--<div class="col-md-12"><hr></div>-->
+                                                        <!--</div>-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -193,7 +201,19 @@
                     </div>
                     <div class="x_panel tile">
                         <div class="x_title">
-                            <h3>Spatial and Non-Spatial Encoding Pairings</h3>
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <h3>Spatial and Non-Spatial Encoding Pairings</h3>
+                                </div>
+                                <div class="col-md-1 settings">
+                                    <div id='cogEnc' class="container cog">
+                                        <a href="#">
+                                            <i class="fa fa-cog"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content" id="encodings"></div>
@@ -211,7 +231,7 @@
                             <div class="x_title">
                                 <div class="row">
                                     <div class="col-md-11">
-                                        <h3>DataSet</h3>
+                                        <h3>Dataset</h3>
                                     </div>
                                     <div class="col-md-1 settings">
                                         <div id='cogType' class="container cog">

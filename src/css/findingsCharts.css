@@ -89,3 +89,8 @@ tr.row_selected td {
     font-size: 1.5em;
     cursor: pointer;
 }
+
+#cogEnc .popover {
+    width:200px;
+    height:250px;
+}

@@ -267,6 +267,73 @@ var Graph = function (options) {
      * @param {Array} subDomains Subdomains mapped to the encoding pairings
      */
     self.graphEncodingBubbleNVD3Chart = function (data, chartDiv, maxValue, grpNames, authors, subDomains) {
+
+        $("#cogEnc a")
+            .popover({
+                container: "body",
+                title: 'Chart Settings',
+                placement: 'auto',
+                html: true,
+                delay: {"show": 100 },
+                content: "<div id='attributeSelector' class='container'>" +
+                            "<div class = row>" +
+                                "<div class='col-md-4'>" +
+                                    "<div class='row'>" +
+                                        "<div class='col-md-12 col-md-offset-3'>" +
+                                            "<h5>X Axis</h5>" +
+                                        "</div>" +
+                                        "<div class='col-md-12'>" +
+                                            "<select>" +
+                                                "<option>Tasks</option>" +
+                                                "<option>Datasets</option>" +
+                                                "<option>Paradigms</option>" +
+                                                "<option>Evaluation</option>" +
+                                                "<option>Evaluator</option>" +
+                                                "</select>"+
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>" +
+                                "<div class='col-md-4 col-md-offset-3'>" +
+                                    "<div class='row'>" +
+                                        "<div class='col-md-12 col-md-offset-3'>" +
+                                            "<h5>Y Axis</h5>" +
+                                        "</div>" +
+                                        "<div class='col-md-12'>" +
+                                            "<select>" +
+                                                "<option>Tasks</option>" +
+                                                "<option>Datasets</option>" +
+                                                "<option>Paradigms</option>" +
+                                                "<option>Evaluation</option>" +
+                                                "<option>Evaluator</option>" +
+                                            "</select>"+
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>" +
+                            "</div>" +
+                            "<div class='row'><br></div>" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4 col-md-offset-3'>" +
+                                    "<button type='button' class='btn btn-primary'>Render Chart</button>" +
+                                "</div>" +
+                            "</div>" +
+                        "</div>"
+            })
+            .on('shown.bs.popover', function(){
+                //ko.applyBindings(new Papers(), document.getElementById('attributeSelector'));
+            });
+
+        $('body').on('click', function (e) {
+            $('[data-original-title]').each(function () {
+                //the 'is' for buttons that trigger popups
+                //the 'has' for icons within a button that triggers a popup
+                if (!$(this).is(e.target) && $(this).has(e.target).length === 0
+                        && $('.popover').has(e.target).length === 0)
+                {
+                    $(this).popover('hide');
+                }
+            });
+        });
+
         /* define the maps that will be used for the labels of the scatter plot bubble */
         var nonSpatialMap = {}, spatialMap = {}, i = 0;
 
@@ -311,7 +378,7 @@ var Graph = function (options) {
 
             chart = nv.models.scatterChart()
                 .showLegend(false)
-                .margin({bottom: 100, left: totWidth / 4, right: 20})
+                .margin({bottom: totHeight / 4, left: totWidth / 4, right: 20})
                 .pointRange([0, (parseInt(totWidth * 0.06) * 50)])
                 .useVoronoi(false);
 
@@ -516,7 +583,7 @@ var Graph = function (options) {
                         return d.value
                     })
                     .margin({left: 30, bottom: 60})
-                    .showLegend(false)
+                    .showLegend(true)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
@@ -576,7 +643,7 @@ var Graph = function (options) {
      */
     self.graphTypeBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
-        $("#typeEval a")
+        $("#cogType a")
             .popover({
                 container: "body",
                 title: 'Chart Settings',
@@ -585,7 +652,6 @@ var Graph = function (options) {
                 content: "<input id='normalizeType' type='checkbox' name='normalize' value='task'> Normalize Data"
             })
             .on('shown.bs.popover', function(){
-
                 $("#normalizeType").change(function() {
                     // normalize the data
                     if(this.checked) {
