@@ -363,7 +363,7 @@ var Graph = function (options) {
 
         /* the width and height of the chart */
         var totWidth = d3.select('.chartDivBubbles').node().clientWidth,
-            totHeight = totWidth * 0.8,
+            totHeight = totWidth * 0.9,
 
             chart = null;
 
@@ -765,6 +765,157 @@ var Graph = function (options) {
      * @param {Array} authors The authors corresponding to the data
      * @param {Array} count number of papers in each sub-domain
      */
+    self.graphParadigmsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
+
+        $("#cogPara a")
+            .popover({
+                container: "body",
+                title: 'Chart Settings',
+                placement: 'left',
+                html: true,
+                content: "<input id='normalizePara' type='checkbox' name='normalize' value='task'> Normalize Data"
+            })
+            .on('shown.bs.popover', function(){
+
+                $("#normalizePara").change(function() {
+                    // normalize the data
+                    if(this.checked) {
+                        datum.forEach(function(o){
+                            o.values.forEach(function(v){
+                                v.value /= count[v.key];
+                            });
+                        });
+                    }
+                    // un-normalize the data
+                    else {
+                        datum.forEach(function(o){
+                            o.values.forEach(function(v){
+                                v.value *= count[v.key];
+                            });
+                        });
+                    }
+
+                    // redraw the chart
+                    d3.select(chartDiv + ' svg')
+                        .datum(datum)
+                        .call(chart);
+
+                    $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+                        $(elem).hover(function () {
+                            hoveringCB.call({
+                                authors: authors, groups: grpNames,
+                                chart: d3.select("#results"), selector: '.nv-bar'
+                            }, d3.select(elem).data()[0], 0, i)
+                        }, function () {
+                            endCB.call({authors: authors});
+                        });
+                    });
+
+                    d3.select(chartDiv).selectAll(".nv-bar")
+                        .on('click', clickCB);
+
+                    // wrap the text of the x-axis
+                    d3.selectAll(chartDiv + ' svg .nv-x text')
+                        .attr('transform', function(d,i,j) { return 'translate (-10, 10) rotate(-45 0,0)' })
+                        .call(wrap, chart.xRange())
+                        .style({"text-anchor": "end"});
+
+                });
+            });
+
+
+        $('a#cogPara').on('click', function(e) {e.preventDefault(); return true;});
+
+        var totWidth = d3.select('.evalDiv').node().clientWidth,
+            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
+
+        var chart;
+        nv.addGraph(function () {
+
+                d3.select(chartDiv)
+                    .append("svg").attr("width", totWidth)
+                    .attr("height", totHeight);
+
+                chart = nv.models.multiBarChart()
+                    .x(function (d) {
+                        return d.label
+                    })
+                    .y(function (d) {
+                        return d.value
+                    })
+                    .showLegend(true)
+                    .reduceXTicks(false)
+                    //.rotateLabels(-45)
+                    .groupSpacing(0.2)
+                    .showControls(false)
+                    .margin({left: 30, bottom: 70});
+
+                chart.xAxis.tickFormat(function (d) {
+                    if(d == "Spatial Nesting")
+                        return "Spat. / Nesting";
+                    else if(d == "Non-Spatial Nesting")
+                        return "Non-Spat. / Nesting";
+                    else if(d == "Linked Views")
+                        return "Linked / Views";
+                    else
+                        return d;
+                });
+
+                /* Set the header formatter */
+                chart.tooltip.headerFormatter(function(d,i){
+                    return "Paradigms: " + d;
+                });
+
+                d3.select(chartDiv + ' svg')
+                    .datum(datum)
+                    .call(chart);
+
+                nv.utils.windowResize(chart.update);
+
+                return chart;
+            }, function () {
+
+                // wrap the text of the x-axis
+                d3.selectAll(chartDiv + ' svg .nv-x text')
+                    .attr('transform', function(d,i,j) { return 'translate (-10, 10) rotate(-45 0,0)' })
+                    .call(wrap, chart.xRange())
+                    .style({"text-anchor": "end"});
+
+                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+
+                    $(elem).hover(function () {
+                        hoveringCB.call({
+                            authors: authors, groups: grpNames,
+                            chart: d3.select("#results"), selector: '.nv-bar'
+                        }, d3.select(elem).data()[0], 0, i)
+                    }, function () {
+                        endCB.call({authors: authors});
+                    });
+                });
+
+                d3.select(chartDiv).selectAll(".nv-bar")
+                    .on('click', clickCB);
+
+                // disable legend actions
+                chart.legend.updateState(false);
+
+            }
+        );
+    };
+
+    /**
+     * Creates and plots the Evaluation Type Bar Chart
+     *
+     * @constructor
+     * @this {Graph}
+     * @param {Object} datum The data to be mapped
+     * @param {String} chartDiv ID if the div the chart is created in
+     * @param {number} maxValue The count of that the largest circle will possess
+     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} subDomains The values for the y-axis
+     * @param {Array} authors The authors corresponding to the data
+     * @param {Array} count number of papers in each sub-domain
+     */
     self.graphEvaluationNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
         $("#cogEval a")
@@ -815,6 +966,7 @@ var Graph = function (options) {
                         .on('click', clickCB);
                 });
             });
+        $('a#cogEval').on('click', function(e) {e.preventDefault(); return true;});
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -823,7 +975,8 @@ var Graph = function (options) {
         nv.addGraph(function () {
 
                 d3.select(chartDiv)
-                    .append("svg").attr("width", totWidth)
+                    .append("svg")
+                    .attr("width", totWidth)
                     .attr("height", totHeight);
 
                 chart = nv.models.multiBarChart()
@@ -955,153 +1108,7 @@ var Graph = function (options) {
         );
     };
 
-    /**
-     * Creates and plots the Evaluation Type Bar Chart
-     *
-     * @constructor
-     * @this {Graph}
-     * @param {Object} datum The data to be mapped
-     * @param {String} chartDiv ID if the div the chart is created in
-     * @param {number} maxValue The count of that the largest circle will possess
-     * @param {Array} grpNames The values for the x-axis
-     * @param {Array} subDomains The values for the y-axis
-     * @param {Array} authors The authors corresponding to the data
-     * @param {Array} count number of papers in each sub-domain
-     */
-    self.graphParadigmsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
 
-        $("#cogPara a")
-            .popover({
-                container: "body",
-                title: 'Chart Settings',
-                placement: 'left',
-                html: true,
-                content: "<input id='normalizePara' type='checkbox' name='normalize' value='task'> Normalize Data"
-            })
-            .on('shown.bs.popover', function(){
-
-                $("#normalizePara").change(function() {
-                    // normalize the data
-                    if(this.checked) {
-                        datum.forEach(function(o){
-                            o.values.forEach(function(v){
-                                v.value /= count[v.key];
-                            });
-                        });
-                    }
-                    // un-normalize the data
-                    else {
-                        datum.forEach(function(o){
-                            o.values.forEach(function(v){
-                                v.value *= count[v.key];
-                            });
-                        });
-                    }
-
-                    // redraw the chart
-                    d3.select(chartDiv + ' svg')
-                        .datum(datum)
-                        .call(chart);
-
-                    $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-                        $(elem).hover(function () {
-                            hoveringCB.call({
-                                authors: authors, groups: grpNames,
-                                chart: d3.select("#results"), selector: '.nv-bar'
-                            }, d3.select(elem).data()[0], 0, i)
-                        }, function () {
-                            endCB.call({authors: authors});
-                        });
-                    });
-
-                    d3.select(chartDiv).selectAll(".nv-bar")
-                        .on('click', clickCB);
-
-                    // wrap the text of the x-axis
-                    d3.selectAll(chartDiv + ' svg .nv-x text')
-                        .attr('transform', function(d,i,j) { return 'translate (-10, 10) rotate(-45 0,0)' })
-                        .call(wrap, chart.xRange())
-                        .style({"text-anchor": "end"});
-
-                });
-            });
-
-        var totWidth = d3.select('.evalDiv').node().clientWidth,
-            totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
-
-        var chart;
-        nv.addGraph(function () {
-
-                d3.select(chartDiv)
-                    .append("svg").attr("width", totWidth)
-                    .attr("height", totHeight);
-
-                chart = nv.models.multiBarChart()
-                    .x(function (d) {
-                        return d.label
-                    })
-                    .y(function (d) {
-                        return d.value
-                    })
-                    .showLegend(true)
-                    .reduceXTicks(false)
-                    //.rotateLabels(-45)
-                    .groupSpacing(0.2)
-                    .showControls(false)
-                    .margin({left: 30, bottom: 70});
-
-            chart.xAxis.tickFormat(function (d) {
-                if(d == "Spatial Nesting")
-                    return "Spat. / Nesting";
-                else if(d == "Non-Spatial Nesting")
-                    return "Non-Spat. / Nesting";
-                else if(d == "Linked Views")
-                    return "Linked / Views";
-                else
-                    return d;
-            });
-
-                /* Set the header formatter */
-                chart.tooltip.headerFormatter(function(d,i){
-                    return "Paradigms: " + d;
-                });
-
-                d3.select(chartDiv + ' svg')
-                    .datum(datum)
-                    .call(chart);
-
-                nv.utils.windowResize(chart.update);
-
-                return chart;
-            }, function () {
-
-                // wrap the text of the x-axis
-                d3.selectAll(chartDiv + ' svg .nv-x text')
-                    .attr('transform', function(d,i,j) { return 'translate (-10, 10) rotate(-45 0,0)' })
-                    .call(wrap, chart.xRange())
-                    .style({"text-anchor": "end"});
-
-                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-
-                    $(elem).hover(function () {
-                        hoveringCB.call({
-                            authors: authors, groups: grpNames,
-                            chart: d3.select("#results"), selector: '.nv-bar'
-                        }, d3.select(elem).data()[0], 0, i)
-                    }, function () {
-                        endCB.call({authors: authors});
-                    });
-                });
-
-                d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('click', clickCB);
-
-                // disable legend actions
-                chart.legend.updateState(false);
-
-            }
-        );
-    };
 
     return self;
 };

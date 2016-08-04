@@ -123,12 +123,12 @@ $(function() {
 
         var testParsing = App.dataParser.parseArbFields(data, "dataTypes", "tasks");
 
-        App.engGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
-            testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
+        //App.engGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
+        //    testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
 
         // plot the bubble scatter plots
-        //App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-        //    encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+        App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
+            encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
 
         //if($('.col-md-6').width() > 600)
         //{
@@ -145,6 +145,10 @@ $(function() {
             ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[1], taskData.count);
 
         // plot the data type analysis
+        App.engGraph.graphParadigmsNVD3Chart(taskData.paradigms, "#paradigms", 0,
+            ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
+
+        // plot the data type analysis
         App.engGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
             ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[2], taskData.count);
 
@@ -152,9 +156,6 @@ $(function() {
         App.engGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
             ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[4], taskData.count);
 
-        // plot the data type analysis
-        App.engGraph.graphParadigmsNVD3Chart(taskData.paradigms, "#paradigms", 0,
-            ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
     }
 
     function setupTable(data) {
