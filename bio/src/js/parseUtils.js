@@ -247,19 +247,23 @@ var Parser = function() {
 
                 });
 
-                // value.paradigms.forEach(function(paradigm){
-                //
-                //     value.subDomain.forEach(function(subDomain) {
-                //
-                //         // increment the task count
-                //         result[3][paradigm][subDomain] += 1;
-                //
-                //         // store the corresponding authors in another array
-                //         authors[3][subDomain][paradigm] = authors[3][subDomain][paradigm] || [];
-                //         authors[3][subDomain][paradigm].push({label: value['author'].trim(), year: value['year']});
-                //     });
-                //
-                // });
+                value.paradigms.forEach(function(paradigm){
+                    paradigm = paradigm.trim();
+                    if(paradigm.length === 0) return;
+                    console.log(paradigm);
+                    console.log(value);
+                    value.subDomain.forEach(function(subDomain) {
+
+                        if(subDomain.length === 0 ) return;
+                        // increment the task count
+                        result[3][paradigm][subDomain] += 1;
+
+                        // store the corresponding authors in another array
+                        authors[3][subDomain][paradigm] = authors[3][subDomain][paradigm] || [];
+                        authors[3][subDomain][paradigm].push({label: value['author'].trim(), year: value['year']});
+                    });
+
+                });
                 //
                 // /* Parse the Evaluators */
                 // result[4][value.year][value.evaluators] += 1;
@@ -323,7 +327,7 @@ var Parser = function() {
 
 
         var maps = [ ];
-        for(var i = 0; i < 3; i++){
+        for(var i = 0; i < 4; i++){
 
             maps.push(_.reduce(data[i], function (result, value, key) {
                     _.keys(value).forEach(function(k, j){
@@ -344,7 +348,7 @@ var Parser = function() {
         console.log(maps);
 
         return { tasks: maps[0], dataTypes: maps[1], evaluation: maps[2],
-            //evaluators: mappedEvaluators, paradigms: maps[3],
-            groups: taskNames, authors: authors, count: totalCounts, subDomains: parsedSubDomains};
+            //evaluators: mappedEvaluators,
+            paradigms: maps[3], groups: taskNames, authors: authors, count: totalCounts, subDomains: parsedSubDomains};
     };
 };

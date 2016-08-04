@@ -66,6 +66,9 @@ $(function() {
 
             o["SubDomain"] = o["SubDomain"].split(", ");
             _.map(o["SubDomain"], _.trim);
+
+            o["Paradigm"] = o["Paradigm"].split(", ");
+            _.map(o["Paradigm"], _.trim);
         });
 
         /** create the new database for the session **/
@@ -126,6 +129,10 @@ $(function() {
         App.bioGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
              ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[2], taskData.count);
 
+        // plot the data type analysis
+        App.bioGraph.graphParadigmsNVD3Chart(taskData.paradigms, "#paradigms", 0,
+            ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[3], taskData.count);
+
         // // plot the data type analysis
         // App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
         //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
@@ -161,6 +168,7 @@ $(function() {
                 d3.select("#encodings svg").remove();
                 d3.select("#evaluation svg").remove();
                 d3.select("#evaluators svg").remove();
+                d3.select("#paradigms svg").remove();
 
                 /* Add new data */
                 App.table.rows.add(data);
