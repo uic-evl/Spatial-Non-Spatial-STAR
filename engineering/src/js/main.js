@@ -90,15 +90,13 @@ $(function() {
     function setupCharts(data){
 
         /** initialize a new bubble graph **/
-        App.engGraph = new Graph(
-            {
+        App.engGraph = new Graph({
                 colorMap: {
                     "Natural Science": "#beaed4",
                     "Physical Science": "#fdc086",
                     "Simulation": "#7fc97f"
                 }
-            }
-        );
+            });
 
         App.dataParser = new Parser({
                 colorMap:
@@ -112,8 +110,7 @@ $(function() {
                         "Visualization Experts" : "#b3cde3"
                     }
                 ]
-        }
-        );
+        });
 
         var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('subDomain'))) ), "Both");
 
@@ -189,11 +186,13 @@ $(function() {
 
                 /* clear the table and charts */
                 App.table.clear().draw();
+                // remove the chart svgs
                 d3.select("#dataTypes svg").remove();
                 d3.select("#tasks svg").remove();
                 d3.select("#encodings svg").remove();
                 d3.select("#evaluation svg").remove();
                 d3.select("#evaluators svg").remove();
+                d3.select("#paradigms svg").remove();
 
                 /* Add new data */
                 App.table.rows.add(data);
