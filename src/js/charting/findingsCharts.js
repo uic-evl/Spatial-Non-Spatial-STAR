@@ -355,17 +355,7 @@ var Graph = function (options) {
 
                 // y-axis
                 chart.yAxis.tickFormat(function (d) {
-                    if (_.isInteger(d))
-                    {
-                        if(spat[d][0] === "Non-Spatial Nesting")
-                        {
-                            return "Non-Spatial / Nesting"
-                        }
-                        else
-                        {
-                            return nonSpat[d][0];
-                        }
-                    }
+                    if (_.isInteger(d))  return spat[d][0];
                 });
 
                 // add the data to the chart

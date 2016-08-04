@@ -205,7 +205,6 @@ var Parser = function() {
 
                     type = type.trim();
 
-
                     // store the corresponding authors in another array
                     value.subDomain.forEach(function(domain) {
                         if(domain.length === 0) return;

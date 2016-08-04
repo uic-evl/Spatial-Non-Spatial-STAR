@@ -119,19 +119,19 @@ $(function() {
 
         // get the parsed encodings and paradigms
         var encodingData = App.dataParser.parseEncodings(data);
-        var hybridData = App.dataParser.parseHybridParadigms(data);
+        //var hybridData = App.dataParser.parseHybridParadigms(data);
 
         // get the task, data set, and evaluations fields
         var taskData = App.dataParser.parseFields(data, subDomains);
 
         var testParsing = App.dataParser.parseArbFields(data, "tasks", "paradigms");
 
-        App.engGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
-            testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
+        //App.engGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
+        //    testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
 
         // plot the bubble scatter plots
-        // App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-        //    encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+        App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
+            encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
 
         // plot the bubble scatter plots
         // App.engGraph.graphParadigmBubbleNVD3Chart(hybridData.hybrids, "#encodings", hybridData.max,

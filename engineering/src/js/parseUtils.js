@@ -94,25 +94,25 @@ var Parser = function(options) {
 
                         if(subDomains[s][n][subDomain])
                         {
-                            if(subDomain == 'Both')
-                            {
-                                subDomains[s][n]['Phys. + Nat. Science'] += 1;
-                            }
-                            else
-                            {
+                            // if(subDomain == 'Both')
+                            // {
+                            //     subDomains[s][n]['Phys. + Nat. Science'] += 1;
+                            // }
+                            // else
+                            // {
                                 subDomains[s][n][subDomain] += 1;
-                            }
+                            //}
                         }
                         else
                         {
-                            if(subDomain == 'Both')
-                            {
-                                subDomains[s][n]['Phys. + Nat. Science'] = 1;
-                            }
-                            else
-                            {
+                            // if(subDomain == 'Both')
+                            // {
+                            //     subDomains[s][n]['Phys. + Nat. Science'] = 1;
+                            // }
+                            // else
+                            // {
                                 subDomains[s][n][subDomain] = 1;
-                            }
+                            // }
                         }
 
                     });
@@ -139,7 +139,7 @@ var Parser = function(options) {
 
             var obj = {};
             obj.groups = [];
-            obj.Spatial = k;
+            obj.yProp = k;
 
             var pairs = _.toPairs(d);
             pairs.forEach(function(arr){
@@ -290,9 +290,10 @@ var Parser = function(options) {
 
                         // create a count of the sub domains per encoding pair
                         subDomains[s][n] = subDomains[s][n] || {};
-                        subDomains[s][n][subDomain] = subDomains[s][n][subDomain] || 0;
-                        subDomains[s][n][subDomain] += 1;
-
+                        value.subDomain.forEach(function(sub){
+                            subDomains[s][n][sub] = subDomains[s][n][sub] || 0;
+                            subDomains[s][n][sub] += 1;
+                        });
                     });
                 });
                 return result;
@@ -323,11 +324,12 @@ var Parser = function(options) {
             return key !== "Author" && key !== "Year" && key !== "Sub-Domain";  });
 
         /* creates a template for parsing the data */
-        var taskTemplate = _.reduce(subDomains,
-            function(result, value, key){
-                result[value] = 0;
-                return result;
-            }, {});
+        var taskTemplate = _.reduce(subDomains,  function(result, value, key){
+
+            value.forEach(function(sub) { result[sub] = 0; });
+
+            return result;
+        }, {});
 
         var totalCounts = {
             "Natural Science": 0,
@@ -365,40 +367,19 @@ var Parser = function(options) {
         var data = _.reduce(rows, function(result, value, key) {
 
                 value.subDomain.forEach(function(subDomain){
-                    if(subDomain == "Both") {
-                        totalCounts["Natural Science"] += 1;
-                        totalCounts["Physical Science"] += 1;
-                    }
-                    else{
-                        totalCounts[subDomain] += 1;
-                    }
+                    totalCounts[subDomain] += 1;
                 });
 
                 /* Parse the User Tasks */
                 value.tasks.forEach(function(task){
 
-                    value.subDomain.forEach(function(subDomain) {
-                        if(subDomain === 'Both'){
-                            // increment the task count
-                            result[0][task]["Physical Science"] += 1;
-                            result[0][task]["Natural Science"] += 1;
+                    value.subDomain.forEach(function(subDomain, i) {
 
-                            // store the corresponding authors in another array
-                            authors[0]["Physical Science"][task] = authors[0]["Physical Science"][task] || [];
-                            authors[0]["Natural Science"][task] = authors[0]["Natural Science"][task] || [];
+                        result[0][task][subDomain] += 1;
 
-                            authors[0]["Natural Science"][task].push({label: value['author'].trim(), year: value['year']});
-                            authors[0]["Physical Science"][task].push({label: value['author'].trim(), year: value['year']});
-
-                        }
-                        else{
-                            // increment the task count
-                            result[0][task][subDomain] += 1;
-
-                            // store the corresponding authors in another array
-                            authors[0][subDomain][task] = authors[0][subDomain][task] || [];
-                            authors[0][subDomain][task].push({label: value['author'].trim(), year: value['year']});
-                        }
+                        // store the corresponding authors in another array
+                        authors[0][subDomain][task] = authors[0][subDomain][task] || [];
+                        authors[0][subDomain][task].push({label: value['author'].trim(), year: value['year']});
                     });
 
                 });
@@ -408,27 +389,12 @@ var Parser = function(options) {
 
                     value.subDomain.forEach(function(subDomain) {
 
-                        if(subDomain === 'Both'){
+                        result[1][type][subDomain] += 1;
 
-                            // increment the data type count
-                            result[1][type]["Physical Science"] += 1;
-                            result[1][type]["Natural Science"] += 1;
+                        // store the corresponding authors in another array
+                        authors[1][subDomain][type] = authors[1][subDomain][type] || [];
+                        authors[1][subDomain][type].push({label: value['author'].trim(), year: value['year']});
 
-                            // store the corresponding authors in another array
-                            authors[1]["Physical Science"][type] = authors[1]["Physical Science"][type] || [];
-                            authors[1]["Natural Science"][type] = authors[1]["Natural Science"][type] || [];
-
-                            authors[1]["Natural Science"][type].push({label: value['author'].trim(), year: value['year']});
-                            authors[1]["Physical Science"][type].push({label: value['author'].trim(), year: value['year']});
-                        }
-                        else {
-                            // increment the data type count
-                            result[1][type][subDomain] += 1;
-
-                            // store the corresponding authors in another array
-                            authors[1][subDomain][type] = authors[1][subDomain][type] || [];
-                            authors[1][subDomain][type].push({label: value['author'].trim(), year: value['year']});
-                        }
                     });
                 });
 
@@ -438,27 +404,13 @@ var Parser = function(options) {
                     type = type.trim();
 
                     value.subDomain.forEach(function(subDomain) {
-                        if(subDomain === 'Both'){
 
-                            // increment the data type count
-                            result[2][type]["Physical Science"] += 1;
-                            result[2][type]["Natural Science"] += 1;
+                        // increment the data type count
+                        result[2][type][subDomain] += 1;
 
-                            // store the corresponding authors in another array
-                            authors[2]["Physical Science"][type] = authors[2]["Physical Science"][type] || [];
-                            authors[2]["Natural Science"][type] = authors[2]["Natural Science"][type] || [];
-
-                            authors[2]["Natural Science"][type].push({label: value['author'].trim(), year: value['year']});
-                            authors[2]["Physical Science"][type].push({label: value['author'].trim(), year: value['year']});
-                        }
-                        else {
-                            // increment the data type count
-                            result[2][type][subDomain] += 1;
-
-                            // store the corresponding authors in another array
-                            authors[2][subDomain][type] = authors[2][subDomain][type] || [];
-                            authors[2][subDomain][type].push({label: value['author'].trim(), year: value['year']});
-                        }
+                        // store the corresponding authors in another array
+                        authors[2][subDomain][type] = authors[2][subDomain][type] || [];
+                        authors[2][subDomain][type].push({label: value['author'].trim(), year: value['year']});
                     });
 
                 });
@@ -473,28 +425,13 @@ var Parser = function(options) {
                 value.paradigms.forEach(function(paradigm){
 
                     value.subDomain.forEach(function(subDomain) {
-                        if(subDomain === 'Both'){
 
-                            // increment the task count
-                            result[3][paradigm]["Physical Science"] += 1;
-                            result[3][paradigm]["Natural Science"] += 1;
+                        // increment the task count
+                        result[3][paradigm][subDomain] += 1;
 
-                            // store the corresponding authors in another array
-                            authors[3]["Physical Science"][paradigm] = authors[3]["Physical Science"][paradigm] || [];
-                            authors[3]["Natural Science"][paradigm] = authors[3]["Natural Science"][paradigm] || [];
-
-                            authors[3]["Natural Science"][paradigm].push({label: value['author'].trim(), year: value['year']});
-                            authors[3]["Physical Science"][paradigm].push({label: value['author'].trim(), year: value['year']});
-
-                        }
-                        else{
-                            // increment the task count
-                            result[3][paradigm][subDomain] += 1;
-
-                            // store the corresponding authors in another array
-                            authors[3][subDomain][paradigm] = authors[3][subDomain][paradigm] || [];
-                            authors[3][subDomain][paradigm].push({label: value['author'].trim(), year: value['year']});
-                        }
+                        // store the corresponding authors in another array
+                        authors[3][subDomain][paradigm] = authors[3][subDomain][paradigm] || [];
+                        authors[3][subDomain][paradigm].push({label: value['author'].trim(), year: value['year']});
                     });
 
                 });
@@ -552,18 +489,14 @@ var Parser = function(options) {
         for(var i = 0; i < 4; i++){
 
             maps.push(_.reduce(data[i], function (result, value, key) {
-
                     _.keys(value).forEach(function(k, j){
-
                         result[j].values.push({
                             label: key,
                             value: value[k],
                             authors: authors[i][k][key],
                             color: options.colorMap[0][k]
                         });
-
                     });
-
                     return result;
                 },
                 [
