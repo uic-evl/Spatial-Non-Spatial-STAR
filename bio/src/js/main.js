@@ -108,11 +108,11 @@ $(function() {
         App.bioGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
              encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
 
-        if($('.col-md-6').width() > 600)
-        {
-            d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
-            d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
-        }
+        // if($('.col-md-6').width() > 600)
+        // {
+        //     d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
+        //     d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
+        // }
         //
         // // plot the task analysis
         //App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
@@ -305,6 +305,7 @@ $(function() {
         var input = [], operator = [], values = [],
             advanced = {
                 domain: [],
+                subDomain: [],
                 dataTypes: [],
                 paradigms: [],
                 encodings: [],
@@ -313,7 +314,6 @@ $(function() {
 
         /** Check to see if a previous search was performed. If so,
          *  clear the old charts and table */
-
 
         /** Get the search values **/
 

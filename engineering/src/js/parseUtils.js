@@ -38,7 +38,8 @@ var Parser = function(options) {
 
         // Spatial columns
         var spatial = [
-            'Choropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines','Volume / Images','Glyph','Animation'
+            'Simple Map', 'Choropleth / Heatmap', 'Ball and Stick / Mesh','Isosurface / Streamlines',
+            'Volume / Images', 'Contour', 'Glyph','Animation'
         ];
 
         // Non-Spatial columns
@@ -53,19 +54,23 @@ var Parser = function(options) {
 
         /* Author / Paper Affiliation */
         var authors = {
+            'Simple Map': {},
             'Choropleth / Heatmap': {},
             'Ball and Stick / Mesh': {},
             'Isosurface / Streamlines': {},
             'Volume / Images': {},
+            'Contour': {},
             'Glyph': {},
             'Animation': {}
         };
 
         var subDomains = {
+            'Simple Map': {},
             'Choropleth / Heatmap': {},
             'Ball and Stick / Mesh': {},
             'Isosurface / Streamlines': {},
             'Volume / Images': {},
+            'Contour': {},
             'Glyph': {},
             'Animation': {}
         };
@@ -122,10 +127,12 @@ var Parser = function(options) {
 
             return result;
         }, {
+            'Simple Map': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Choropleth / Heatmap': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Ball and Stick / Mesh': _.cloneDeep(nonSpatialTemplate),//{ enc odings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Isosurface / Streamlines': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Volume / Images': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
+            'Contour': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Glyph': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Animation': _.cloneDeep(nonSpatialTemplate)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
         });

@@ -378,8 +378,8 @@ var Graph = function (options) {
 
             chart = nv.models.scatterChart()
                 .showLegend(false)
-                .margin({bottom: totHeight / 4, left: totWidth / 4, right: 20})
-                .pointRange([0, (parseInt(totWidth * 0.06) * 50)])
+                .margin({bottom: 150, left: 150, right: 20})
+                .pointRange([0, (parseInt(totWidth * 0.05) * 45)])
                 .useVoronoi(false);
 
                 /* Set the header formatter */
@@ -455,8 +455,8 @@ var Graph = function (options) {
 
                 // wrap the text of the y-axis
                 d3.selectAll(chartDiv + ' svg .nv-y text')
-                    .call(truncate, chart.margin().left)
-                    .attr('transform', 'translate(' + -20 + ',' + '0)')
+                    .call(wrap)
+                    .attr('transform', 'translate(' + -60 + ',' + '0)')
                     .style({"text-anchor": "end", "font-weight": "bold"});
 
                 // move the text of the x-axis down and rotate it

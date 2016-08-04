@@ -350,7 +350,6 @@ $(function() {
         /** Check to see if a previous search was performed. If so,
          *  clear the old charts and table */
 
-
         /** Get the search values **/
 
         // search variable
