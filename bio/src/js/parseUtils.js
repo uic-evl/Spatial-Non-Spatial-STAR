@@ -185,6 +185,7 @@ var Parser = function() {
             _.cloneDeep(subDomainTemplate),
             _.cloneDeep(subDomainTemplate),
             _.cloneDeep(subDomainTemplate),
+            _.cloneDeep(subDomainTemplate),
             {
                 "Domain Experts"        : {},
                 "Visualization Experts" : {}
@@ -229,25 +230,43 @@ var Parser = function() {
                 });
 
                 /* Parse the evaluation types */
-                // value.evaluation.forEach(function(type){
+                value.evaluation.forEach(function(type){
+                    type = type.trim();
+                    if(type.length === 0) return;
+                    value.subDomain.forEach(function(subDomain) {
+
+                        if(subDomain.length === 0 ) return;
+
+                        // increment the data type count
+                        result[2][type][subDomain] += 1;
+
+                        // store the corresponding authors in another array
+                        authors[2][subDomain][type] = authors[2][subDomain][type] || [];
+                        authors[2][subDomain][type].push({label: value['author'].trim(), year: value['year']});
+                    });
+
+                });
+
+                // value.paradigms.forEach(function(paradigm){
                 //
-                //     type = type.trim();
+                //     value.subDomain.forEach(function(subDomain) {
                 //
-                //     // increment the data type count
-                //     result[2][type][domain] += 1;
+                //         // increment the task count
+                //         result[3][paradigm][subDomain] += 1;
                 //
-                //     // store the corresponding authors in another array
-                //     authors[2][domain][type] = authors[2][domain][type] || [];
-                //     authors[2][domain][type].push({label: value['author'].trim(), year: value['year']});
+                //         // store the corresponding authors in another array
+                //         authors[3][subDomain][paradigm] = authors[3][subDomain][paradigm] || [];
+                //         authors[3][subDomain][paradigm].push({label: value['author'].trim(), year: value['year']});
+                //     });
                 //
                 // });
-
-                /* Parse the Evaluators */
-                result[3][value.year][value.evaluators] += 1;
-
-                /* Parse the author for the evaluator year */
-                authors[3][value.evaluators][value.year] = authors[3][value.evaluators][value.year] || [];
-                authors[3][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
+                //
+                // /* Parse the Evaluators */
+                // result[4][value.year][value.evaluators] += 1;
+                //
+                // /* Parse the author for the evaluator year */
+                // authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
+                // authors[4][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
 
                 return result;
             },
@@ -279,6 +298,12 @@ var Parser = function() {
                     "User Study"            : _.cloneDeep(taskTemplate)
                 },
                 {
+                    "Overlays"              : _.cloneDeep(taskTemplate),
+                    "Linked Views"          : _.cloneDeep(taskTemplate),
+                    "Spatial Nesting"       : _.cloneDeep(taskTemplate),
+                    "Non-Spatial Nesting"   : _.cloneDeep(taskTemplate)
+                },
+                {
                     "2005": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2006": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2007": {"Domain Experts" : 0, "Visualization Experts" : 0},
@@ -298,7 +323,7 @@ var Parser = function() {
 
 
         var maps = [ ];
-        for(var i = 0; i < 2; i++){
+        for(var i = 0; i < 3; i++){
 
             maps.push(_.reduce(data[i], function (result, value, key) {
                     _.keys(value).forEach(function(k, j){
@@ -315,6 +340,9 @@ var Parser = function() {
                 )
             );
         }
+
+        console.log(maps);
+
         return { tasks: maps[0], dataTypes: maps[1], evaluation: maps[2],
             //evaluators: mappedEvaluators, paradigms: maps[3],
             groups: taskNames, authors: authors, count: totalCounts, subDomains: parsedSubDomains};

@@ -334,13 +334,6 @@ var Parser = function(options) {
 
                 });
 
-                /* Parse the Evaluators */
-                result[4][value.year][value.evaluators] += 1;
-
-                /* Parse the author for the paradigms year */
-                authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
-                authors[4][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
-
                 value.paradigms.forEach(function(paradigm){
 
                     value.subDomain.forEach(function(subDomain) {
@@ -354,6 +347,13 @@ var Parser = function(options) {
                     });
 
                 });
+
+                /* Parse the Evaluators */
+                result[4][value.year][value.evaluators] += 1;
+
+                /* Parse the author for the paradigms year */
+                authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
+                authors[4][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
 
                 return result;
             },

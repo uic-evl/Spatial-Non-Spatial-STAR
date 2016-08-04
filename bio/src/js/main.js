@@ -61,7 +61,7 @@ $(function() {
             o["Tasks"] = o["Tasks"].split(", ");
             _.map(o["Tasks"], _.trim);
 
-            o["Evaluation Type"] = o["Evaluation Type"].split(",");
+            o["Evaluation Type"] = o["Evaluation Type"].split(", ");
             _.map(o["Evaluation Type"], _.trim);
 
             o["SubDomain"] = o["SubDomain"].split(", ");
@@ -123,9 +123,9 @@ $(function() {
             ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[1], taskData.count);
 
         // // plot the data type analysis
-        // App.bioGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
-        //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[2], taskData.count);
-        //
+        App.bioGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
+             ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[2], taskData.count);
+
         // // plot the data type analysis
         // App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
         //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
