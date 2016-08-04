@@ -204,9 +204,7 @@ var Parser = function() {
                 value.tasks.forEach(function(task){
                     // store the corresponding authors in another array
                     value.subDomain.forEach(function(domain) {
-
                         if(domain.length === 0) return;
-
                         // increment the task count
                         result[0][task][domain] += 1;
                         authors[0][domain][task] = authors[0][domain][task] || [];
@@ -298,8 +296,9 @@ var Parser = function() {
 
         /** Map the data into the correct format for use **/
 
+
         var maps = [ ];
-        for(var i = 0; i < 1; i++){
+        for(var i = 0; i < 2; i++){
 
             maps.push(_.reduce(data[i], function (result, value, key) {
                     _.keys(value).forEach(function(k, j){
@@ -312,11 +311,10 @@ var Parser = function() {
                     });
                     return result;
                 },
-                   template
+                _.cloneDeep(template)
                 )
             );
         }
-
         return { tasks: maps[0], dataTypes: maps[1], evaluation: maps[2],
             //evaluators: mappedEvaluators, paradigms: maps[3],
             groups: taskNames, authors: authors, count: totalCounts, subDomains: parsedSubDomains};

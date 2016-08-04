@@ -121,18 +121,14 @@ $(function() {
         // get the task, data set, and evaluations fields
         var taskData = App.dataParser.parseFields(data, subDomains);
 
-        var testParsing = App.dataParser.parseArbFields(data, "tasks", "paradigms");
+        var testParsing = App.dataParser.parseArbFields(data, "dataTypes", "tasks");
 
-        //App.engGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
-        //    testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
-
-        // plot the bubble scatter plots
-        App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-            encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+        App.engGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
+            testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
 
         // plot the bubble scatter plots
-        // App.engGraph.graphParadigmBubbleNVD3Chart(hybridData.hybrids, "#encodings", hybridData.max,
-        //     [ "1. Linked Views", "2. Overlays",  "3. Non-Spatial Nesting"]);
+        //App.engGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
+        //    encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
 
         //if($('.col-md-6').width() > 600)
         //{

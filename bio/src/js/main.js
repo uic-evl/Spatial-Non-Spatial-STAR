@@ -119,8 +119,8 @@ $(function() {
             taskData.subDomains, taskData.authors[0], taskData.count);
 
         // // plot the data type analysis
-        //App.bioGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
-        //    ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[1], taskData.count);
+        App.bioGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
+            ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[1], taskData.count);
 
         // // plot the data type analysis
         // App.bioGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,

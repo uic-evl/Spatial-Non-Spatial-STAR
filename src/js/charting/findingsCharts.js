@@ -711,7 +711,7 @@ var Graph = function (options) {
                     .y(function (d) {
                         return d.value
                     })
-                    .showLegend(false)
+                    .showLegend(true)
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)

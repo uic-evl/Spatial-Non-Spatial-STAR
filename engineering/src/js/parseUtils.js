@@ -99,25 +99,11 @@ var Parser = function(options) {
 
                         if(subDomains[s][n][subDomain])
                         {
-                            // if(subDomain == 'Both')
-                            // {
-                            //     subDomains[s][n]['Phys. + Nat. Science'] += 1;
-                            // }
-                            // else
-                            // {
                                 subDomains[s][n][subDomain] += 1;
-                            //}
                         }
                         else
                         {
-                            // if(subDomain == 'Both')
-                            // {
-                            //     subDomains[s][n]['Phys. + Nat. Science'] = 1;
-                            // }
-                            // else
-                            // {
                                 subDomains[s][n][subDomain] = 1;
-                            // }
                         }
 
                     });
@@ -159,80 +145,6 @@ var Parser = function(options) {
         return {encodings: encodings, authors: authors, subDomains: subDomains, max: max, groups: nonSpatial};
     };
 
-    /**
-     * Parses the data from the Google Sheets for use in the charts
-     *
-     * @constructor
-     * @this {Graph}
-     * @param {Object} rows The data to be parsed
-     * @returns {Object} The mapped encodings and their properties
-     **/
-
-    self.parseHybridParadigms = function(rows){
-
-        /** iterate over the resutls to combine the encodings **/
-        var hybrid = _.reduce(rows, function(result, value, key) {
-
-                if(value.paradigms.length > 1)
-                {
-                    value.paradigms.sort().reverse();
-
-                    for(var i = 0; i < value.paradigms.length -1; i++)
-                    {
-                        var para1 = value.paradigms[i];
-                        for(var j = i+1; j < value.paradigms.length; j++)
-                        {
-                            var para2 = value.paradigms[j];
-
-                            result[para1][para2] += 1;
-                        }
-                    }
-                }
-
-                return result;
-            },
-            {
-                "Spatial Nesting" : {"Overlays": 0, "Linked Views": 0, "Non-Spatial Nesting" : 0},
-                "Overlays" : {"Linked Views": 0, "Non-Spatial Nesting": 0, "Spatial Nesting" : 0},
-                "Non-Spatial Nesting" : {"Linked Views": 0, "Overlays": 0, "Spatial Nesting" : 0}
-            }
-        );
-
-        // Finally, map to the format needed for the chart
-        var max = 0;
-        hybrid = _.map(hybrid, function(d, k, o)
-        {
-            var localMax = _.max(_.values(d));
-            max = Math.max(max, localMax);
-
-            var obj = {};
-            obj.groups = [];
-
-            switch(k){
-                case "Spatial Nesting": obj.Paradigm      =  "4. Spatial Nesting"; break;
-                case "Non-Spatial Nesting": obj.Paradigm  =  "3. Non-Spatial Nesting"; break;
-                case "Overlays": obj.Paradigm             =  "2. Overlays"; break;
-            }
-
-            var pairs = _.toPairs(d);
-            pairs.forEach(function(arr){
-
-                var label = "";
-                switch(arr[0]){
-                    case "Spatial Nesting":      label =  "4. Spatial Nesting"; break;
-                    case "Non-Spatial Nesting":  label =  "3. Non-Spatial Nesting"; break;
-                    case "Overlays":             label =  "2. Overlays"; break;
-                    case "Linked Views":         label =  "1. Linked Views"; break;
-                }
-                obj.groups.push({label: label, value: parseInt(arr[1])});
-            });
-
-            return obj;
-        });
-
-        return {hybrids: hybrid, max: max};
-
-    };
 
     self.parseArbFields = function(rows, xProp, yProp) {
 
