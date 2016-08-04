@@ -302,21 +302,18 @@ var Parser = function() {
         for(var i = 0; i < 1; i++){
 
             maps.push(_.reduce(data[i], function (result, value, key) {
-
                     _.keys(value).forEach(function(k, j){
-
-                        console.log(value[k]);
-
-                        result[i].values.push({
+                        result[j].values.push({
                             label: key,
                             value: value[k],
-                            authors: authors[i][k][key]
-                            //color: "#beaed4"//options.colorMap[0][k]
+                            authors: authors[i][k][key],
+                            //color: options.colorMap[0][k]
                         });
                     });
-
                     return result;
-                }, template )
+                },
+                   template
+                )
             );
         }
 
