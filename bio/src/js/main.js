@@ -116,7 +116,7 @@ $(function() {
         //     d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
         //     d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
         // }
-        //
+
         // // plot the task analysis
         App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
             taskData.subDomains, taskData.authors[0], taskData.count);
@@ -134,8 +134,8 @@ $(function() {
             ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[3], taskData.count);
 
         // // plot the data type analysis
-        // App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
-        //     ["Table", "Field", "Network", "Geometry"], subDomains, taskData.authors[3], taskData.count);
+        App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
+             ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[3], taskData.count);
     }
 
     function setupTable(data) {

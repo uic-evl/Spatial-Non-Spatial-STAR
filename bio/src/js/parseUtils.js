@@ -250,8 +250,7 @@ var Parser = function() {
                 value.paradigms.forEach(function(paradigm){
                     paradigm = paradigm.trim();
                     if(paradigm.length === 0) return;
-                    console.log(paradigm);
-                    console.log(value);
+
                     value.subDomain.forEach(function(subDomain) {
 
                         if(subDomain.length === 0 ) return;
@@ -266,11 +265,11 @@ var Parser = function() {
                 });
                 //
                 // /* Parse the Evaluators */
-                // result[4][value.year][value.evaluators] += 1;
-                //
-                // /* Parse the author for the evaluator year */
-                // authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
-                // authors[4][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
+                result[4][value.year][value.evaluators] += 1;
+
+                /* Parse the author for the evaluator year */
+                authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
+                authors[4][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
 
                 return result;
             },
@@ -345,10 +344,27 @@ var Parser = function() {
             );
         }
 
-        console.log(maps);
+        var mappedEvaluators = _.reduce(data[4], function (result, value, key) {
+
+                _.keys(value).forEach(function(k, i){
+
+                    result[i].values.push({
+                        label: key,
+                        value: value[k],
+                        authors: authors[4][k][key],
+                        //color: options.colorMap[1][k]
+                    });
+                });
+
+                return result;
+            },
+            [
+                {key: "Domain Experts", values: [], color: "#fbb4ae"},
+                {key: "Visualization Experts", values: [], color: "#b3cde3"}
+            ]);
 
         return { tasks: maps[0], dataTypes: maps[1], evaluation: maps[2],
-            //evaluators: mappedEvaluators,
-            paradigms: maps[3], groups: taskNames, authors: authors, count: totalCounts, subDomains: parsedSubDomains};
+                evaluators: mappedEvaluators, paradigms: maps[3], groups: taskNames,
+                authors: authors, count: totalCounts, subDomains: parsedSubDomains };
     };
 };
