@@ -107,9 +107,14 @@ $(function() {
         var encodingData = App.dataParser.parseEncodings(data);
         var taskData = App.dataParser.parseFields(data, subDomains);
 
+        var testParsing = App.dataParser.parseArbFields(data, "paradigms", "dataTypes");
+
         // plot the bubble scatter plots
         App.bioGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
              encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+
+        //App.bioGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
+        //    testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
 
         // if($('.col-md-6').width() > 600)
         // {

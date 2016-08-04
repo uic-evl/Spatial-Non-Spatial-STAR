@@ -52,7 +52,6 @@ function Papers() {
                 elements: [
                     {text:"Linked Views", category: "paradigms"},
                     {text:"Overlays", category: "paradigms"},
-                    {text:"Hybrid", category: "paradigms"},
                     {text:"Spatial Nesting" , category: "paradigms"},
                     {text:"Non-Spatial Nesting", category: "paradigms"}
                 ]
@@ -90,15 +89,6 @@ function Papers() {
                     {text:"Scatterplot Matrix", category: "encodings"},
                     {text:"Parallel Coordinates", category: "encodings"},
                     {text:"Matrix", category: "encodings"}
-                ]
-            },
-            {
-                name: 'Evaluation',
-                elements: [
-                    {text:"Case Study", category: "evaluation"},
-                    {text:"User Study", category: "evaluation"},
-                    {text:"Feedback", category: "evaluation"},
-                    {text:"Quantitative Analysis", category: "evaluation"}
                 ]
             },
             {

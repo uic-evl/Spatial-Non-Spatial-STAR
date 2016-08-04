@@ -153,19 +153,32 @@ var Parser = function(options) {
             xDomain = [],
             yDomain = [];
 
+        /* Because not in the search model */
+        if(yProp == "tasks")
+        {
+            yDomain = d3.keys(App.tasks[0]).filter(function(key) {
+                return key !== "Author" && key !== "Year" && key !== "Sub-Domain";  });
+        }
+        else
+        {
+            $('#accordion').find('input[name=' + yProp + ']').each(function() {
+                yDomain.push($(this).attr('value'));
+
+            });
+        }
+        if(xProp == "tasks")
+        {
+            xDomain = d3.keys(App.tasks[0]).filter(function(key) {
+                return key !== "Author" && key !== "Year" && key !== "Sub-Domain";  });
+        }
+        else {
+            $('#accordion').find('input[name=' + xProp + ']').each(function() {
+                xDomain.push($(this).attr('value'));
+            });
+        }
+
         /* construct the template for the parsing and the x/y domains */
         rows.forEach(function(row){
-
-            if(_.isArray(row[xProp]))
-            {
-                row[xProp].forEach(function(x){
-                    if (xDomain.indexOf(x) < 0) xDomain.push(x);
-                });
-            }
-            else
-            {
-                if (xDomain.indexOf(row[xProp]) < 0) xDomain.push(row[xProp]);
-            }
 
             if(_.isArray(row[yProp]))
             {
@@ -175,7 +188,7 @@ var Parser = function(options) {
                     authors[y] = {};
                     subDomains[y] = {};
 
-                    if (yDomain.indexOf(y) < 0) yDomain.push(y);
+                    //if (yDomain.indexOf(y) < 0) yDomain.push(y);
                 });
             }
             else
@@ -184,34 +197,43 @@ var Parser = function(options) {
                 template[row[yProp]] = {};
                 subDomains[row[yProp]] = {};
 
-                if (yDomain.indexOf(row[yProp]) < 0) yDomain.push(row[yProp]);
+                //if (yDomain.indexOf(row[yProp]) < 0) yDomain.push(row[yProp]);
             }
         });
+
+        _.difference(yDomain, _.keys(subDomains)).forEach(function(y) {
+            authors[y] = {};
+            template[y] = {};
+            subDomains[y] = {};
+        });
+
+        xDomain.sort();
+        yDomain.sort();
 
         /** iterate over the resutls to combine the encodings **/
         var output = _.reduce(rows, function(result, value, key) {
 
-                /** Separate the spatial and non-spatial encodings **/
-                var x  = _.intersection(value[xProp], xDomain);
-                var y  = _.intersection(value[yProp], yDomain);
-
-                y.forEach(function(s){
-                    x.forEach(function(n){
+                yDomain.forEach(function(s){
+                    xDomain.forEach(function(n){
 
                         // increment the result
                         result[s][n] = result[s][n] || 0;
-                        result[s][n] += 1;
 
-                        // store the corresponding authors in another array
-                        authors[s][n] = authors[s][n] || [];
-                        authors[s][n].push({label: value['author'].trim(), year: value['year']});
+                        // if the row has these values
+                        if(value[yProp].indexOf(s) > -1 && value[xProp].indexOf(n) > -1){
 
-                        // create a count of the sub domains per encoding pair
-                        subDomains[s][n] = subDomains[s][n] || {};
-                        value.subDomain.forEach(function(sub){
-                            subDomains[s][n][sub] = subDomains[s][n][sub] || 0;
-                            subDomains[s][n][sub] += 1;
-                        });
+                            result[s][n] += 1;
+                            // store the corresponding authors in another array
+                            authors[s][n] = authors[s][n] || [];
+                            authors[s][n].push({label: value['author'].trim(), year: value['year']});
+
+                            // create a count of the sub domains per encoding pair
+                            subDomains[s][n] = subDomains[s][n] || {};
+                            value.subDomain.forEach(function(sub){
+                                subDomains[s][n][sub] = subDomains[s][n][sub] || 0;
+                                subDomains[s][n][sub] += 1;
+                            });
+                        }
                     });
                 });
                 return result;

@@ -364,7 +364,7 @@ var Graph = function (options) {
         /* the width and height of the chart */
         var totWidth = d3.select('.chartDivBubbles').node().clientWidth,
             totHeight = totWidth * 0.9,
-
+            margins = { top : 20, bottom: 150, left: 150, right: 30},
             chart = null;
 
         var nonSpat = _.toPairs(nonSpatialMap);
@@ -373,13 +373,13 @@ var Graph = function (options) {
         nv.addGraph(function () {
 
             d3.select(chartDiv).append("svg")
-                .attr("width", totWidth)
-                .attr("height", totHeight);
+                .attr("width", totWidth - margins.left - margins.right)
+                .attr("height", totHeight - margins.top - margins.bottom);
 
             chart = nv.models.scatterChart()
                 .showLegend(false)
-                .margin({bottom: 150, left: 150, right: 20})
-                .pointRange([0, (parseInt(totWidth * 0.05) * 45)])
+                .margin(margins)
+                .pointRange([0, (parseInt( (totWidth- margins.left - margins.right) * 0.05) * 45)])
                 .useVoronoi(false);
 
                 /* Set the header formatter */
