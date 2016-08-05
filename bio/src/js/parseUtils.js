@@ -106,27 +106,15 @@ var Parser = function() {
 
                     value.subDomain.forEach(function(subDomain){
 
+                        if(subDomain.length === 0) return;
+
                         if(subDomains[s][n][subDomain])
                         {
-                            // if(subDomain == 'Both')
-                            // {
-                            //     subDomains[s][n]['Phys. + Nat. Science'] += 1;
-                            // }
-                            // else
-                            // {
                             subDomains[s][n][subDomain] += 1;
-                            //}
                         }
                         else
                         {
-                            // if(subDomain == 'Both')
-                            // {
-                            //     subDomains[s][n]['Phys. + Nat. Science'] = 1;
-                            // }
-                            // else
-                            // {
                             subDomains[s][n][subDomain] = 1;
-                            // }
                         }
 
                     });
@@ -145,6 +133,8 @@ var Parser = function() {
             'Glyph': _.cloneDeep(nonSpatialTemplate),//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) },
             'Animation': _.cloneDeep(nonSpatialTemplate)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
         });
+
+        console.log(encodings);
 
         // Finally, map to the format needed for the chart
         var max = 0;
