@@ -1001,6 +1001,8 @@ var Graph = function (options) {
                 chart.xAxis.tickFormat(function (d) {
                     if(d == "Quantitative Analysis")
                         return "Quantitative";
+                    else if(d == "Qualitative Analysis")
+                        return "Qualitative";
                     else
                         return d;
                 });
