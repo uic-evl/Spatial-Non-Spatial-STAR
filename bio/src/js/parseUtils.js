@@ -286,7 +286,7 @@ var Parser = function() {
     self.parseFields = function(rows, subDomains) {
 
         var taskNames = d3.keys(App.tasks[0]).filter(function(key) {
-            return key !== "Author" && key !== "Year" && key !== "Sub-Domain";  });
+            return key !== "Author" && key !== "Year" && key !== "SubDomain";  });
 
         /* creates a template for parsing the data */
         var taskTemplate = _.reduce(subDomains,
@@ -434,6 +434,7 @@ var Parser = function() {
                 {
                     "Case Study"            : _.cloneDeep(taskTemplate),
                     "Quantitative Analysis" : _.cloneDeep(taskTemplate),
+                    "Qualitative Analysis" : _.cloneDeep(taskTemplate),
                     "Feedback"              : _.cloneDeep(taskTemplate),
                     "User Study"            : _.cloneDeep(taskTemplate)
                 },

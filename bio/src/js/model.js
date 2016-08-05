@@ -23,7 +23,7 @@ function Papers() {
                     {text: "Protein", category: "subDomain"},
                     {text: "Biochemical", category: "subDomain"},
                     {text: "Animal", category: "subDomain"},
-                    {text: "Molecular", category: "subDomain"}
+                    {text: "Molecular Dynamics", category: "subDomain"}
                 ]
             },
             {
