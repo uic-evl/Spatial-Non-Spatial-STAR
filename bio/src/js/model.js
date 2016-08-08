@@ -18,24 +18,12 @@ function Papers() {
             {
                 name: 'SubDomain',
                 elements: [
-                    {text: "Gene Expression", category: "subDomain"},
-                    {text: "Microscopy", category: "subDomain" },
-                    {text: "Protein", category: "subDomain"},
-                    {text: "Biochemical", category: "subDomain"},
-                    {text: "Animal", category: "subDomain"},
-                    {text: "Molecular Dynamics", category: "subDomain"}
-                ]
-            },
-            {
-                name: '',
-                elements: [
-                    {text: "Biomolecular Features", category: "subDomain"},
-                    {text: "Cell", category: "subDomain"},
+                    {text: "Biochemistry", category: "subDomain"},
+                    {text: "Neuroscience", category: "subDomain" },
+                    {text: "Biomedical", category: "subDomain"},
                     {text: "Epidemiology", category: "subDomain"},
-                    {text: "Neuroscience", category: "subDomain"},
-                    {text: "Blood Flow", category: "subDomain"},
-                    {text: "Medical Image Analysis", category: "subDomain"},
-                    {text: "Clinical Research", category: "subDomain"}
+                    {text: "Biomechanics", category: "subDomain"},
+                    {text: "Animal Behavior", category: "subDomain"}
                 ]
             },
             {

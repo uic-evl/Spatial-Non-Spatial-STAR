@@ -134,8 +134,6 @@ var Parser = function() {
             'Animation': _.cloneDeep(nonSpatialTemplate)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
         });
 
-        console.log(encodings);
-
         // Finally, map to the format needed for the chart
         var max = 0;
         encodings = _.map(encodings, function(d, k, o)
