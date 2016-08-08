@@ -92,14 +92,30 @@ $(function() {
         App.bioGraph = new Graph(
             {
                 colorMap: {
-                    "Natural Science": "#beaed4",
-                    "Physical Science": "#fdc086",
-                    "Simulation": "#7fc97f"
+                    "Biochemistry": "#7fc97f",
+                    "Neuroscience": "#beaed4",
+                    "Biomedical": "#fdc086",
+                    "Epidemiology": "#ffff99",
+                    "Biomechanics": "#386cb0",
+                    "Animal Behavior": "#f0027f"
                 }
             }
         );
 
-        App.dataParser = new Parser();
+        App.dataParser = new Parser({colorMap: [
+            {
+                "Biochemistry": "#7fc97f",
+                "Neuroscience": "#beaed4",
+                "Biomedical": "#fdc086",
+                "Epidemiology": "#ffff99",
+                "Biomechanics": "#386cb0",
+                "Animal Behavior": "#f0027f"
+            },
+            {
+                "Domain Experts" : "#fbb4ae",
+                "Visualization Experts" : "#b3cde3"
+            }
+        ]});
 
         var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('subDomain'))) ), "Both");
 

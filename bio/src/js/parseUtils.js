@@ -1,5 +1,5 @@
 'use strict';
-var Parser = function() {
+var Parser = function(options) {
 
     var self = this;
 
@@ -460,7 +460,7 @@ var Parser = function() {
                             label: key,
                             value: value[k],
                             authors: authors[i][k][key],
-                            //color: options.colorMap[0][k]
+                            color: options.colorMap[0][k]
                         });
                     });
                     return result;
@@ -478,7 +478,7 @@ var Parser = function() {
                         label: key,
                         value: value[k],
                         authors: authors[4][k][key],
-                        //color: options.colorMap[1][k]
+                        color: options.colorMap[1][k]
                     });
                 });
 

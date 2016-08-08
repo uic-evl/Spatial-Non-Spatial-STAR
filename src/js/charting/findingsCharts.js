@@ -322,17 +322,17 @@ var Graph = function (options) {
                 //ko.applyBindings(new Papers(), document.getElementById('attributeSelector'));
             });
 
-        $('body').on('click', function (e) {
-            $('[data-original-title]').each(function () {
-                //the 'is' for buttons that trigger popups
-                //the 'has' for icons within a button that triggers a popup
-                if (!$(this).is(e.target) && $(this).has(e.target).length === 0
-                        && $('.popover').has(e.target).length === 0)
-                {
-                    $(this).popover('hide');
-                }
-            });
-        });
+        // $('body').on('click', function (e) {
+        //     $('[data-original-title]').each(function () {
+        //         //the 'is' for buttons that trigger popups
+        //         //the 'has' for icons within a button that triggers a popup
+        //         if (!$(this).is(e.target) && $(this).has(e.target).length === 0
+        //                 && $('.popover').has(e.target).length === 0)
+        //         {
+        //             $(this).popover('hide');
+        //         }
+        //     });
+        // });
 
         /* define the maps that will be used for the labels of the scatter plot bubble */
         var nonSpatialMap = {}, spatialMap = {}, i = 0;
@@ -645,12 +645,17 @@ var Graph = function (options) {
 
         $("#cogType a")
             .popover({
-                container: "body",
+                container: "#results",
                 title: 'Chart Settings',
                 placement: 'left',
                 html: true,
-                content: "<input id='normalizeType' type='checkbox' name='normalize' value='task'> Normalize Data"
+                content: "<input id='normalizeType' type='checkbox' name='normalize' value='task'>Normalize Data"
             })
+            // .click(function(e) {
+            //     e.preventDefault();
+            //     $(this).popover('toggle');
+            //     e.stopPropagation();
+            // })
             .on('shown.bs.popover', function(){
                 $("#normalizeType").change(function() {
                     // normalize the data
