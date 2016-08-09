@@ -94,3 +94,7 @@ tr.row_selected td {
     width:200px;
     height:250px;
 }
+
+.nv-legendWrap .nv-legend-symbol, .nv-legendWrap .nv-legend-text{
+    cursor: default !important;
+}

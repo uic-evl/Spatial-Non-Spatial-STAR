@@ -115,7 +115,7 @@ var Graph = function (options) {
 
             self.selected.push(obj);
 
-            // grey out the circles that are not selected
+            // grey out the circles/bars that are not selected
             self.chart.selectAll(self.selector)
                 .filter(
                     function (d) {
@@ -125,7 +125,7 @@ var Graph = function (options) {
                 .classed("unSelected", true);
 
             /* grey out all other points from other charts that aren't selected */
-            self.chart.selectAll(_.difference(self.selectors,[self.selector])[0])
+            self.chart.selectAll(_.difference(self.selectors, [self.selector])[0])
                 .filter(
                     function (d) {
                         if (_.indexOf(self.selected, d) < 0)
@@ -1117,8 +1117,6 @@ var Graph = function (options) {
             }
         );
     };
-
-
 
     return self;
 };
