@@ -27,7 +27,7 @@ function Papers() {
                     {text:"Field", category: "dataTypes"},
                     {text:"Geometry", category: "dataTypes"},
                     {text:"Set", category: "dataTypes"},
-                    {text:"List", category: "dataTypes"},
+                    {text:"Cluster", category: "dataTypes"},
                     {text:"Path", category: "dataTypes"}
                 ]
             },
