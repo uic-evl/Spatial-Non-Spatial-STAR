@@ -251,7 +251,7 @@ $(function() {
                             '</tr>'+
 
                             '<tr>'+
-                                '<td class="title">Data Types :</td>'+
+                                '<td class="title">DataSet Types :</td>'+
                                 '<td>' + d.dataTypes.join(', ') +'</td>'+
                             '</tr>'+
 

@@ -20,7 +20,7 @@ function Papers() {
                 ]
             },
             {
-                name: 'Data Set Types',
+                name: 'DataSet Types',
                 elements: [
                     {text:"Table", category: "dataTypes"},
                     {text:"Network", category: "dataTypes"},
