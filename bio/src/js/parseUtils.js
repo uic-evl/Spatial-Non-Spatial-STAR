@@ -460,7 +460,7 @@ var Parser = function(options) {
                             label: key,
                             value: value[k],
                             authors: authors[i][k][key],
-                            color: options.colorMap[0][k]
+                            color: options.colorMap[0][i]
                         });
                     });
                     return result;
@@ -478,7 +478,7 @@ var Parser = function(options) {
                         label: key,
                         value: value[k],
                         authors: authors[4][k][key],
-                        color: options.colorMap[1][k]
+                        color: options.colorMap[1][i]
                     });
                 });
 
