@@ -587,7 +587,8 @@ var Graph = function (options) {
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
-                    .showControls(false);
+                    .showControls(true)
+                    .stacked(true);
 
                 /* Set the header formatter */
                 chart.tooltip.headerFormatter(function(d,i){
@@ -716,10 +717,12 @@ var Graph = function (options) {
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
-                    .showControls(false)
-                    .margin({left: 30, bottom: 60});
+                    .showControls(true)
+                    .margin({left: 30, bottom: 60})
+                    .stacked(true);
 
-                /* Set the header formatter */
+
+            /* Set the header formatter */
                 chart.tooltip.headerFormatter(function(d,i){
                     return "Data Type: " + d;
                 });
@@ -848,8 +851,9 @@ var Graph = function (options) {
                     .reduceXTicks(false)
                     //.rotateLabels(-45)
                     .groupSpacing(0.2)
-                    .showControls(false)
-                    .margin({left: 30, bottom: 70});
+                    .showControls(true)
+                    .margin({left: 30, bottom: 70})
+                    .stacked(true);
 
                 chart.xAxis.tickFormat(function (d) {
                     if(d == "Spatial Nesting")
@@ -991,10 +995,12 @@ var Graph = function (options) {
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
-                    .showControls(false)
-                    .margin({left: 30, bottom: 60});
+                    .showControls(true)
+                    .margin({left: 30, bottom: 60})
+                    .stacked(true);
 
-                /* Set the header formatter */
+
+            /* Set the header formatter */
                 chart.tooltip.headerFormatter(function(d,i){
                     return "Evaluation: " + d;
                 });
@@ -1073,8 +1079,9 @@ var Graph = function (options) {
                     .reduceXTicks(false)
                     .rotateLabels(-45)
                     .groupSpacing(0.2)
-                    .showControls(false)
-                    .margin({left: 30, bottom: 60});
+                    .showControls(true)
+                    .margin({left: 30, bottom: 60})
+                    .stacked(true);
 
                 /* Set the header formatter */
                 chart.tooltip.headerFormatter(function(d,i){
