@@ -68,8 +68,8 @@
 
 </head>
 
-<body class="pushmenu-push" onload="App.initDB();" >
-      <!--onunload="window.indexedDB.deleteDatabase('BioMed')"-->
+<body class="pushmenu-push" onload="App.initDB();"
+      onunload="window.indexedDB.deleteDatabase('BioMed')">
 
 <div class="main">
 
@@ -148,9 +148,9 @@
                                         <li>
                                             <div class="container-fluid" data-bind="foreach: fields">
 
-                                                <div class="row" data-bind="css: { row: $index%3 >= 0 }">
+                                                <div class="row" data-bind="css: { row: $index%4 >= 0 }">
                                                     <!-- Multiple Checkboxes -->
-                                                    <div class="form-group col-md-4">
+                                                    <div class="form-group col-md-3">
                                                         <div class="row">
                                                             <!-- Check if there is a name. If not, it's a continued col-->
                                                             <div data-bind="if: name.length > 0">
@@ -225,9 +225,9 @@
                                         <h3>DataSet</h3>
                                     </div>
                                     <div class="col-md-1 settings">
-                                        <div id='cogType' class="container cog">
-                                            <a href="#">
-                                                <i class="fa fa-cog"></i>
+                                        <div id='cogType'>
+                                            <a>
+                                                <i class="fa fa-cog cog"></i>
                                             </a>
                                         </div>
 

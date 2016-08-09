@@ -9,13 +9,6 @@ function Papers() {
     self.fields = ko.observableArray(
         [
             {
-                name: 'Domain',
-                elements: [
-                    {text: "Bioinformatics", category: "domain"},
-                    {text: "BioMedical", category: "domain" }
-                ]
-            },
-            {
                 name: 'SubDomain',
                 elements: [
                     {text: "Biochemistry", category: "subDomain"},
@@ -27,12 +20,15 @@ function Papers() {
                 ]
             },
             {
-                name: 'Data Types',
+                name: 'Data Set Types',
                 elements: [
                     {text:"Table", category: "dataTypes"},
                     {text:"Network", category: "dataTypes"},
                     {text:"Field", category: "dataTypes"},
-                    {text:"Geometry", category: "dataTypes"}
+                    {text:"Geometry", category: "dataTypes"},
+                    {text:"Set", category: "dataTypes"},
+                    {text:"List", category: "dataTypes"},
+                    {text:"Path", category: "dataTypes"}
                 ]
             },
             {

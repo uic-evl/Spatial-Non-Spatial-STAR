@@ -645,18 +645,14 @@ var Graph = function (options) {
 
         $("#cogType a")
             .popover({
-                container: "#results",
+                container: "body",
                 title: 'Chart Settings',
                 placement: 'left',
                 html: true,
                 content: "<input id='normalizeType' type='checkbox' name='normalize' value='task'>Normalize Data"
             })
-            // .click(function(e) {
-            //     e.preventDefault();
-            //     $(this).popover('toggle');
-            //     e.stopPropagation();
-            // })
             .on('shown.bs.popover', function(){
+                console.log(this);
                 $("#normalizeType").change(function() {
                     // normalize the data
                     if(this.checked) {
@@ -695,8 +691,8 @@ var Graph = function (options) {
                     d3.select(chartDiv).selectAll(".nv-bar")
                         .on('click', clickCB);
                 });
-            });
-
+            })
+        ;
 
         var totWidth = d3.select('.typeDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
