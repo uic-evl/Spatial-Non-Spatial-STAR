@@ -64,7 +64,6 @@
     <script type="text/javascript" src="src/js/main.js"></script>
     <script type="text/javascript" src="../src/js/database/db.js"></script>
     <script type="text/javascript" src="../src/js/charting/parseUtils.js"></script>
-    <script type="text/javascript" src="src/js/parseUtils.js"></script>
     <script type="text/javascript" src="../src/js/charting/findingsCharts.js"></script>
 
 </head>
@@ -148,29 +147,30 @@
                                     <ul class="submenu">
                                         <li>
                                             <div class="container-fluid" data-bind="foreach: fields">
-
-                                                <div class="row" data-bind="css: { row: $index%4 >= 0 }">
-                                                    <!-- Multiple Checkboxes -->
-                                                    <div class="form-group col-md-3">
-                                                        <div class="row">
-                                                            <!-- Check if there is a name. If not, it's a continued col-->
-                                                            <div data-bind="if: name.length > 0">
-                                                                <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
-                                                            </div>
-                                                            <div data-bind="if: name.length == 0">
-                                                                <br>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
-                                                            <div class="col-md-12">
-                                                                <div class="checkbox">
-                                                                    <input type="checkbox"
-                                                                           data-bind="attr: {name: el.category,
-                                                                            id: String(el.text)}, value: String(el.text)">
-                                                                    <label data-bind="attr: {for: el.category},
-                                                                            text: String(el.text)"></label>
+                                                <div data-bind="if: name != 'Tasks' ">
+                                                    <div class="row" data-bind="css: { row: $index%4 >= 0 }">
+                                                        <!-- Multiple Checkboxes -->
+                                                        <div class="form-group col-md-3">
+                                                            <div class="row">
+                                                                <!-- Check if there is a name. If not, it's a continued col-->
+                                                                <div data-bind="if: name.length ">
+                                                                    <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
+                                                                </div>
+                                                                <div data-bind="if: name.length == 0">
+                                                                    <br>
                                                                 </div>
                                                             </div>
+                                                                <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
+                                                                    <div class="col-md-12">
+                                                                        <div class="checkbox">
+                                                                            <input type="checkbox"
+                                                                                   data-bind="attr: {name: el.category,
+                                                                                    id: String(el.text)}, value: String(el.text)">
+                                                                            <label data-bind="attr: {for: el.category},
+                                                                                    text: String(el.text)"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                         </div>
                                                     </div>
                                                 </div>

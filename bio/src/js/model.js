@@ -10,6 +10,7 @@ function Papers() {
         [
             {
                 name: 'SubDomain',
+                property: 'subDomain',
                 elements: [
                     {text: "Biochemistry", category: "subDomain"},
                     {text: "Neuroscience", category: "subDomain" },
@@ -21,6 +22,7 @@ function Papers() {
             },
             {
                 name: 'DataSet Types',
+                property: 'dataTypes',
                 elements: [
                     {text:"Table", category: "dataTypes"},
                     {text:"Network", category: "dataTypes"},
@@ -32,7 +34,26 @@ function Papers() {
                 ]
             },
             {
+              name: 'Tasks',
+              property: 'tasks',
+              elements: [
+                    {text: "Discover", category: 'tasks'},
+                    {text: "Present", category: 'tasks'},
+                    {text: "Annotate", category: 'tasks'},
+                    {text: "Record", category: 'tasks'},
+                    {text: "Derive", category: 'tasks'},
+                    {text: "Browse", category: 'tasks'},
+                    {text: "Locate", category: 'tasks'},
+                    {text: "Explore", category: 'tasks'},
+                    {text: "Lookup", category: 'tasks'},
+                    {text: "Identify", category: 'tasks'},
+                    {text: "Compare", category: 'tasks'},
+                    {text: "Summarize", category: 'tasks'}
+                ]
+            },
+            {
                 name: 'Paradigms',
+                property: 'paradigms',
                 elements: [
                     {text:"Linked Views", category: "paradigms"},
                     {text:"Overlays", category: "paradigms"},
@@ -42,6 +63,7 @@ function Papers() {
             },
             {
                 name: 'Spatial Encodings',
+                property: 'spatial',
                 elements: [
                     {text:"Simple Map", category: "encodings"},
                     {text:"Choropheth / Heatmap", category: "encodings"},
@@ -55,6 +77,7 @@ function Papers() {
             },
             {
                 name: 'Non-Spatial Encodings',
+                property: 'nonSpatial',
                 elements: [
                     {text:"Color", category: "encodings"},
                     {text:"Label", category: "encodings"},
@@ -66,6 +89,7 @@ function Papers() {
                 ]},
             {
                 name: '',
+                property: 'nonSpatial',
                 elements: [
                     {text:"Scatterplot", category: "encodings"},
                     {text:"Box Plot", category: "encodings"},
@@ -84,11 +108,10 @@ function Papers() {
             }
         ]
     );
-
 }
 
 /*** IFE to load the data and apply the KO bindings ***/
 (function(){
-    App.papers = new Papers;
-    ko.applyBindings(new Papers());
+    App.model = new Papers();
+    ko.applyBindings(App.model);
 })();

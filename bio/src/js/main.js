@@ -102,7 +102,7 @@ $(function() {
             }
         );
 
-        App.dataParser = new Parser({colorMap: [
+        App.dataParser = new Parser2({colorMap: [
             {
                 "Biochemistry": "#7fc97f",
                 "Neuroscience": "#beaed4",
@@ -117,28 +117,14 @@ $(function() {
             }
         ]});
 
-        App.dataParser2 = new Parser2({colorMap: [
-            {
-                "Biochemistry": "#7fc97f",
-                "Neuroscience": "#beaed4",
-                "Biomedical": "#fdc086",
-                "Epidemiology": "#ffff99",
-                "Biomechanics": "#386cb0",
-                "Animal Behavior": "#f0027f"
-            },
-            {
-                "Domain Experts" : "#fbb4ae",
-                "Visualization Experts" : "#b3cde3"
-            }
-        ]});
-
-        var subDomains = _.uniq( (_.map(data, _.iteratee('subDomain'))) );
+        /* get the sub-domains from the model */
+        var subDomains = _.map(_.find(App.model.fields(), {property: 'subDomain'} ).elements, 'text' );
 
         // get the parsed encodings
-        var encodingData = App.dataParser2.parseEncodings(data);
+        var encodingData = App.dataParser.parseEncodings(data);
         var taskData = App.dataParser.parseFields(data, subDomains);
 
-        var testParsing = App.dataParser2.parseArbFields(data, "paradigms", "dataTypes");
+        var testParsing = App.dataParser.parseArbFields(data, "paradigms", "dataTypes");
 
         // plot the bubble scatter plots
         App.bioGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
@@ -146,12 +132,6 @@ $(function() {
 
         //App.bioGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
         //    testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
-
-        // if($('.col-md-6').width() > 600)
-        // {
-        //     d3.select('.chartDivBubbles').classed({'col-md-6': false, 'col-md-4': true});
-        //     d3.select('.barCharts').classed({'col-md-6': false, 'col-md-8': true});
-        // }
 
         // // plot the task analysis
         App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
@@ -232,7 +212,7 @@ $(function() {
                         {title: "Paper Title", data: "title", className: "dt-center",  "targets": [ 0 ]},
                         // {title: "Url", data: "url"},
                         // {title: "Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
-                        {title: "Sub-Domain", data: "domain", className: "dt-center",  "targets": [ 0 ]},
+                        {title: "Sub-Domain", data: "subDomain", className: "dt-center",  "targets": [ 0 ]},
                         // {title: "No. of Users", data: "# of Users"},
                         // {title: "Users", data: "Users"},
                         {title: "Level of Expertise", data: "expertise", className: "dt-center",  "targets": [ 0 ]},
