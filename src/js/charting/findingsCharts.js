@@ -6,7 +6,7 @@ var Graph = function (options) {
     // flag to indicate if the bubble was selected or not
     self.clicked = false;
     // list of the selected nodes
-    self.selected = [];
+    self.selected = null;
 
     // the two types of elements that can be selected
     self.selectors = ['.nv-bar', '.nv-point'];
@@ -96,6 +96,11 @@ var Graph = function (options) {
 
     var clickCB = function (obj, i) {
 
+        console.log(obj);
+
+        // bubble chart data
+        if(_.isArray(obj)) obj = obj[0];
+
         // if the circle is hidden, no tooltip should be shown
         if (obj.value === 0) return;
 
@@ -108,18 +113,28 @@ var Graph = function (options) {
             }));
         });
 
-        if (_.indexOf(self.selected, obj) < 0) {
+        /** unselect everything **/
+        self.chart.selectAll(self.selector)
+            .classed({"unSelected": false, linked: false});
+
+        self.chart.selectAll(_.difference(self.selectors,[self.selector])[0])
+            .classed({"unSelected": false, linked: false});
+
+        if (self.selected !== obj) {
+
             // remove the previous selection
             d3.select(this)
                 .classed("unSelected", false);
 
-            self.selected.push(obj);
+            // save the selected object
+            self.selected = obj;
 
             // grey out the circles/bars that are not selected
             self.chart.selectAll(self.selector)
                 .filter(
                     function (d) {
-                        if (_.indexOf(self.selected, d) < 0)
+                        if(_.isArray(d)) d = d[0];
+                        if (self.selected != d)
                             return d;
                     })
                 .classed("unSelected", true);
@@ -128,29 +143,94 @@ var Graph = function (options) {
             self.chart.selectAll(_.difference(self.selectors, [self.selector])[0])
                 .filter(
                     function (d) {
-                        if (_.indexOf(self.selected, d) < 0)
+                        if(_.isArray(d)) d = d[0];
+                        if (self.selected != d)
                             return d;
                     })
                 .classed("unSelected", true);
 
+            // grey out the circles/bars that are not selected
+            self.chart.selectAll(self.selector)
+                .filter(
+                    function (d) {
+
+                        // bubble chart data
+                        if(_.isArray(d)) d = d[0];
+
+                        // no bar or same chart
+                        if(d.value === 0 || d.property == self.selected.property) return;
+
+                        /** iterate over the rows of the selection and find the corresponding
+                         * bars / circles in the other graphs to select */
+                        var include = false;
+                        var rows = [];
+
+                        /* find the data rows corresponding to the selected row */
+                        d.authors.forEach(function(a){
+                            var row = _.find(App.queryResults, {author: a.label, year: a.year});
+                            if (row) rows.push(row);
+                        });
+
+                        /* check to see if any item in the bar has the selected property */
+                        rows.forEach(function(r){
+                           if( r[self.selected.property].indexOf(self.selected.label) > -1 )
+                               include = true;
+                        });
+
+                        // if not the current selection, not the current chart, and shares the same
+                        // property as the selected item, highlight it
+                        if (self.selected != d  && include)
+                            return d;
+                    })
+                .classed({"linked": true, "unSelected": false});
+
+            // grey out the circles/bars that are not selected
+            self.chart.selectAll(_.difference(self.selectors, [self.selector])[0])
+                .filter(
+                    function (d) {
+
+                        // bubble chart data
+                        if(_.isArray(d)) d = d[0];
+
+                        // no bar or same chart
+                        if(d.value === 0 || d.property == self.selected.property || d.size === 0) return;
+
+                        /** iterate over the rows of the selection and find the corresponding
+                         * bars / circles in the other graphs to select */
+                        var include = false;
+                        var rows = [];
+
+                        /* find the data rows corresponding to the selected row */
+                        d.authors.forEach(function(a){
+                            var row = _.find(App.queryResults, {author: a.label, year: a.year});
+                            if (row) rows.push(row);
+                        });
+
+                        /* check to see if any item in the bar has the selected property */
+                        rows.forEach(function(r){
+                            if( r[self.selected.property].indexOf(self.selected.label) > -1 )
+                                include = true;
+                        });
+
+                        // if not the current selection, not the current chart, and shares the same
+                        // property as the selected item, highlight it
+                        if (self.selected != d  && include)
+                            return d;
+                    })
+                .classed({"linked": true, "unSelected": false});
+
             self.clicked = true;
 
-            App.currentSelection = _.union(App.currentSelection, newRows);
+            App.currentSelection = newRows;
         }
+        // clicked on the same item again
         else {
-            // remove the bubble from the array
-            var idx = self.selected.indexOf(obj);
-            self.selected.splice(idx, 1);
-
-            // remove the previous selection
-            d3.select(this)
-                .classed("unSelected", true);
-
-            App.currentSelection = _.difference(App.currentSelection, newRows);
+            // reset the selection
+            self.selected = null;
         }
 
         /** modify the table to only show the entries related to the selected bubble **/
-        if (self.selected.length === 0) {
+        if (self.selected == null) {
             // there is no click interaction
             self.clicked = false;
 
@@ -352,7 +432,8 @@ var Graph = function (options) {
                     y: spatialMap[value.yProp],
                     x: nonSpatialMap[obj.label],
                     domains: subDomains[value.yProp][obj.label],
-                    authors: authors[value.yProp][obj.label]
+                    authors: authors[value.yProp][obj.label],
+                    property: obj.property
                 });
             });
             return result;

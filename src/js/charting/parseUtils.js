@@ -226,7 +226,7 @@ var Parser = function(options) {
 
             var pairs = _.toPairs(d);
             pairs.forEach(function(arr){
-                obj.groups.push({label: arr[0], value: parseInt(arr[1])});
+                obj.groups.push({label: arr[0], value: parseInt(arr[1]), property: 'encodings'});
             });
 
             return obj;
@@ -260,6 +260,8 @@ var Parser = function(options) {
         var totalCounts = {},
             subDomainTemplate = {},
             template = [], templateMap = {}, j = 0;
+
+        var order = ['tasks', 'dataTypes', 'evaluation', 'paradigms', 'evaluators'];
 
         subDomains.forEach(function(subDomain){
             var d = subDomain.trim();
@@ -301,7 +303,8 @@ var Parser = function(options) {
                         // increment the task count
                         result[0][task][domain] += 1;
                         authors[0][domain][task] = authors[0][domain][task] || [];
-                        authors[0][domain][task].push({label: value['author'].trim(), year: value['year']});
+                        authors[0][domain][task].push({label: value['author'].trim(),
+                            year: value['year'], property: 'tasks'});
                     });
                 });
 
@@ -316,7 +319,8 @@ var Parser = function(options) {
                         // increment the data type count
                         result[1][type][domain] += 1;
                         authors[1][domain][type] = authors[1][domain][type] || [];
-                        authors[1][domain][type].push({label: value['author'].trim(), year: value['year']});
+                        authors[1][domain][type].push({label: value['author'].trim(),
+                            year: value['year'], property: 'dataTypes'});
                     });
 
                 });
@@ -334,7 +338,8 @@ var Parser = function(options) {
 
                         // store the corresponding authors in another array
                         authors[2][subDomain][type] = authors[2][subDomain][type] || [];
-                        authors[2][subDomain][type].push({label: value['author'].trim(), year: value['year']});
+                        authors[2][subDomain][type].push({label: value['author'].trim(),
+                            year: value['year'], property: 'evaluation'});
                     });
 
                 });
@@ -351,7 +356,8 @@ var Parser = function(options) {
 
                         // store the corresponding authors in another array
                         authors[3][subDomain][paradigm] = authors[3][subDomain][paradigm] || [];
-                        authors[3][subDomain][paradigm].push({label: value['author'].trim(), year: value['year']});
+                        authors[3][subDomain][paradigm].push({label: value['author'].trim(),
+                            year: value['year'], property: 'paradigms'});
                     });
 
                 });
@@ -361,7 +367,8 @@ var Parser = function(options) {
 
                 /* Parse the author for the evaluator year */
                 authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
-                authors[4][value.evaluators][value.year].push({label: value['author'].trim(), year: value['year']});
+                authors[4][value.evaluators][value.year].push({label: value['author'].trim(),
+                    year: value['year'], property: 'evaluators'});
 
                 return result;
             },
@@ -425,7 +432,8 @@ var Parser = function(options) {
                             label: key,
                             value: value[k],
                             authors: authors[i][k][key],
-                            color: options.colorMap[0][i]
+                            color: options.colorMap[0][i],
+                            property: order[i]
                         });
                     });
                     return result;
@@ -443,7 +451,8 @@ var Parser = function(options) {
                         label: key,
                         value: value[k],
                         authors: authors[4][k][key],
-                        color: options.colorMap[1][i]
+                        color: options.colorMap[1][i],
+                        property: order[4]
                     });
                 });
 

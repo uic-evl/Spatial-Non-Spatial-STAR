@@ -52,6 +52,13 @@ tr.row_selected td {
     fill: #f0f0f0 !important;
 }
 
+.linked {
+    stroke-opacity: 1 !important;
+    stroke-width: 1 !important;
+    stroke: #feb24c !important;
+    fill-opacity: 0.4 !important;
+}
+
 .nv-axis .tick line {
     display:none;
 }
