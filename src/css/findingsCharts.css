@@ -52,10 +52,17 @@ tr.row_selected td {
     fill: #f0f0f0 !important;
 }
 
+.selected {
+    fill-opacity: 1 !important;
+    stroke-opacity: 1 !important;
+    stroke-width: 1 !important;
+    stroke: #f03b20 !important;
+}
+
 .linked {
     stroke-opacity: 1 !important;
     stroke-width: 1 !important;
-    stroke: #feb24c !important;
+    stroke: #ffffb3 !important;
     fill-opacity: 0.4 !important;
 }
 

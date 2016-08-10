@@ -96,8 +96,6 @@ var Graph = function (options) {
 
     var clickCB = function (obj, i) {
 
-        console.log(obj);
-
         // bubble chart data
         if(_.isArray(obj)) obj = obj[0];
 
@@ -115,16 +113,17 @@ var Graph = function (options) {
 
         /** unselect everything **/
         self.chart.selectAll(self.selector)
-            .classed({"unSelected": false, linked: false});
+            .classed({"unSelected": false, 'linked': false, 'selected': false});
 
         self.chart.selectAll(_.difference(self.selectors,[self.selector])[0])
-            .classed({"unSelected": false, linked: false});
+            .classed({"unSelected": false, 'linked': false, 'selected': false});
+
 
         if (self.selected !== obj) {
 
             // remove the previous selection
             d3.select(this)
-                .classed("unSelected", false);
+                .classed({"selected": true});
 
             // save the selected object
             self.selected = obj;
@@ -173,7 +172,7 @@ var Graph = function (options) {
 
                         /* check to see if any item in the bar has the selected property */
                         rows.forEach(function(r){
-                           if( r[self.selected.property].indexOf(self.selected.label) > -1 )
+                           if( r[self.selected.property].indexOf(self.selected.label) > -1 && r.subDomain == self.selected.key)
                                include = true;
                         });
 
