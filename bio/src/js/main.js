@@ -102,7 +102,7 @@ $(function() {
             }
         );
 
-        App.dataParser = new Parser2({colorMap: [
+        App.dataParser = new Parser({colorMap: [
             {
                 "Biochemistry": "#7fc97f",
                 "Neuroscience": "#beaed4",

@@ -112,30 +112,17 @@ $(function() {
                 ]
         });
 
-        App.dataParser2 = new Parser2({
-            colorMap:
-                [{
-                    "Natural Science": "#beaed4",
-                    "Physical Science": "#fdc086",
-                    "Simulation": "#7fc97f"
-                },
-                    {
-                        "Domain Experts" : "#fbb4ae",
-                        "Visualization Experts" : "#b3cde3"
-                    }
-                ]
-        });
-
-        var subDomains = _.uniq( (_.map(data, _.iteratee('subDomain'))) );
+        /* get the sub-domains from the model */
+        var subDomains = _.map(_.find(App.model.fields(), {property: 'subDomain'} ).elements, 'text' );
 
         // get the parsed encodings and paradigms
-        var encodingData = App.dataParser2.parseEncodings(data);
+        var encodingData = App.dataParser.parseEncodings(data);
         //var hybridData = App.dataParser.parseHybridParadigms(data);
 
         // get the task, data set, and evaluations fields
         var taskData = App.dataParser.parseFields(data, subDomains);
 
-        var testParsing = App.dataParser2.parseArbFields(data, "dataTypes", "tasks");
+        var testParsing = App.dataParser.parseArbFields(data, "dataTypes", "tasks");
 
         //App.engGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
         //    testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);

@@ -1,5 +1,5 @@
 'use strict';
-var Parser2 = function(options) {
+var Parser = function(options) {
 
     var self = this;
 
