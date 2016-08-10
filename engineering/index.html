@@ -63,12 +63,14 @@
     <script type="text/javascript" src="src/js/model.js" defer="defer"></script>
     <script type="text/javascript" src="src/js/main.js"></script>
     <script type="text/javascript" src="../src/js/database/db.js"></script>
+    <script type="text/javascript" src="../src/js/charting/parseUtils.js"></script>
     <script type="text/javascript" src="src/js/parseUtils.js"></script>
     <script type="text/javascript" src="../src/js/charting/findingsCharts.js"></script>
 
 </head>
 
-<body class="pushmenu-push" onload="App.initDB();">
+<body class="pushmenu-push" onload="App.initDB();"
+      onunload="window.indexedDB.deleteDatabase('Engineering')">
 
 <div class="main">
 

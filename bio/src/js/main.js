@@ -117,13 +117,28 @@ $(function() {
             }
         ]});
 
-        var subDomains = _.without(_.uniq( (_.map(data, _.iteratee('subDomain'))) ), "Both");
+        App.dataParser2 = new Parser2({colorMap: [
+            {
+                "Biochemistry": "#7fc97f",
+                "Neuroscience": "#beaed4",
+                "Biomedical": "#fdc086",
+                "Epidemiology": "#ffff99",
+                "Biomechanics": "#386cb0",
+                "Animal Behavior": "#f0027f"
+            },
+            {
+                "Domain Experts" : "#fbb4ae",
+                "Visualization Experts" : "#b3cde3"
+            }
+        ]});
+
+        var subDomains = _.uniq( (_.map(data, _.iteratee('subDomain'))) );
 
         // get the parsed encodings
-        var encodingData = App.dataParser.parseEncodings(data);
+        var encodingData = App.dataParser2.parseEncodings(data);
         var taskData = App.dataParser.parseFields(data, subDomains);
 
-        var testParsing = App.dataParser.parseArbFields(data, "paradigms", "dataTypes");
+        var testParsing = App.dataParser2.parseArbFields(data, "paradigms", "dataTypes");
 
         // plot the bubble scatter plots
         App.bioGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
