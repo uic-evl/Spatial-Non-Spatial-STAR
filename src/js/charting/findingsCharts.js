@@ -157,7 +157,7 @@ var Graph = function (options) {
                         if(_.isArray(d)) d = d[0];
 
                         // no bar or same chart
-                        if(d.value === 0 || d.property == self.selected.property) return;
+                        if(d.value === 0) return;
 
                         /** iterate over the rows of the selection and find the corresponding
                          * bars / circles in the other graphs to select */
@@ -192,7 +192,7 @@ var Graph = function (options) {
                         if(_.isArray(d)) d = d[0];
 
                         // no bar or same chart
-                        if(d.value === 0 || d.property == self.selected.property || d.size === 0) return;
+                        if(d.value === 0 || d.size === 0) return;
 
                         /** iterate over the rows of the selection and find the corresponding
                          * bars / circles in the other graphs to select */
