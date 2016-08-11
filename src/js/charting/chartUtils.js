@@ -13,7 +13,7 @@ var ChartUtils = function (options) {
 
     // the hover callback to be used when the user
     // hovers over one of the circles
-    self.hoveringCB = function (obj, col, row) {
+    self.hoveringCB = function (obj) {
 
         // show the tooltip if the circle is visible
         if (obj.value === 0){

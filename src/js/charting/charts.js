@@ -18,12 +18,11 @@ var Graph = function (options) {
      * @this {Graph}
      * @param {Object} data The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
-     * @param {number} maxValue The count of that the largest circle will possess
-     * @param {Array} grpNames The values for the x-axis
+     * @param {Array} xDomain The values for the x-axis
+     * @param {Array} subDomainCount The subDomain count per item
      * @param {Array} authors The authors corresponding to the data
-     * @param {Array} subDomains Subdomains mapped to the encoding pairings
      */
-    self.graphEncodingBubbleNVD3Chart = function (data, chartDiv, maxValue, grpNames, authors, subDomains) {
+    self.graphEncodingBubbleNVD3Chart = function (data, chartDiv, xDomain, subDomainCount, authors) {
 
         // $("#cogEnc a")
         //     .popover({
@@ -94,8 +93,8 @@ var Graph = function (options) {
         var nonSpatialMap = {}, spatialMap = {}, i = 0;
 
         // create the non-spatial map
-        grpNames.forEach(function (grp) {
-            nonSpatialMap[grp] = i++;
+        xDomain.forEach(function (x) {
+            nonSpatialMap[x] = i++;
         });
 
         // reset the iterator and create the spatial map
@@ -107,7 +106,7 @@ var Graph = function (options) {
                     size: obj.value * 100,
                     y: spatialMap[value.yProp],
                     x: nonSpatialMap[obj.label],
-                    domains: subDomains[value.yProp][obj.label],
+                    domains: subDomainCount[value.yProp][obj.label],
                     authors: authors[value.yProp][obj.label],
                     property: obj.property
                 });
@@ -226,11 +225,9 @@ var Graph = function (options) {
                 $(chartDiv + " svg .nv-point").each(function (i, elem) {
 
                     $(elem).hover(function () {
-
-                        utils.hoveringCB.call(
-                            {
-                                groups: grpNames,
-                                chart: d3.select("#results"), selector: '.nv-point'
+                        utils.hoveringCB.call({
+                            chart: d3.select("#results"),
+                            selector: '.nv-point'
                             }, d3.select(elem).data()[0][0], 0, i)
                     },
                         function () {
@@ -251,12 +248,10 @@ var Graph = function (options) {
      * @this {Graph}
      * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
-     * @param {number} maxValue The count of that the largest circle will possess
-     * @param {Array} grpNames The values for the x-axis
-     * @param {Array} subDomains The values for the y-axis
+     * @param {Array} xDomain The values for the x-axis
      * @param {Array} authors The authors corresponding to the data,
      */
-    self.graphTaskBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
+    self.graphTaskBarNVD3Chart = function (datum, chartDiv, authors) {
 
         // $("#cogTask a")
         //     .popover({
@@ -366,7 +361,7 @@ var Graph = function (options) {
                     $(elem).hover(function () {
 
                         utils.hoveringCB.call({
-                            authors: authors, groups: grpNames,
+                            authors: authors,
                             chart: d3.select("#results"), selector: '.nv-bar'
                         }, d3.select(elem).data()[0], 0, i)
 
@@ -392,12 +387,9 @@ var Graph = function (options) {
      * @this {Graph}
      * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
-     * @param {number} maxValue The count of that the largest circle will possess
-     * @param {Array} grpNames The values for the x-axis
-     * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
      */
-    self.graphTypeBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
+    self.graphTypeBarNVD3Chart = function (datum, chartDiv, authors) {
 
         // $("#cogType a")
         //     .popover({
@@ -495,7 +487,7 @@ var Graph = function (options) {
             $(chartDiv + " svg .nv-bar").each(function (i, elem) {
                 $(elem).hover(function () {
                     utils.hoveringCB.call({
-                        authors: authors, groups: grpNames,
+                        authors: authors,
                         chart: d3.select("#results"), selector: '.nv-bar'
                     }, d3.select(elem).data()[0], 0, i)
                 }, function () {
@@ -518,12 +510,9 @@ var Graph = function (options) {
      * @this {Graph}
      * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
-     * @param {number} maxValue The count of that the largest circle will possess
-     * @param {Array} grpNames The values for the x-axis
-     * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
      */
-    self.graphParadigmsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
+    self.graphParadigmsNVD3Chart = function (datum, chartDiv, authors) {
 
         // $("#cogPara a")
         //     .popover({
@@ -642,7 +631,7 @@ var Graph = function (options) {
 
                     $(elem).hover(function () {
                         utils.hoveringCB.call({
-                            authors: authors, groups: grpNames,
+                            authors: authors,
                             chart: d3.select("#results"), selector: '.nv-bar'
                         }, d3.select(elem).data()[0], 0, i)
                     }, function () {
@@ -667,12 +656,9 @@ var Graph = function (options) {
      * @this {Graph}
      * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
-     * @param {number} maxValue The count of that the largest circle will possess
-     * @param {Array} grpNames The values for the x-axis
-     * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
      */
-    self.graphEvaluationNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
+    self.graphEvaluationNVD3Chart = function (datum, chartDiv, authors) {
 
         // $("#cogEval a")
         //     .popover({
@@ -777,7 +763,7 @@ var Graph = function (options) {
 
                     $(elem).hover(function () {
                         utils.hoveringCB.call({
-                            authors: authors, groups: grpNames,
+                            authors: authors,
                             chart: d3.select("#results"), selector: '.nv-bar'
                         }, d3.select(elem).data()[0], 0, i)
                     }, function () {
@@ -801,12 +787,9 @@ var Graph = function (options) {
      * @this {Graph}
      * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
-     * @param {number} maxValue The count of that the largest circle will possess
-     * @param {Array} grpNames The values for the x-axis
-     * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
      */
-    self.graphEvaluatorsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
+    self.graphEvaluatorsNVD3Chart = function (datum, chartDiv, authors) {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -851,7 +834,7 @@ var Graph = function (options) {
                     $(elem).hover(function () {
 
                         utils.hoveringCB.call({
-                            authors: authors, groups: grpNames,
+                            authors: authors,
                             chart: d3.select("#results"), selector: '.nv-bar'
                         }, d3.select(elem).data()[0], 0, i)
                     }, function () {

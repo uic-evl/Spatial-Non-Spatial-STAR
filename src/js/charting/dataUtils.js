@@ -36,7 +36,7 @@ var Parser = function(options) {
 
     self.parseArbFields = function(rows, xProp, yProp) {
 
-        var authors = {}, subDomains = {};
+        var authors = {}, elementSubDomains = {};
 
         var template = {},
             xDomain = [],
@@ -54,21 +54,21 @@ var Parser = function(options) {
 
                     template[y] = {};
                     authors[y] = {};
-                    subDomains[y] = {};
+                    elementSubDomains[y] = {};
                 });
             }
             else
             {
                 authors[row[yProp]] = {};
                 template[row[yProp]] = {};
-                subDomains[row[yProp]] = {};
+                elementSubDomains[row[yProp]] = {};
             }
         });
 
-        _.difference(yDomain, _.keys(subDomains)).forEach(function(y) {
+        _.difference(yDomain, _.keys(options.subDomains)).forEach(function(y) {
             authors[y] = {};
             template[y] = {};
-            subDomains[y] = {};
+            elementSubDomains[y] = {};
         });
 
 
@@ -76,7 +76,7 @@ var Parser = function(options) {
         yDomain.sort();
 
         /** iterate over the resutls to combine the encodings **/
-        var output = _.reduce(rows, function(result, value, key) {
+        var output = _.reduce(rows, function(result, value) {
 
                 yDomain.forEach(function(s){
                     xDomain.forEach(function(n){
@@ -93,10 +93,10 @@ var Parser = function(options) {
                             authors[s][n].push({label: value['author'].trim(), year: value['year']});
 
                             // create a count of the sub domains per encoding pair
-                            subDomains[s][n] = subDomains[s][n] || {};
-                            value.subDomain.forEach(function(sub){
-                                subDomains[s][n][sub] = subDomains[s][n][sub] || 0;
-                                subDomains[s][n][sub] += 1;
+                            elementSubDomains[s][n] = elementSubDomains[s][n] || {};
+                            options.subDomains.forEach(function(sub){
+                                elementSubDomains[s][n][sub] = elementSubDomains[s][n][sub] || 0;
+                                elementSubDomains[s][n][sub] += 1;
                             });
                         }
                     });
@@ -110,7 +110,7 @@ var Parser = function(options) {
         output = formatBubbleData(output, yProp);
 
         return {pairings : output.data, authors: authors, xDomain : xDomain,
-            yDomain : yDomain, subDomains: subDomains, max: output.max};
+            yDomain : yDomain,  max: output.max};
     };
 
     /**
@@ -152,7 +152,7 @@ var Parser = function(options) {
             'Animation': {}
         };
 
-        var subDomains = {
+        var elementSubDomains = {
             'Simple Map': {},
             'Choropleth / Heatmap': {},
             'Ball and Stick / Mesh': {},
@@ -181,21 +181,20 @@ var Parser = function(options) {
                     authors[s][n].push({label: value['author'].trim(), year: value['year']});
 
                     // create a count of the sub domains per encoding pair
-                    subDomains[s][n] = subDomains[s][n] || {};
+                    elementSubDomains[s][n] = elementSubDomains[s][n] || {};
 
                     value.subDomain.forEach(function(subDomain){
 
                         if(subDomain.length === 0) return;
 
-                        if(subDomains[s][n][subDomain])
+                        if(elementSubDomains[s][n][subDomain])
                         {
-                            subDomains[s][n][subDomain] += 1;
+                            elementSubDomains[s][n][subDomain] += 1;
                         }
                         else
                         {
-                            subDomains[s][n][subDomain] = 1;
+                            elementSubDomains[s][n][subDomain] = 1;
                         }
-
                     });
 
                 });
@@ -232,7 +231,7 @@ var Parser = function(options) {
             return obj;
         });
 
-        return {encodings: encodings, authors: authors, subDomains: subDomains, max: max, groups: nonSpatial};
+        return {encodings: encodings, authors: authors, max: max, xDomain: nonSpatial, subDomainCount: elementSubDomains};
     };
 
     /**
@@ -241,33 +240,30 @@ var Parser = function(options) {
      * @constructor
      * @this {Graph}
      * @param {Object} rows The data to be parsed
-     * @param {Array} subDomains The list of sub-domains to map the data
      * @returns {Object} The mapped tasks, data types, and task types
      */
 
-    self.parseFields = function(rows, subDomains) {
+    self.parseFields = function(rows) {
 
         // get the task names from the model
-        var taskNames = _.map(_.find(App.model.fields(), {property: 'tasks'} ).elements, 'text' );
+        //var taskNames = _.map(_.find(App.model.fields(), {property: 'tasks'} ).elements, 'text' );
 
         /* creates a template for parsing the data */
-        var taskTemplate = _.reduce(subDomains,
-            function(result, value, key){
+        var taskTemplate = _.reduce(options.subDomains,
+            function(result, value){
                 if(value.length > 0) result[value] = 0;
                 return result;
             }, {});
 
-        var totalCounts = {},
-            subDomainTemplate = {},
+        var subDomainTemplate = {},
             template = [], templateMap = {}, j = 0;
 
         var order = ['tasks', 'dataTypes', 'evaluation', 'paradigms', 'evaluators'];
 
-        subDomains.forEach(function(subDomain){
+        options.subDomains.forEach(function(subDomain){
             var d = subDomain.trim();
-            if(d.length > 0 && totalCounts[d] == null)
+            if(d.length > 0)
             {
-                totalCounts[d] = 0;
                 subDomainTemplate[d] = {};
 
                 template.push({key: d, values: []});
@@ -287,13 +283,6 @@ var Parser = function(options) {
         ];
 
         var data = _.reduce(rows, function(result, value, key) {
-
-                /* iterate over the domains */
-
-                value.subDomain.forEach(function(domain) {
-                    if(domain.length === 0) return;
-                    totalCounts[domain] += 1;
-                });
 
                 /* Parse the User Tasks */
                 value.tasks.forEach(function(task){
@@ -444,9 +433,7 @@ var Parser = function(options) {
         }
 
         var mappedEvaluators = _.reduce(data[4], function (result, value, key) {
-
                 _.keys(value).forEach(function(k, i){
-
                     result[i].values.push({
                         label: key,
                         value: value[k],
@@ -455,7 +442,6 @@ var Parser = function(options) {
                         property: order[4]
                     });
                 });
-
                 return result;
             },
             [
@@ -464,8 +450,7 @@ var Parser = function(options) {
             ]);
 
         return { tasks: maps[0], dataTypes: maps[1], evaluation: maps[2],
-            evaluators: mappedEvaluators, paradigms: maps[3], groups: taskNames,
-            authors: authors, count: totalCounts };
+            evaluators: mappedEvaluators, paradigms: maps[3], authors: authors };
     };
 
 };

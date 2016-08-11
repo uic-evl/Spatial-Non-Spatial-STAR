@@ -60,6 +60,9 @@ var App = App || {};
 
     function setupCharts(data){
 
+        /* get the sub-domains from the model */
+        var subDomains = _.map(_.find(App.model.fields(), {property: 'subDomain'} ).elements, 'text' );
+
         /** initialize a new bubble graph **/
         App.bioGraph = new Graph(
             {
@@ -70,60 +73,58 @@ var App = App || {};
                     "Epidemiology": "#ffff99",
                     "Biomechanics": "#386cb0",
                     "Animal Behavior": "#f0027f"
-                }
+                },
+                subDomains: subDomains
             }
         );
 
-        App.dataParser = new Parser({colorMap: [
+        App.dataParser = new Parser(
             {
-                "Biochemistry": "#7fc97f",
-                "Neuroscience": "#beaed4",
-                "Biomedical": "#fdc086",
-                "Epidemiology": "#ffff99",
-                "Biomechanics": "#386cb0",
-                "Animal Behavior": "#f0027f"
-            },
-            {
-                "Domain Experts" : "#fbb4ae",
-                "Visualization Experts" : "#b3cde3"
+                colorMap: [
+                {
+                    "Biochemistry": "#7fc97f",
+                    "Neuroscience": "#beaed4",
+                    "Biomedical": "#fdc086",
+                    "Epidemiology": "#ffff99",
+                    "Biomechanics": "#386cb0",
+                    "Animal Behavior": "#f0027f"
+                },
+                {
+                    "Domain Experts" : "#fbb4ae",
+                    "Visualization Experts" : "#b3cde3"
+                }],
+                subDomains: subDomains
             }
-        ]});
-
-        /* get the sub-domains from the model */
-        var subDomains = _.map(_.find(App.model.fields(), {property: 'subDomain'} ).elements, 'text' );
+        );
 
         // get the parsed encodings
         var encodingData = App.dataParser.parseEncodings(data);
-        var taskData = App.dataParser.parseFields(data, subDomains);
+        var taskData = App.dataParser.parseFields(data);
 
-        var testParsing = App.dataParser.parseArbFields(data, "paradigms", "dataTypes");
+        //var testParsing = App.dataParser.parseArbFields(data, "paradigms", "dataTypes");
 
         // plot the bubble scatter plots
         App.bioGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-             encodingData.max, encodingData.groups, encodingData.authors, encodingData.subDomains);
+            encodingData.xDomain, encodingData.subDomainCount, encodingData.authors);
 
         //App.bioGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
         //    testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
 
-        // // plot the task analysis
-        App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", 0, taskData.groups,
-            taskData.subDomains, taskData.authors[0], taskData.count);
-
-        // // plot the data type analysis
-        App.bioGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", 0,
-            ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[1], taskData.count);
-
-        // // plot the data type analysis
-        App.bioGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", 0,
-             ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[2], taskData.count);
+        // plot the task analysis
+        App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", taskData.subDomains, taskData.authors[0]);
 
         // plot the data type analysis
-        App.bioGraph.graphParadigmsNVD3Chart(taskData.paradigms, "#paradigms", 0,
-            ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[3], taskData.count);
+        App.bioGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", taskData.authors[1]);
 
         // // plot the data type analysis
-        App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", 0,
-             ["Table", "Field", "Network", "Geometry"], taskData.subDomains, taskData.authors[4], taskData.count);
+        App.bioGraph.graphEvaluationNVD3Chart(taskData.evaluation, "#evaluation", taskData.authors[2]);
+
+        // plot the data type analysis
+        App.bioGraph.graphParadigmsNVD3Chart(taskData.paradigms, "#paradigms",  taskData.authors[3]);
+
+        // plot the data type analysis
+        App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators",
+             ["Table", "Field", "Network", "Geometry"], taskData.authors[4]);
     }
 
     function setupTable(data) {
