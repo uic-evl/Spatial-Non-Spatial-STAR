@@ -580,7 +580,6 @@ var Graph = function (options) {
         //
         //         });
         //     });
-
         // $('a#cogPara').on('click', function(e) {e.preventDefault(); return true;});
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
