@@ -148,8 +148,24 @@ var ChartUtils = function (options) {
 
                         /** check to see if any item in the bar has the selected property **/
                         rows.forEach(function(r){
-                            if( r[self.selected.property].indexOf(self.selected.label) > -1 && r.subDomain == self.selected.key)
-                                include = true;
+
+                            //  if the bubble chart was selected
+                            if(self.selected.pairing) {
+                                // check to see if the paper has both of the attribute pairings
+                                if( _.intersection(r[self.selected.property], self.selected.pairing).length > 1)
+                                {
+                                    include = true;
+                                }
+
+                            }
+                            else
+                            {
+                                if( r[self.selected.property].indexOf(self.selected.label) > -1
+                                        && r.subDomain == self.selected.key)
+                                {
+                                    include = true;
+                                }
+                            }
                         });
 
                         // if not the current selection, not the current chart, and shares the same

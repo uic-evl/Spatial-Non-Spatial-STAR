@@ -51,7 +51,10 @@ var Parser = function(options) {
                     x: xDomainMap[obj.label],
                     domains: elementCounts[value.yProp][obj.label],
                     authors: authors[value.yProp][obj.label],
-                    property: obj.property
+                    // the property corresponding to the DB
+                    property: obj.property,
+                    // the x and y paring
+                    pairing: [obj.label, value.yProp]
                 });
             });
             return result;
