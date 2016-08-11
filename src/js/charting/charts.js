@@ -221,7 +221,6 @@ var Graph = function (options) {
      * @this {Graph}
      * @param {Object} datum The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
-     * @param {Array} xDomain The values for the x-axis
      * @param {Array} authors The authors corresponding to the data,
      */
     self.graphTaskBarNVD3Chart = function (datum, chartDiv, authors) {

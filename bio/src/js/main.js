@@ -124,8 +124,7 @@ var App = App || {};
         App.bioGraph.graphParadigmsNVD3Chart(taskData.paradigms, "#paradigms",  taskData.authors[3]);
 
         // plot the data type analysis
-        App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators",
-             ["Table", "Field", "Network", "Geometry"], taskData.authors[4]);
+        App.bioGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", taskData.authors[4]);
     }
 
     function setupTable(data) {

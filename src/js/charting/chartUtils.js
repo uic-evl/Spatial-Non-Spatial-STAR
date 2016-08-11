@@ -1,5 +1,4 @@
 'use strict';
-'use strict';
 var App = App || {};
 
 var ChartUtils = function (options) {
@@ -8,8 +7,11 @@ var ChartUtils = function (options) {
 
     // flag to indicate if the bubble was selected or not
     self.clicked = false;
-    // list of the selected nodes
-    self.selected = null;
+
+    // list of the selected nodes and the corresponding data
+    self.selectedElements = [];
+    self.selectedData = [];
+    App.currentSelection = [];
 
     // the hover callback to be used when the user
     // hovers over one of the circles
@@ -78,11 +80,11 @@ var ChartUtils = function (options) {
     self.endCB = function () {
 
         // deselect the table rows
-        $("#papers tbody tr")
+        $("#papers").find("tbody tr")
             .removeClass('row_selected');
     };
 
-    self.clickCB = function (obj, i) {
+    self.clickCB = function (obj) {
 
         // bubble chart data
         if(_.isArray(obj)) obj = obj[0];
@@ -90,28 +92,67 @@ var ChartUtils = function (options) {
         // if the circle is hidden, no tooltip should be shown
         if (obj.value === 0) return;
 
+        // reset the selections
+        App.currentSelection = [];
+
+        /** restore default styling **/
+        self.chart.selectAll(self.selector + ', ' + _.difference(options.selectors,[self.selector])[0])
+            .classed({"unSelected": false, 'linked': false, 'selected': false});
+
+        /* if unselect, remove the item from the selections */
+        if(self.selectedData.indexOf(obj) > -1){
+            // if ctrl unclick, remove the element and data from the arrays
+            if(App.ctrl) {
+                // remove the clicked items
+                self.selectedData = _.difference(self.selectedData, [obj]);
+                self.selectedElements = _.difference(self.selectedElements, [this]);
+            }
+            else
+            {
+                // reset the selection
+                self.selectedData = [];
+                self.selectedElements = [];
+            }
+        }
+        else{
+            // save the selected object
+            if(App.ctrl) {
+                self.selectedData.push(obj);
+                self.selectedElements.push(this);
+            }
+            // new single selection
+            else {
+                self.selectedData = [obj];
+                self.selectedElements = [this];
+            }
+        }
+
+        /** determine which papers make up the current selection */
         /** select the rows associated with the selected bubble **/
-        var newRows = [];
-        _.forEach(self.authors, function (a) {
+        var newRows = [], authors = [];
+
+        /* get the list of authors of the selected papers */
+        self.selectedData.forEach(function(data){
+            data.authors = _.map(data.authors, function(a) { return {label: a.label, year: a.year} } );
+            authors = (authors.length === 0) ? data.authors :_.union(authors, data.authors);
+        });
+        authors = _.uniqWith(authors, _.isEqual);
+
+        /* using the authors, find the papers corresponding to the selection */
+        _.forEach(authors, function (a) {
             // add the rows corresponding to the authors/year of the clicked item
             newRows.push(_.find(App.queryResults, function (r) {
                 return r.author.trim() == a.label.trim() && parseInt(r.year) == a.year;
             }));
         });
 
-        /** unselect everything **/
-        self.chart.selectAll(self.selector + ', ' + _.difference(options.selectors,[self.selector])[0])
-            .classed({"unSelected": false, 'linked': false, 'selected': false});
-
-        /** if the item has not been selected yet **/
-        if (self.selected !== obj) {
-
-            // remove the previous selection
-            d3.select(this)
-                .classed({"selected": true});
-
-            // save the selected object
-            self.selected = obj;
+        /** color the elements **/
+        if(self.selectedData.length > 0) {
+            // highlight the selected elements
+            self.selectedElements.forEach(function(element){
+                d3.select(element)
+                    .classed({"selected": true, "linked": false, 'unSelected': false});
+            });
 
             /** grey out the circles/bars that are not selected
              * by adding the unselected class to all other items */
@@ -119,10 +160,9 @@ var ChartUtils = function (options) {
                 .filter(
                     function (d) {
                         if(_.isArray(d)) d = d[0];
-                        if (self.selected != d)
-                            return d;
+                        if (self.selectedData.indexOf(d) < 0) return d;
                     })
-                .classed("unSelected", true);
+                .classed({"unSelected": true});
 
             /** Iterate through the selected charts and mark the items that
              *  share the selected attribute */
@@ -149,51 +189,39 @@ var ChartUtils = function (options) {
 
                         /** check to see if any item in the bar has the selected property **/
                         rows.forEach(function(r){
-                            if( r[self.selected.property].indexOf(self.selected.label) > -1 && r.subDomain == self.selected.key)
-                                include = true;
+
+                            self.selectedData.forEach(function(s) {
+                                //  if the bubble chart was selected
+                                if(s.pairing) {
+                                    // check to see if the paper has both of the attribute pairings
+                                    if( _.intersection(r[s.property], s.pairing).length > 1)
+                                        { include = true; }
+                                }
+                                else
+                                {
+                                    if( r[s.property].indexOf(s.label) > -1 && r.subDomain == s.key)
+                                    { include = true; }
+                                }
+                            });
                         });
 
                         // if not the current selection, not the current chart, and shares the same
                         // property as the selected item, highlight it
-                        if (self.selected != d  && include)
-                            return d;
+                        if (self.selectedData.indexOf(d) < 0  && include) return d;
                     })
                 .classed({"linked": true, "unSelected": false});
 
-            self.clicked = true;
-
+            // set the current selection to be the selected papers
             App.currentSelection = newRows;
-        }
-        // clicked on the same item again
-        else {
-            // reset the selection
-            self.selected = null;
         }
 
         /** modify the table to only show the entries related to the selected bubble **/
-        if (self.selected == null) {
-            // there is no click interaction
-            self.clicked = false;
-
-            // make all of the circle their original color
-            self.chart.selectAll(self.selector + ', ' + _.difference(options.selectors,[self.selector])[0])
-                .classed("unSelected", false);
-
-            // clear the old rows
-            App.table.clear();
-            //add the selection to the table
-            App.table.rows.add(App.queryResults);
-            //render the table
-            App.table.draw();
-        }
-        else {
-            // clear the old rows
-            App.table.clear();
-            //add the selection to the table
-            App.table.rows.add(App.currentSelection);
-            //render the table
-            App.table.draw();
-        }
+        // clear the old rows
+        App.table.clear();
+        //add the selection to the table
+        App.table.rows.add( (App.currentSelection.length > 0) ? App.currentSelection : App.queryResults);
+        //render the table
+        App.table.draw();
     };
 
     self.wrap = function (text, width) {
@@ -254,7 +282,7 @@ var ChartUtils = function (options) {
 
     self.truncate = function (text, width) {
 
-        text.each(function(d){
+        text.each(function(){
 
             var text = d3.select(this);
             var label = text.text();
@@ -271,6 +299,5 @@ var ChartUtils = function (options) {
             }
         });
     };
-
     return self;
 };
