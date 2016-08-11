@@ -1,5 +1,4 @@
 'use strict';
-'use strict';
 var App = App || {};
 
 var ChartUtils = function (options) {
