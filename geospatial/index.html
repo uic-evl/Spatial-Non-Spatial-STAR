@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xml:lang="en" lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, maximum-scale=1">
+    <title>S.T.A.R Engineering</title>
+
+    <!---- CSS Libraries ---->
+
+    <!---- Fonts  ---->
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,800italic,700italic,600italic,400italic,300italic,800,700,600'
+          rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../lib/css/bootstrap.css" rel="stylesheet" type="text/css">
+
+    <!-- Table Styling -->
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../lib/css/nv.d3.css"/>
+
+    <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
+    <link rel="stylesheet" type="text/css" href="../lib/js/external/datepicker/css/datepicker-min.css"/>
+    <link rel="stylesheet" type="text/css" href="../lib/css/style.css">
+
+    <link href="http://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+
+    <!---- CSS Source ---->
+    <link href="../src/css/findingsCharts.css" rel="stylesheet" type="text/css">
+    <link href="../src/css/custom.css" rel="stylesheet" type="text/css">
+    <link href="../src/css/accordian.css" rel="stylesheet" type="text/css" >
+    <link href="../src/css/main.css" rel="stylesheet" type="text/css" >
+
+    <!---- JS Libraries ---->
+    <script type="text/javascript" src="../lib/js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="../lib/js/external/datepicker/js/datepicker-min.js" charset="utf-8"></script>
+    <script src="../lib/js/knockout-debug.js"></script>
+
+    <!-- Style-->
+    <script type="text/javascript" src="../lib/js/wowsearchform.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../lib/js/languages/wowsearchform_lang_en.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../lib/js/bootstrap.js"></script>
+
+    <!-- D3 v3.5.16-->
+    <script type="text/javascript" src="../lib/js/d3.min.js"></script>
+    <script type="text/javascript" src="../lib/js/d3-tip.js"></script>
+
+    <!-- NVD3 Charting Library v1.8.4 -->
+    <script type="text/javascript" src="../lib/js/nv.d3.js"></script>
+
+    <!-- DB and Table-->
+    <script type="text/javascript" src="../lib/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript"
+            src="../lib/js/dataTables.fixedColumns.min.js"></script>
+    <script type="text/javascript" src="../lib/js/tabletop.js"></script>
+    <script type="text/javascript" src="../lib/js/dexie.js"></script>
+
+    <!-- JS Utilities-->
+    <script type="text/javascript" src="../lib/js/lodash.js"></script>
+    <script type="text/javascript" src="../lib/js/q.js"></script>
+
+    <!---- JS Source ---->
+    <script type="text/javascript" src="src/js/model.js" defer="defer"></script>
+    <script type="text/javascript" src="src/js/main.js"></script>
+    <script type="text/javascript" src="../src/js/database/db.js"></script>
+
+    <!-- Charting Source-->
+    <script type="text/javascript" src="../src/js/charting/dataUtils.js"></script>
+    <script type="text/javascript" src="../src/js/charting/chartUtils.js"></script>
+    <script type="text/javascript" src="../src/js/charting/charts.js"></script>
+
+</head>
+
+<body class="pushmenu-push" onload="App.initDB(); App.getResults()"
+      onunload="window.indexedDB.deleteDatabase('Geospatial')">
+
+<div class="main">
+
+    <section class="buttonset" style="position: relative;">
+
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-md-2">
+                    <div id="header_logo">
+                        <a href="https://www.evl.uic.edu">
+                            <img src="../lib/css/logo.png" onmouseover="this.src='../lib/css/logo_on.png';"
+                                 onmouseout="this.src='../lib/css/logo.png'" alt="evl" title="evl" height="104" width="254">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-offset-1 col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="main_title">Visual Integration of Spatial and Nonspatial Data</h2>
+                            <h3 class="main_title">Geospatial and Trajectories</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul id="nav">
+            <li><a class="active" href="#started"><h3 class="nav-text">Getting Started</h3></a></li>
+            <li><a href="#search"><h3 class="nav-text">Search</h3></a></li>
+            <li><a href="#contact"><h3 class="nav-text">Contact</h3></a></li>
+            <li><a href="#about"><h3 class="nav-text">About Us</h3></a></li>
+        </ul>
+
+    </section>
+
+    <div id="search" class="vcenter">
+        <div id="searchContainer" class="container">
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row" style="padding-bottom: 10px;">
+                        <div class="col-md-offset-3 col-md-7">
+                            <!--Set class "wowsearchform" to start wowsearchform plugin-->
+                            <form id="myform" class="wowsearchform form-inline" method="post" onsubmit="event.preventDefault(); App.getResults(event);">
+
+                                <!--   It must be a SELECT of all fields to search (the class identify is "wowFields" and the name must be an array)  -->
+                                <select class="wowFields form-control" name="my_fields[]">
+                                    <!--  NB: the class name identify the field type (text, number, date) -->
+                                    <option class="text" value="title">Publication Title</option>
+                                    <option class="text" value="author">Author</option>
+                                    <option class="date" value="subscription">Publication date</option>
+                                </select>
+
+                                <!--   It must be a INPUT TEXT (the name must be an array)  -->
+                                <input type="text" class="form-control" name="my_value[]">
+
+                                <!--  You can use class identify "wowNoClone" for others html element   -->
+                                <button type="submit" class="wowNoClone btn btn-primary"><i class="glyphicon glyphicon-search"></i> Search</button>
+
+                                <!--  wowsearchform reset button has the class identify "wowReset"-->
+                                <a class="wowReset btn btn-default">Reset</a>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-offset-2 col-md-9">
+                            <ul id="accordion" class="accordion">
+                                <li>
+                                    <div class="link"><i class="fa fa-database"></i>Advanced<i class="fa fa-chevron-down"></i></div>
+                                    <ul class="submenu">
+                                        <li>
+                                            <div class="container-fluid" data-bind="foreach: fields">
+                                                <div class="row" data-bind="css: { row: $index%3 >= 0 }">
+                                                    <!-- Multiple Checkboxes -->
+                                                    <div class="form-group col-md-4">
+                                                        <div class="row">
+                                                            <!-- Check if there is a name. If not, it's a continued col-->
+                                                            <div data-bind="if: name.length > 0">
+                                                                <label class="control-label col-md-12" data-bind="attr: {for: name}, text: name" ></label>
+                                                            </div>
+                                                            <div data-bind="if: name.length == 0">
+                                                                <br>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
+                                                            <div class="col-md-12">
+                                                                <div class="checkbox">
+                                                                    <input type="checkbox"
+                                                                           data-bind="attr: {name: el.category,
+                                                                            id: String(el.text)}, value: String(el.text)">
+                                                                    <label data-bind="attr: {for: el.category},
+                                                                            text: String(el.text)"></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!--<div class="row">-->
+                                                        <!--<div class="col-md-12"><hr></div>-->
+                                                        <!--</div>-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="loading" style="display:none;"></div>
+
+    <div id="results" class="container-fluid">
+
+        <div class="row resultCharts">
+
+            <div class="chartDivBubbles col-md-6">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h3>Spatial and Non-Spatial Encoding Pairings</h3>
+                            </div>
+                            <div class="col-md-1 settings">
+                                <div id='cogEnc' class="container cog">
+                                    <a>
+                                        <i class="fa fa-cog"></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content" id="encodings"></div>
+                </div>
+            </div>
+            <div class="barCharts col-md-6">
+
+                <div class="row resultCharts">
+
+                    <div class="typeDiv col-md-12">
+                        <div class="x_panel tile">
+                            <div class="x_title">
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <h3>DataSet</h3>
+                                    </div>
+                                    <div class="col-md-1 settings">
+                                        <div id='cogType' class="container cog">
+                                            <a>
+                                                <i class="fa fa-cog"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content" id="dataTypes"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Data set and Paradigms-->
+                <div class="row resultCharts">
+                    <div class="evalDiv col-md-12">
+                        <div class="x_panel tile">
+                            <div class="x_title">
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <h3>Paradigms</h3>
+                                    </div>
+                                    <div class="col-md-1 settings">
+                                        <div id='cogPara' class="container cog">
+                                            <a>
+                                                <i class="fa fa-cog"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content" id="paradigms">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="row resultCharts">
+
+            <div class="taskDiv col-md-12">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h3>Task</h3>
+                            </div>
+                            <div class="col-md-1 settings">
+                                <div id='cogTask' class="container cog">
+                                    <a>
+                                        <i class="fa fa-cog"></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content" id="tasks">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row resultCharts">
+
+            <div class="evalDiv col-md-6">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h3>Evaluation</h3>
+                            </div>
+                            <div class="col-md-1 settings">
+                                <div id='cogEval' class="container cog">
+                                    <a>
+                                        <i class="fa fa-cog"></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content" id="evaluation">
+                    </div>
+                </div>
+            </div>
+
+            <div class="evalDiv col-md-6">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <h3>Evaluator</h3>
+                            </div>
+                            <div class="col-md-1 settings">
+                                <div id='cogEvalu' class="container cog">
+                                    <a>
+                                        <i class="fa fa-cog"></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content" id="evaluators">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Evaluator Row-->
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel tile">
+                    <div class="x_title">
+                        <h3>Results</h3>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
