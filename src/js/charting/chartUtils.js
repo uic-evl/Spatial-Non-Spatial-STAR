@@ -81,7 +81,7 @@ var ChartUtils = function (options) {
             .removeClass('row_selected');
     };
 
-    self.clickCB = function (obj, i) {
+    self.clickCB = function (obj) {
 
         // bubble chart data
         if(_.isArray(obj)) obj = obj[0];
@@ -153,18 +153,12 @@ var ChartUtils = function (options) {
                             if(self.selected.pairing) {
                                 // check to see if the paper has both of the attribute pairings
                                 if( _.intersection(r[self.selected.property], self.selected.pairing).length > 1)
-                                {
-                                    include = true;
-                                }
-
+                                    { include = true; }
                             }
                             else
                             {
                                 if( r[self.selected.property].indexOf(self.selected.label) > -1
-                                        && r.subDomain == self.selected.key)
-                                {
-                                    include = true;
-                                }
+                                        && r.subDomain == self.selected.key) { include = true; }
                             }
                         });
 
@@ -269,7 +263,7 @@ var ChartUtils = function (options) {
 
     self.truncate = function (text, width) {
 
-        text.each(function(d){
+        text.each(function(){
 
             var text = d3.select(this);
             var label = text.text();
@@ -286,6 +280,5 @@ var ChartUtils = function (options) {
             }
         });
     };
-
     return self;
 };
