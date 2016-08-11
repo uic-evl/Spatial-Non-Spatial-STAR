@@ -77,7 +77,7 @@ var ChartUtils = function (options) {
     self.endCB = function () {
 
         // deselect the table rows
-        $("#papers tbody tr")
+        $("#papers").find("tbody tr")
             .removeClass('row_selected');
     };
 

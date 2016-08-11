@@ -275,7 +275,7 @@ var Parser = function(options) {
             {
                 subDomainTemplate[d] = {};
 
-                template.push({key: d, values: []});
+                template.push({key: d, values: [], color: options.colorMap[0][d]});
                 templateMap[d] = j++;
             }
         });
@@ -426,7 +426,7 @@ var Parser = function(options) {
                             label: key,
                             value: value[k],
                             authors: authors[i][k][key],
-                            color: options.colorMap[0][i],
+                            color: options.colorMap[0][k],
                             property: order[i]
                         });
                     });
@@ -443,7 +443,7 @@ var Parser = function(options) {
                         label: key,
                         value: value[k],
                         authors: authors[4][k][key],
-                        color: options.colorMap[1][i],
+                        color: options.colorMap[1][k],
                         property: order[4]
                     });
                 });
