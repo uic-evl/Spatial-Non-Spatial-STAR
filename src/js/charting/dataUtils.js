@@ -297,6 +297,7 @@ var Parser = function(options) {
         var data = _.reduce(rows, function(result, value) {
                 /* Parse the User Tasks */
                 value.tasks.forEach(function(task){
+                    if(task.length === 0) return;
                     // store the corresponding authors in another array
                     value.subDomain.forEach(function(domain) {
                         if(domain.length === 0) return;
@@ -310,9 +311,8 @@ var Parser = function(options) {
 
                 /* Parse the data types */
                 value.dataTypes.forEach(function(type){
-
                     type = type.trim();
-
+                    if(type.length === 0) return;
                     // store the corresponding authors in another array
                     value.subDomain.forEach(function(domain) {
                         if(domain.length === 0) return;
@@ -345,7 +345,6 @@ var Parser = function(options) {
                 value.paradigms.forEach(function(paradigm){
                     paradigm = paradigm.trim();
                     if(paradigm.length === 0) return;
-
                     value.subDomain.forEach(function(subDomain) {
 
                         if(subDomain.length === 0 ) return;
@@ -358,15 +357,16 @@ var Parser = function(options) {
                             year: value['year'], property: 'paradigms'});
                     });
                 });
-                //
-                // /* Parse the Evaluators */
-                result[4][value.year][value.evaluators] += 1;
 
-                /* Parse the author for the evaluator year */
-                authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
-                authors[4][value.evaluators][value.year].push({label: value['author'].trim(),
-                    year: value['year'], property: 'evaluators'});
+                if(value.evaluators.length > 0){
+                    // /* Parse the Evaluators */
+                    result[4][value.year][value.evaluators] += 1;
 
+                    /* Parse the author for the evaluator year */
+                    authors[4][value.evaluators][value.year] = authors[4][value.evaluators][value.year] || [];
+                    authors[4][value.evaluators][value.year].push({label: value['author'].trim(),
+                        year: value['year'], property: 'evaluators'});
+                }
                 return result;
             },
             [
