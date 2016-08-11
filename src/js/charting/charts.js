@@ -18,12 +18,13 @@ var Graph = function (options) {
      * @this {Graph}
      * @param {Object} data The data to be mapped
      * @param {String} chartDiv ID if the div the chart is created in
-     * @param {Array} xDomain The values for the x-axis
      * @param {Array} subDomainCount The subDomain count per item
      * @param {Array} authors The authors corresponding to the data
+     * @param {Object} xLabelMap The mapping between the x axis ticks and names
+     * @param {Object} yLabelMap The mapping between the y axis ticks and names
      */
-    self.graphEncodingBubbleNVD3Chart = function (data, chartDiv, xDomain, subDomainCount, authors) {
-
+    self.graphEncodingBubbleNVD3Chart = function (data, chartDiv, subDomainCount,
+                                                  authors, xLabelMap, yLabelMap) {
         // $("#cogEnc a")
         //     .popover({
         //         container: "body",
@@ -89,42 +90,14 @@ var Graph = function (options) {
         //     });
         // });
 
-        /* define the maps that will be used for the labels of the scatter plot bubble */
-        var nonSpatialMap = {}, spatialMap = {}, i = 0;
-
-        // create the non-spatial map
-        xDomain.forEach(function (x) {
-            nonSpatialMap[x] = i++;
-        });
-
-        // reset the iterator and create the spatial map
-        i = 0;
-        var datum = _.reduce(data, function (result, value) {
-            spatialMap[value.yProp] = i++;
-            value.groups.forEach(function (obj) {
-                result.values.push({
-                    size: obj.value * 100,
-                    y: spatialMap[value.yProp],
-                    x: nonSpatialMap[obj.label],
-                    domains: subDomainCount[value.yProp][obj.label],
-                    authors: authors[value.yProp][obj.label],
-                    property: obj.property
-                });
-            });
-            return result;
-
-        }, {
-            key: "Group 1", values: []
-        });
-
         /* the width and height of the chart */
         var totWidth = d3.select('.chartDivBubbles').node().clientWidth,
             totHeight = totWidth * 0.9,
             margins = { top : 20, bottom: 150, left: 150, right: 30},
             chart = null;
 
-        var nonSpat = _.toPairs(nonSpatialMap);
-        var spat = _.toPairs(spatialMap);
+        var nonSpat = _.toPairs(xLabelMap);
+        var spat = _.toPairs(yLabelMap);
 
         nv.addGraph(function () {
 
@@ -191,17 +164,17 @@ var Graph = function (options) {
 
                 // x-axis
                 chart.xAxis.tickFormat(function (d) {
-                    if (_.isInteger(d))  return nonSpat[d][0];
+                    if (_.isInteger(d) && d < nonSpat.length)  return nonSpat[d][0];
                 });
 
                 // y-axis
                 chart.yAxis.tickFormat(function (d) {
-                    if (_.isInteger(d))  return spat[d][0];
+                    if (_.isInteger(d) && d < spat.length)  return spat[d][0];
                 });
 
                 // add the data to the chart
                 d3.select(chartDiv + ' svg')
-                    .datum([datum])
+                    .datum([data])
                     .call(chart);
 
                 //nv.utils.windowResize(chart.update);

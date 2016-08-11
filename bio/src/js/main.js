@@ -105,13 +105,14 @@ var App = App || {};
 
         // plot the bubble scatter plots
         App.bioGraph.graphEncodingBubbleNVD3Chart(encodingData.encodings, "#encodings",
-            encodingData.xDomain, encodingData.subDomainCount, encodingData.authors);
+            encodingData.subDomainCount, encodingData.authors,
+            encodingData.xLabelMap, encodingData.yLabelMap);
 
         //App.bioGraph.graphEncodingBubbleNVD3Chart(testParsing.pairings, "#encodings",
         //    testParsing.max, testParsing.xDomain, testParsing.authors, testParsing.subDomains);
 
         // plot the task analysis
-        App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", taskData.subDomains, taskData.authors[0]);
+        App.bioGraph.graphTaskBarNVD3Chart(taskData.tasks, "#tasks", taskData.authors[0]);
 
         // plot the data type analysis
         App.bioGraph.graphTypeBarNVD3Chart(taskData.dataTypes, "#dataTypes", taskData.authors[1]);

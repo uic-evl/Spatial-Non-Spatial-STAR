@@ -6,18 +6,14 @@ var Parser = function(options) {
     function formatBubbleData(data, yProp){
 
         // map the data to be alphabetical by the yProperty
-        data = _.sortBy(_.toPairs(data), function(o){ return o[0] });
+        data = _.toPairs(data);//_.sortBy(_.toPairs(data), function(o){ return o[0] });
 
         // Finally, map to the format needed for the chart
-        var max = 0;
         var output = [];
         data.forEach(function(o){
 
             var key = o[0];
             var values = o[1];
-
-            var localMax = _.max(_.values(values));
-            max = Math.max(max, localMax);
 
             var obj = {};
             obj.groups = [];
@@ -25,13 +21,44 @@ var Parser = function(options) {
 
             var pairs = _.toPairs(values);
             pairs.forEach(function(arr){
-                obj.groups.push({label: arr[0], value: parseInt(arr[1])});
+                obj.groups.push({label: arr[0], value: parseInt(arr[1]), property: yProp});
             });
 
             output.push(obj);
         });
 
-        return {data : output , max: max};
+        return {data : output};
+    }
+
+    function formatNVD3Bubble(data, xDomain, yDomain, elementCounts, authors) {
+
+        /* define the maps that will be used for the labels of the scatter plot bubble */
+        var xDomainMap = {}, yDomainMap = {}, i = 0, j= 0;
+
+        xDomain.forEach(function(x) {
+            xDomainMap[x] = i++;
+        });
+
+        yDomain.forEach(function(y) {
+            yDomainMap[y] = j++;
+        });
+
+        var datum = _.reduce(data, function (result, value) {
+            value.groups.forEach(function (obj) {
+                result.values.push({
+                    size: obj.value * 100,
+                    y: yDomainMap[value.yProp],
+                    x: xDomainMap[obj.label],
+                    domains: elementCounts[value.yProp][obj.label],
+                    authors: authors[value.yProp][obj.label],
+                    property: obj.property
+                });
+            });
+            return result;
+        }, {
+            key: "Group 1", values: []
+        });
+        return {data: datum, xLabelMap: xDomainMap, yLabelMap: yDomainMap};
     }
 
     self.parseArbFields = function(rows, xProp, yProp) {
@@ -71,7 +98,7 @@ var Parser = function(options) {
             elementSubDomains[y] = {};
         });
 
-
+        // sort the domains
         xDomain.sort();
         yDomain.sort();
 
@@ -107,10 +134,10 @@ var Parser = function(options) {
         );
 
         // Format the data to fit into the bubble chart
-        output = formatBubbleData(output, yProp);
+        output = formatBubbleData(output, elementSubDomains, authors);
 
         return {pairings : output.data, authors: authors, xDomain : xDomain,
-            yDomain : yDomain,  max: output.max};
+            yDomain : yDomain, xLabelMap: output.xDomainMap, yLabelMap: output.yDomainMap};
     };
 
     /**
@@ -135,7 +162,7 @@ var Parser = function(options) {
 
         // Set up the data structure for reduce to clone
         var nonSpatialTemplate = _.reduce(nonSpatial,
-            function(result, value, key){
+            function(result, value){
                 result[value] = 0;
                 return result;
             }, {});
@@ -164,7 +191,7 @@ var Parser = function(options) {
         };
 
         /** iterate over the resutls to combine the encodings **/
-        var encodings = _.reduce(rows, function(result, value, key) {
+        var encodings = _.reduce(rows, function(result, value) {
 
             /** Separate the spatial and non-spatial encodings **/
             var spat = _.intersection(value.encodings, spatial);
@@ -184,7 +211,7 @@ var Parser = function(options) {
                     elementSubDomains[s][n] = elementSubDomains[s][n] || {};
 
                     value.subDomain.forEach(function(subDomain){
-
+                        // no subDomain, skip
                         if(subDomain.length === 0) return;
 
                         if(elementSubDomains[s][n][subDomain])
@@ -196,7 +223,6 @@ var Parser = function(options) {
                             elementSubDomains[s][n][subDomain] = 1;
                         }
                     });
-
                 });
             });
 
@@ -212,26 +238,12 @@ var Parser = function(options) {
             'Animation': _.cloneDeep(nonSpatialTemplate)//{ encodings: _.cloneDeep(nonSpatial), authors: _.cloneDeep(authors) }
         });
 
-        // Finally, map to the format needed for the chart
-        var max = 0;
-        encodings = _.map(encodings, function(d, k, o)
-        {
-            var localMax = _.max(_.values(d));
-            max = Math.max(max, localMax);
+        // format the data to be used in NVD3's scatterChart
+        encodings = formatBubbleData(encodings, 'encodings');
+        encodings = formatNVD3Bubble(encodings.data, nonSpatial, spatial, elementSubDomains, authors);
 
-            var obj = {};
-            obj.groups = [];
-            obj.yProp = k;
-
-            var pairs = _.toPairs(d);
-            pairs.forEach(function(arr){
-                obj.groups.push({label: arr[0], value: parseInt(arr[1]), property: 'encodings'});
-            });
-
-            return obj;
-        });
-
-        return {encodings: encodings, authors: authors, max: max, xDomain: nonSpatial, subDomainCount: elementSubDomains};
+        return {encodings: encodings.data, authors: authors, subDomainCount: elementSubDomains,
+                xLabelMap: encodings.xLabelMap, yLabelMap: encodings.yLabelMap};
     };
 
     /**
@@ -240,13 +252,10 @@ var Parser = function(options) {
      * @constructor
      * @this {Graph}
      * @param {Object} rows The data to be parsed
-     * @returns {Object} The mapped tasks, data types, and task types
+     * @returns {Object} The mapped tasks, data types, and tasks
      */
 
     self.parseFields = function(rows) {
-
-        // get the task names from the model
-        //var taskNames = _.map(_.find(App.model.fields(), {property: 'tasks'} ).elements, 'text' );
 
         /* creates a template for parsing the data */
         var taskTemplate = _.reduce(options.subDomains,
@@ -282,8 +291,7 @@ var Parser = function(options) {
             }
         ];
 
-        var data = _.reduce(rows, function(result, value, key) {
-
+        var data = _.reduce(rows, function(result, value) {
                 /* Parse the User Tasks */
                 value.tasks.forEach(function(task){
                     // store the corresponding authors in another array
@@ -311,7 +319,6 @@ var Parser = function(options) {
                         authors[1][domain][type].push({label: value['author'].trim(),
                             year: value['year'], property: 'dataTypes'});
                     });
-
                 });
 
                 /* Parse the evaluation types */
@@ -330,7 +337,6 @@ var Parser = function(options) {
                         authors[2][subDomain][type].push({label: value['author'].trim(),
                             year: value['year'], property: 'evaluation'});
                     });
-
                 });
 
                 value.paradigms.forEach(function(paradigm){
@@ -348,7 +354,6 @@ var Parser = function(options) {
                         authors[3][subDomain][paradigm].push({label: value['author'].trim(),
                             year: value['year'], property: 'paradigms'});
                     });
-
                 });
                 //
                 // /* Parse the Evaluators */
