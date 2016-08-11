@@ -102,23 +102,20 @@ var Graph = function (options) {
         // if the circle is hidden, no tooltip should be shown
         if (obj.value === 0) return;
 
-        // select the rows associated with the selected bubble
+        /** select the rows associated with the selected bubble **/
         var newRows = [];
         _.forEach(self.authors, function (a) {
-
+            // add the rows corresponding to the authors/year of the clicked item
             newRows.push(_.find(App.queryResults, function (r) {
                 return r.author.trim() == a.label.trim() && parseInt(r.year) == a.year;
             }));
         });
 
         /** unselect everything **/
-        self.chart.selectAll(self.selector)
+        self.chart.selectAll(self.selector + ', ' + _.difference(self.selectors,[self.selector])[0])
             .classed({"unSelected": false, 'linked': false, 'selected': false});
 
-        self.chart.selectAll(_.difference(self.selectors,[self.selector])[0])
-            .classed({"unSelected": false, 'linked': false, 'selected': false});
-
-
+        /** if the item has not been selected yet **/
         if (self.selected !== obj) {
 
             // remove the previous selection
@@ -128,8 +125,9 @@ var Graph = function (options) {
             // save the selected object
             self.selected = obj;
 
-            // grey out the circles/bars that are not selected
-            self.chart.selectAll(self.selector)
+            /** grey out the circles/bars that are not selected
+             * by adding the unselected class to all other items */
+            self.chart.selectAll(self.selector + ', ' + _.difference(self.selectors, [self.selector])[0])
                 .filter(
                     function (d) {
                         if(_.isArray(d)) d = d[0];
@@ -138,60 +136,16 @@ var Graph = function (options) {
                     })
                 .classed("unSelected", true);
 
-            /* grey out all other points from other charts that aren't selected */
-            self.chart.selectAll(_.difference(self.selectors, [self.selector])[0])
-                .filter(
-                    function (d) {
-                        if(_.isArray(d)) d = d[0];
-                        if (self.selected != d)
-                            return d;
-                    })
-                .classed("unSelected", true);
-
-            // grey out the circles/bars that are not selected
-            self.chart.selectAll(self.selector)
+            /** Iterate through the selected charts and mark the items that
+             *  share the selected attribute */
+            self.chart.selectAll(self.selector + ', ' + _.difference(self.selectors, [self.selector])[0])
                 .filter(
                     function (d) {
 
-                        // bubble chart data
+                        // for the bubble chart
                         if(_.isArray(d)) d = d[0];
 
-                        // no bar or same chart
-                        if(d.value === 0) return;
-
-                        /** iterate over the rows of the selection and find the corresponding
-                         * bars / circles in the other graphs to select */
-                        var include = false;
-                        var rows = [];
-
-                        /* find the data rows corresponding to the selected row */
-                        d.authors.forEach(function(a){
-                            var row = _.find(App.queryResults, {author: a.label, year: a.year});
-                            if (row) rows.push(row);
-                        });
-
-                        /* check to see if any item in the bar has the selected property */
-                        rows.forEach(function(r){
-                           if( r[self.selected.property].indexOf(self.selected.label) > -1 && r.subDomain == self.selected.key)
-                               include = true;
-                        });
-
-                        // if not the current selection, not the current chart, and shares the same
-                        // property as the selected item, highlight it
-                        if (self.selected != d  && include)
-                            return d;
-                    })
-                .classed({"linked": true, "unSelected": false});
-
-            // grey out the circles/bars that are not selected
-            self.chart.selectAll(_.difference(self.selectors, [self.selector])[0])
-                .filter(
-                    function (d) {
-
-                        // bubble chart data
-                        if(_.isArray(d)) d = d[0];
-
-                        // no bar or same chart
+                        // no visual item / chart place holder
                         if(d.value === 0 || d.size === 0) return;
 
                         /** iterate over the rows of the selection and find the corresponding
@@ -199,16 +153,16 @@ var Graph = function (options) {
                         var include = false;
                         var rows = [];
 
-                        /* find the data rows corresponding to the selected row */
+                        /** find the data rows corresponding to the selected row **/
                         d.authors.forEach(function(a){
                             var row = _.find(App.queryResults, {author: a.label, year: a.year});
                             if (row) rows.push(row);
                         });
 
-                        /* check to see if any item in the bar has the selected property */
+                        /** check to see if any item in the bar has the selected property **/
                         rows.forEach(function(r){
-                            if( r[self.selected.property].indexOf(self.selected.label) > -1 )
-                                include = true;
+                           if( r[self.selected.property].indexOf(self.selected.label) > -1 && r.subDomain == self.selected.key)
+                               include = true;
                         });
 
                         // if not the current selection, not the current chart, and shares the same
@@ -234,10 +188,7 @@ var Graph = function (options) {
             self.clicked = false;
 
             // make all of the circle their original color
-            self.chart.selectAll(self.selector)
-                .classed("unSelected", false);
-
-            self.chart.selectAll(_.difference(self.selectors,[self.selector])[0])
+            self.chart.selectAll(self.selector + ', ' + _.difference(self.selectors,[self.selector])[0])
                 .classed("unSelected", false);
 
             // clear the old rows
