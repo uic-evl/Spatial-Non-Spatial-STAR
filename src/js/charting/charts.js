@@ -140,12 +140,12 @@ var Graph = function (options) {
                 .useVoronoi(false);
 
                 /* Set the header formatter */
-                chart.tooltip.headerFormatter(function(d,i){
+                chart.tooltip.headerFormatter(function(){
                     return "";
                 });
 
                 /* Set the value formatter to output the number of papers*/
-                chart.tooltip.valueFormatter(function(d,i){
+                chart.tooltip.valueFormatter(function(d){
                     return d;
                 });
 
@@ -255,9 +255,8 @@ var Graph = function (options) {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data,
-     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphTaskBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
+    self.graphTaskBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         // $("#cogTask a")
         //     .popover({
@@ -348,7 +347,7 @@ var Graph = function (options) {
                     .stacked(true);
 
                 /* Set the header formatter */
-                chart.tooltip.headerFormatter(function(d,i){
+                chart.tooltip.headerFormatter(function(d){
                     return "Task: " + d;
                 });
 
@@ -397,9 +396,8 @@ var Graph = function (options) {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
-     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphTypeBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
+    self.graphTypeBarNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         // $("#cogType a")
         //     .popover({
@@ -480,7 +478,7 @@ var Graph = function (options) {
 
 
             /* Set the header formatter */
-                chart.tooltip.headerFormatter(function(d,i){
+                chart.tooltip.headerFormatter(function(d){
                     return "Data Type: " + d;
                 });
 
@@ -524,9 +522,8 @@ var Graph = function (options) {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
-     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphParadigmsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
+    self.graphParadigmsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         // $("#cogPara a")
         //     .popover({
@@ -623,7 +620,7 @@ var Graph = function (options) {
                 });
 
                 /* Set the header formatter */
-                chart.tooltip.headerFormatter(function(d,i){
+                chart.tooltip.headerFormatter(function(d){
                     return "Paradigms: " + d;
                 });
 
@@ -638,7 +635,7 @@ var Graph = function (options) {
 
                 // wrap the text of the x-axis
                 d3.selectAll(chartDiv + ' svg .nv-x text')
-                    .attr('transform', function(d,i,j) { return 'translate (-10, 10) rotate(-45 0,0)' })
+                    .attr('transform', function() { return 'translate (-10, 10) rotate(-45 0,0)' })
                     .call(utils.wrap, chart.xRange())
                     .style({"text-anchor": "end"});
 
@@ -675,9 +672,8 @@ var Graph = function (options) {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
-     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphEvaluationNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
+    self.graphEvaluationNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         // $("#cogEval a")
         //     .popover({
@@ -757,7 +753,7 @@ var Graph = function (options) {
 
 
             /* Set the header formatter */
-                chart.tooltip.headerFormatter(function(d,i){
+                chart.tooltip.headerFormatter(function(d){
                     return "Evaluation: " + d;
                 });
 
@@ -810,9 +806,8 @@ var Graph = function (options) {
      * @param {Array} grpNames The values for the x-axis
      * @param {Array} subDomains The values for the y-axis
      * @param {Array} authors The authors corresponding to the data
-     * @param {Array} count number of papers in each sub-domain
      */
-    self.graphEvaluatorsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors, count) {
+    self.graphEvaluatorsNVD3Chart = function (datum, chartDiv, maxValue, grpNames, subDomains, authors) {
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -840,7 +835,7 @@ var Graph = function (options) {
                     .stacked(true);
 
                 /* Set the header formatter */
-                chart.tooltip.headerFormatter(function(d,i){
+                chart.tooltip.headerFormatter(function(d){
                     return "Evaluation: " + d;
                 });
 
