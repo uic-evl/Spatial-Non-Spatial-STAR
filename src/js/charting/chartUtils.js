@@ -8,7 +8,7 @@ var ChartUtils = function (options) {
     // flag to indicate if the bubble was selected or not
     self.clicked = false;
     // list of the selected nodes
-    self.selected = null;
+    self.selected = [];
 
     // the hover callback to be used when the user
     // hovers over one of the circles
@@ -103,14 +103,20 @@ var ChartUtils = function (options) {
             .classed({"unSelected": false, 'linked': false, 'selected': false});
 
         /** if the item has not been selected yet **/
-        if (self.selected !== obj) {
+        if (self.selected.indexOf(obj) < 0) {
 
             // remove the previous selection
             d3.select(this)
                 .classed({"selected": true});
 
             // save the selected object
-            self.selected = obj;
+            if(App.ctrl){
+                self.selected.push(obj);
+            }
+            else
+            {
+                self.selected = [obj];
+            }
 
             /** grey out the circles/bars that are not selected
              * by adding the unselected class to all other items */
@@ -118,7 +124,7 @@ var ChartUtils = function (options) {
                 .filter(
                     function (d) {
                         if(_.isArray(d)) d = d[0];
-                        if (self.selected != d)
+                        if (self.selected[0] != d)
                             return d;
                     })
                 .classed("unSelected", true);
@@ -150,21 +156,21 @@ var ChartUtils = function (options) {
                         rows.forEach(function(r){
 
                             //  if the bubble chart was selected
-                            if(self.selected.pairing) {
+                            if(self.selected[0].pairing) {
                                 // check to see if the paper has both of the attribute pairings
-                                if( _.intersection(r[self.selected.property], self.selected.pairing).length > 1)
+                                if( _.intersection(r[self.selected[0].property], self.selected[0].pairing).length > 1)
                                     { include = true; }
                             }
                             else
                             {
-                                if( r[self.selected.property].indexOf(self.selected.label) > -1
-                                        && r.subDomain == self.selected.key) { include = true; }
+                                if( r[self.selected[0].property].indexOf(self.selected[0].label) > -1
+                                        && r.subDomain == self.selected[0].key) { include = true; }
                             }
                         });
 
                         // if not the current selection, not the current chart, and shares the same
                         // property as the selected item, highlight it
-                        if (self.selected != d  && include)
+                        if (self.selected[0] != d  && include)
                             return d;
                     })
                 .classed({"linked": true, "unSelected": false});
@@ -176,11 +182,11 @@ var ChartUtils = function (options) {
         // clicked on the same item again
         else {
             // reset the selection
-            self.selected = null;
+            self.selected = [];
         }
 
         /** modify the table to only show the entries related to the selected bubble **/
-        if (self.selected == null) {
+        if (self.selected.length === 0) {
             // there is no click interaction
             self.clicked = false;
 
