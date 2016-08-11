@@ -31,10 +31,6 @@ var Graph = function (options) {
         self.chart = this.chart;
         self.selector = this.selector;
 
-        if (this.tooltip) {
-            this.tooltip.show(obj, self.authors);
-        }
-
         // remove the highlighting class if the selection is empty
         if (self.authors && self.authors.length == 0) {
             $("#papers tbody tr")
@@ -83,11 +79,6 @@ var Graph = function (options) {
     // the hover callback to be used when the user
     // finishes their hover
     var endCB = function () {
-
-        // hide the tooltip
-        if (this.tooltip) {
-            this.tooltip.hide();
-        }
 
         // deselect the table rows
         $("#papers tbody tr")
