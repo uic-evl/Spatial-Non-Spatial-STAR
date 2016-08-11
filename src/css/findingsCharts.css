@@ -55,7 +55,7 @@ tr.row_selected td {
 .selected {
     fill-opacity: 1 !important;
     stroke-opacity: 1 !important;
-    stroke-width: 1 !important;
+    stroke-width: 2 !important;
     stroke: #f03b20 !important;
 }
 
@@ -111,4 +111,8 @@ tr.row_selected td {
 
 .nv-legendWrap .nv-legend-symbol, .nv-legendWrap .nv-legend-text{
     cursor: default !important;
+}
+
+.nv-group {
+    fill-opacity: 0.8 !important;
 }
