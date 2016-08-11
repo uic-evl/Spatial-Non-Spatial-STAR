@@ -298,7 +298,7 @@ var Parser = function(options) {
                     value.subDomain.forEach(function(domain) {
                         if(domain.length === 0) return;
                         // increment the task count
-                        result[0][task][domain] += 1;
+                         result[0][task][domain] += 1;
                         authors[0][domain][task] = authors[0][domain][task] || [];
                         authors[0][domain][task].push({label: value['author'].trim(),
                             year: value['year'], property: 'tasks'});
@@ -314,7 +314,7 @@ var Parser = function(options) {
                     value.subDomain.forEach(function(domain) {
                         if(domain.length === 0) return;
                         // increment the data type count
-                        result[1][type][domain] += 1;
+                         result[1][type][domain] += 1;
                         authors[1][domain][type] = authors[1][domain][type] || [];
                         authors[1][domain][type].push({label: value['author'].trim(),
                             year: value['year'], property: 'dataTypes'});
