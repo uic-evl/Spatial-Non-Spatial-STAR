@@ -11,6 +11,29 @@ var Graph = function (options) {
     // Color map for the charts
     var colorMap = options.colorMap;
 
+    function enableMouseCallbacks(chartDiv, chart, authors){
+        $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+
+            $(elem).hover(function () {
+
+                utils.hoveringCB.call({
+                    authors: authors,
+                    chart: d3.select("#results"), selector: '.nv-bar'
+                }, d3.select(elem).data()[0], 0, i)
+
+            }, function () {
+
+                utils.endCB.call({authors: authors});
+
+            });
+        });
+
+        d3.select(chartDiv).selectAll(".nv-bar")
+            .on('click', utils.clickCB);
+
+        chart.legend.updateState(false);
+    }
+
     /**
      * Creates and plots the Bubble Scatter Plot
      *
@@ -25,71 +48,6 @@ var Graph = function (options) {
      */
     self.graphEncodingBubbleNVD3Chart = function (data, chartDiv, subDomainCount,
                                                   authors, xLabelMap, yLabelMap) {
-        // $("#cogEnc a")
-        //     .popover({
-        //         container: "body",
-        //         title: 'Chart Settings',
-        //         placement: 'auto',
-        //         html: true,
-        //         delay: {"show": 100 },
-        //         content: "<div id='attributeSelector' class='container'>" +
-        //                     "<div class = row>" +
-        //                         "<div class='col-md-4'>" +
-        //                             "<div class='row'>" +
-        //                                 "<div class='col-md-12 col-md-offset-3'>" +
-        //                                     "<h5>X Axis</h5>" +
-        //                                 "</div>" +
-        //                                 "<div class='col-md-12'>" +
-        //                                     "<select>" +
-        //                                         "<option>Tasks</option>" +
-        //                                         "<option>Datasets</option>" +
-        //                                         "<option>Paradigms</option>" +
-        //                                         "<option>Evaluation</option>" +
-        //                                         "<option>Evaluator</option>" +
-        //                                         "</select>"+
-        //                                 "</div>" +
-        //                             "</div>" +
-        //                         "</div>" +
-        //                         "<div class='col-md-4 col-md-offset-3'>" +
-        //                             "<div class='row'>" +
-        //                                 "<div class='col-md-12 col-md-offset-3'>" +
-        //                                     "<h5>Y Axis</h5>" +
-        //                                 "</div>" +
-        //                                 "<div class='col-md-12'>" +
-        //                                     "<select>" +
-        //                                         "<option>Tasks</option>" +
-        //                                         "<option>Datasets</option>" +
-        //                                         "<option>Paradigms</option>" +
-        //                                         "<option>Evaluation</option>" +
-        //                                         "<option>Evaluator</option>" +
-        //                                     "</select>"+
-        //                                 "</div>" +
-        //                             "</div>" +
-        //                         "</div>" +
-        //                     "</div>" +
-        //                     "<div class='row'><br></div>" +
-        //                     "<div class='row'>" +
-        //                         "<div class='col-md-4 col-md-offset-3'>" +
-        //                             "<button type='button' class='btn btn-primary'>Render Chart</button>" +
-        //                         "</div>" +
-        //                     "</div>" +
-        //                 "</div>"
-        //     })
-        //     .on('shown.bs.popover', function(){
-        //     });
-
-        // $('body').on('click', function (e) {
-        //     $('[data-original-title]').each(function () {
-        //         //the 'is' for buttons that trigger popups
-        //         //the 'has' for icons within a button that triggers a popup
-        //         if (!$(this).is(e.target) && $(this).has(e.target).length === 0
-        //                 && $('.popover').has(e.target).length === 0)
-        //         {
-        //             $(this).popover('hide');
-        //         }
-        //     });
-        // });
-
         /* the width and height of the chart */
         var totWidth = d3.select('.chartDivBubbles').node().clientWidth,
             totHeight = totWidth * 0.9,
@@ -225,67 +183,6 @@ var Graph = function (options) {
      */
     self.graphTaskBarNVD3Chart = function (datum, chartDiv, authors) {
 
-        // $("#cogTask a")
-        //     .popover({
-        //         container: "body",
-        //         title: 'Chart Settings',
-        //         placement: 'left',
-        //         html: true,
-        //         content: "<input id='normalizeTask' type='checkbox' name='normalize' value='task'> Normalize Data"
-        //     })
-        //     .on('shown.bs.popover', function(){
-        //
-        //         $("#normalizeTask").change(function() {
-        //
-        //             // normalize the data
-        //             if(this.checked) {
-        //
-        //                 datum.forEach(function(o){
-        //
-        //                     o.values.forEach(function(v){
-        //                         v.value /= count[v.key];
-        //                     });
-        //                 });
-        //             }
-        //             // un-normalize the data
-        //             else {
-        //                 datum.forEach(function(o){
-        //
-        //                     o.values.forEach(function(v){
-        //                         v.value *= count[v.key];
-        //                     });
-        //                 });
-        //             }
-        //
-        //             // redraw the chart
-        //             d3.select(chartDiv + ' svg')
-        //                 .datum(datum)
-        //                 .call(chart);
-        //
-        //             $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-        //
-        //                 $(elem).hover(function () {
-        //
-        //                     utils.hoveringCB.call({
-        //                         authors: authors, groups: grpNames,
-        //                         chart: d3.select("#results"), selector: '.nv-bar'
-        //                     }, d3.select(elem).data()[0], 0, i)
-        //
-        //                 }, function () {
-        //
-        //                     utils.endCB.call({authors: authors});
-        //
-        //                 });
-        //             });
-        //
-        //             d3.select(chartDiv).selectAll(".nv-bar")
-        //                 .on('click', utils.clickCB);
-        //
-        //             chart.legend.updateState(false);
-        //         });
-        //
-        //     });
-
         var totWidth = d3.select('.taskDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
 
@@ -323,31 +220,13 @@ var Graph = function (options) {
                     .call(chart)
                 ;
 
-                nv.utils.windowResize(chart.update);
-
+                nv.utils.windowResize(function(){
+                    chart.update();
+                    enableMouseCallbacks(chartDiv, chart, authors);
+                });
                 return chart;
             }, function () {
-
-                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-
-                    $(elem).hover(function () {
-
-                        utils.hoveringCB.call({
-                            authors: authors,
-                            chart: d3.select("#results"), selector: '.nv-bar'
-                        }, d3.select(elem).data()[0], 0, i)
-
-                    }, function () {
-
-                        utils.endCB.call({authors: authors});
-
-                    });
-                });
-
-                d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('click', utils.clickCB);
-
-                chart.legend.updateState(false);
+                enableMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -362,57 +241,6 @@ var Graph = function (options) {
      * @param {Array} authors The authors corresponding to the data
      */
     self.graphTypeBarNVD3Chart = function (datum, chartDiv, authors) {
-
-        // $("#cogType a")
-        //     .popover({
-        //         container: "body",
-        //         title: 'Chart Settings',
-        //         placement: 'left',
-        //         html: true,
-        //         content: "<input id='normalizeType' type='checkbox' name='normalize' value='task'>Normalize Data"
-        //     })
-        //     .on('shown.bs.popover', function(){
-        //         console.log(this);
-        //         $("#normalizeType").change(function() {
-        //             // normalize the data
-        //             if(this.checked) {
-        //                 datum.forEach(function(o){
-        //                     o.values.forEach(function(v){
-        //                         v.value /= count[v.key];
-        //                     });
-        //                 });
-        //             }
-        //             // un-normalize the data
-        //             else {
-        //                 datum.forEach(function(o){
-        //                     o.values.forEach(function(v){
-        //                         v.value *= count[v.key];
-        //                     });
-        //                 });
-        //             }
-        //
-        //             // redraw the chart
-        //             d3.select(chartDiv + ' svg')
-        //                 .datum(datum)
-        //                 .call(chart);
-        //
-        //             $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-        //                 $(elem).hover(function () {
-        //                     utils.hoveringCB.call({
-        //                         groups: grpNames,
-        //                         chart: d3.select("#results"), selector: '.nv-bar'
-        //                     }, d3.select(elem).data()[0], 0, i)
-        //
-        //                 }, function () {
-        //                     utils.endCB.call({authors: authors});
-        //                 });
-        //             });
-        //
-        //             d3.select(chartDiv).selectAll(".nv-bar")
-        //                 .on('click', utils.clickCB);
-        //         });
-        //     })
-        // ;
 
         var totWidth = d3.select('.typeDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -451,26 +279,14 @@ var Graph = function (options) {
                     .call(chart)
                 ;
 
-                nv.utils.windowResize(chart.update);
-
+            nv.utils.windowResize(function(){
+                chart.update();
+                enableMouseCallbacks(chartDiv, chart, authors);
+            });
                 return chart;
 
             }, function () {
-            $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-                $(elem).hover(function () {
-                    utils.hoveringCB.call({
-                        authors: authors,
-                        chart: d3.select("#results"), selector: '.nv-bar'
-                    }, d3.select(elem).data()[0], 0, i)
-                }, function () {
-                    utils.endCB.call({authors: authors});
-                });
-            });
-
-            d3.select(chartDiv).selectAll(".nv-bar")
-                .on('click', utils.clickCB);
-
-            chart.legend.updateState(false);
+                enableMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -485,63 +301,6 @@ var Graph = function (options) {
      * @param {Array} authors The authors corresponding to the data
      */
     self.graphParadigmsNVD3Chart = function (datum, chartDiv, authors) {
-
-        // $("#cogPara a")
-        //     .popover({
-        //         container: "body",
-        //         title: 'Chart Settings',
-        //         placement: 'left',
-        //         html: true,
-        //         content: "<input id='normalizePara' type='checkbox' name='normalize' value='task'> Normalize Data"
-        //     })
-        //     .on('shown.bs.popover', function(){
-        //
-        //         $("#normalizePara").change(function() {
-        //             // normalize the data
-        //             if(this.checked) {
-        //                 datum.forEach(function(o){
-        //                     o.values.forEach(function(v){
-        //                         v.value /= count[v.key];
-        //                     });
-        //                 });
-        //             }
-        //             // un-normalize the data
-        //             else {
-        //                 datum.forEach(function(o){
-        //                     o.values.forEach(function(v){
-        //                         v.value *= count[v.key];
-        //                     });
-        //                 });
-        //             }
-        //
-        //             // redraw the chart
-        //             d3.select(chartDiv + ' svg')
-        //                 .datum(datum)
-        //                 .call(chart);
-        //
-        //             $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-        //                 $(elem).hover(function () {
-        //                     utils.hoveringCB.call({
-        //                         authors: authors, groups: grpNames,
-        //                         chart: d3.select("#results"), selector: '.nv-bar'
-        //                     }, d3.select(elem).data()[0], 0, i)
-        //                 }, function () {
-        //                     utils.endCB.call({authors: authors});
-        //                 });
-        //             });
-        //
-        //             d3.select(chartDiv).selectAll(".nv-bar")
-        //                 .on('click', utils.clickCB);
-        //
-        //             // wrap the text of the x-axis
-        //             d3.selectAll(chartDiv + ' svg .nv-x text')
-        //                 .attr('transform', function(d,i,j) { return 'translate (-10, 10) rotate(-45 0,0)' })
-        //                 .call(utils.wrap, chart.xRange())
-        //                 .style({"text-anchor": "end"});
-        //
-        //         });
-        //     });
-        // $('a#cogPara').on('click', function(e) {e.preventDefault(); return true;});
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -588,35 +347,27 @@ var Graph = function (options) {
                     .datum(datum)
                     .call(chart);
 
-                nv.utils.windowResize(chart.update);
-
-                return chart;
-            }, function () {
-
                 // wrap the text of the x-axis
                 d3.selectAll(chartDiv + ' svg .nv-x text')
                     .attr('transform', function() { return 'translate (-10, 10) rotate(-45 0,0)' })
                     .call(utils.wrap, chart.xRange())
                     .style({"text-anchor": "end"});
 
-                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
+                nv.utils.windowResize(function(){
+                    chart.update();
+                    // wrap the text of the x-axis
+                    d3.selectAll(chartDiv + ' svg .nv-x text')
+                        .attr('transform', function() { return 'translate (-10, 10) rotate(-45 0,0)' })
+                        .call(utils.wrap, chart.xRange())
+                        .style({"text-anchor": "end"});
 
-                    $(elem).hover(function () {
-                        utils.hoveringCB.call({
-                            authors: authors,
-                            chart: d3.select("#results"), selector: '.nv-bar'
-                        }, d3.select(elem).data()[0], 0, i)
-                    }, function () {
-                        utils.endCB.call({authors: authors});
-                    });
+                    enableMouseCallbacks(chartDiv, chart, authors);
+
                 });
 
-                d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('click', utils.clickCB);
-
-                // disable legend actions
-                chart.legend.updateState(false);
-
+                return chart;
+            }, function () {
+                enableMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -631,56 +382,6 @@ var Graph = function (options) {
      * @param {Array} authors The authors corresponding to the data
      */
     self.graphEvaluationNVD3Chart = function (datum, chartDiv, authors) {
-
-        // $("#cogEval a")
-        //     .popover({
-        //         container: "body",
-        //         title: 'Chart Settings',
-        //         placement: 'left',
-        //         html: true,
-        //         content: "<input id='normalizeEval' type='checkbox' name='normalize' value='task'> Normalize Data"
-        //     })
-        //     .on('shown.bs.popover', function(){
-        //
-        //         $("#normalizeEval").change(function() {
-        //             // normalize the data
-        //             if(this.checked) {
-        //                 datum.forEach(function(o){
-        //                     o.values.forEach(function(v){
-        //                         v.value /= count[v.key];
-        //                     });
-        //                 });
-        //             }
-        //             // un-normalize the data
-        //             else {
-        //                 datum.forEach(function(o){
-        //                     o.values.forEach(function(v){
-        //                         v.value *= count[v.key];
-        //                     });
-        //                 });
-        //             }
-        //
-        //             // redraw the chart
-        //             d3.select(chartDiv + ' svg')
-        //                 .datum(datum)
-        //                 .call(chart);
-        //
-        //             $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-        //                 $(elem).hover(function () {
-        //                     utils.hoveringCB.call({
-        //                         authors: authors, groups: grpNames,
-        //                         chart: d3.select("#results"), selector: '.nv-bar'
-        //                     }, d3.select(elem).data()[0], 0, i)
-        //                 }, function () {
-        //                     utils.endCB.call({authors: authors});
-        //                 });
-        //             });
-        //
-        //             d3.select(chartDiv).selectAll(".nv-bar")
-        //                 .on('click', utils.clickCB);
-        //         });
-        //     });
-        // $('a#cogEval').on('click', function(e) {e.preventDefault(); return true;});
 
         var totWidth = d3.select('.evalDiv').node().clientWidth,
             totHeight = d3.select('.chartDivBubbles').node().clientWidth * 0.4;
@@ -727,27 +428,14 @@ var Graph = function (options) {
                     .datum(datum)
                     .call(chart);
 
-                nv.utils.windowResize(chart.update);
+                nv.utils.windowResize(function(){
+                    chart.update();
+                    enableMouseCallbacks(chartDiv, chart, authors);
+                });
 
                 return chart;
             }, function () {
-                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-
-                    $(elem).hover(function () {
-                        utils.hoveringCB.call({
-                            authors: authors,
-                            chart: d3.select("#results"), selector: '.nv-bar'
-                        }, d3.select(elem).data()[0], 0, i)
-                    }, function () {
-                        utils.endCB.call({authors: authors});
-                    });
-                });
-
-                d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('click', utils.clickCB);
-
-                // disable legend actions
-                chart.legend.updateState(false);
+                enableMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -797,28 +485,14 @@ var Graph = function (options) {
                     .datum(datum)
                     .call(chart);
 
-                nv.utils.windowResize(chart.update);
+                nv.utils.windowResize(function(){
+                    chart.update();
+                    enableMouseCallbacks(chartDiv, chart, authors);
+                });
 
                 return chart;
             }, function () {
-                $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-
-                    $(elem).hover(function () {
-
-                        utils.hoveringCB.call({
-                            authors: authors,
-                            chart: d3.select("#results"), selector: '.nv-bar'
-                        }, d3.select(elem).data()[0], 0, i)
-                    }, function () {
-                        utils.endCB.call({authors: d3.select(elem).data()[0].authors});
-                    });
-                });
-
-                d3.select(chartDiv).selectAll(".nv-bar")
-                    .on('click', utils.clickCB);
-
-                // disable legend actions
-                chart.legend.updateState(false);
+                enableMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
