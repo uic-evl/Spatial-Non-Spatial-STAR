@@ -11,25 +11,53 @@ var Graph = function (options) {
     // Color map for the charts
     var colorMap = options.colorMap;
 
-    function enableMouseCallbacks(chartDiv, chart, authors){
+    function enableBarChartMouseCallbacks(chartDiv, chart, authors){
         $(chartDiv + " svg .nv-bar").each(function (i, elem) {
-
             $(elem).hover(function () {
-
                 utils.hoveringCB.call({
                     authors: authors,
                     chart: d3.select("#results"), selector: '.nv-bar'
                 }, d3.select(elem).data()[0], 0, i)
-
             }, function () {
 
                 utils.endCB.call({authors: authors});
 
             });
         });
-
         d3.select(chartDiv).selectAll(".nv-bar")
             .on('click', utils.clickCB);
+        chart.legend.updateState(false);
+    }
+
+    function enableScatterChartMouseCallbacks(chartDiv, chart, authors){
+
+        // wrap the text of the y-axis
+        d3.selectAll(chartDiv + ' svg .nv-y text')
+            .call(utils.wrap)
+            .attr('transform', 'translate(' + -60 + ',' + '0)')
+            .style({"text-anchor": "end", "font-weight": "bold"});
+
+        // move the text of the x-axis down and rotate it
+        d3.select(chartDiv + ' svg .nv-x .nv-axis')
+            .attr('transform', 'translate(' + -10 + ',' + chart.margin().bottom / 3.0 + ')')
+            .selectAll('text')
+            .style({"text-anchor": "end", "font-weight": "bold"})
+            .attr("transform", "rotate(-45)");
+
+        $(chartDiv + " svg .nv-point").each(function (i, elem) {
+            $(elem).hover(function () {
+                    utils.hoveringCB.call({
+                        chart: d3.select("#results"),
+                        selector: '.nv-point'
+                    }, d3.select(elem).data()[0][0], 0, i)
+                },
+                function () {
+                    utils.endCB.call({authors: authors});
+                })
+                .click(function(){
+                    utils.clickCB.call(elem, d3.select(elem).data()[0]);
+                });
+        });
 
         chart.legend.updateState(false);
     }
@@ -54,8 +82,7 @@ var Graph = function (options) {
             margins = { top : 20, bottom: 150, left: 150, right: 30},
             chart = null;
 
-        var nonSpat = _.toPairs(xLabelMap);
-        var spat = _.toPairs(yLabelMap);
+        var nonSpat = _.toPairs(xLabelMap); var spat = _.toPairs(yLabelMap);
 
         nv.addGraph(function () {
 
@@ -135,39 +162,16 @@ var Graph = function (options) {
                     .datum([data])
                     .call(chart);
 
-                //nv.utils.windowResize(chart.update);
+                // reformat the axis' and re-enable the mouse clicks
+                nv.utils.windowResize(function(){
+                    chart.update();
+                    enableScatterChartMouseCallbacks(chartDiv, chart, authors);
+                });
+
                 return chart;
         },
             function () {
-
-                // wrap the text of the y-axis
-                d3.selectAll(chartDiv + ' svg .nv-y text')
-                    .call(utils.wrap)
-                    .attr('transform', 'translate(' + -60 + ',' + '0)')
-                    .style({"text-anchor": "end", "font-weight": "bold"});
-
-                // move the text of the x-axis down and rotate it
-                d3.select(chartDiv + ' svg .nv-x .nv-axis')
-                    .attr('transform', 'translate(' + -10 + ',' + chart.margin().bottom / 3.0 + ')')
-                    .selectAll('text')
-                    .style({"text-anchor": "end", "font-weight": "bold"})
-                    .attr("transform", "rotate(-45)");
-
-                $(chartDiv + " svg .nv-point").each(function (i, elem) {
-
-                    $(elem).hover(function () {
-                        utils.hoveringCB.call({
-                            chart: d3.select("#results"),
-                            selector: '.nv-point'
-                            }, d3.select(elem).data()[0][0], 0, i)
-                    },
-                        function () {
-                            utils.endCB.call({authors: authors});
-                    })
-                        .click(function(){
-                            utils.clickCB.call(elem, d3.select(elem).data()[0]);
-                        });
-                });
+                enableScatterChartMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -222,11 +226,11 @@ var Graph = function (options) {
 
                 nv.utils.windowResize(function(){
                     chart.update();
-                    enableMouseCallbacks(chartDiv, chart, authors);
+                    enableBarChartMouseCallbacks(chartDiv, chart, authors);
                 });
                 return chart;
             }, function () {
-                enableMouseCallbacks(chartDiv, chart, authors);
+                enableBarChartMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -281,12 +285,12 @@ var Graph = function (options) {
 
             nv.utils.windowResize(function(){
                 chart.update();
-                enableMouseCallbacks(chartDiv, chart, authors);
+                enableBarChartMouseCallbacks(chartDiv, chart, authors);
             });
                 return chart;
 
             }, function () {
-                enableMouseCallbacks(chartDiv, chart, authors);
+                enableBarChartMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -361,13 +365,12 @@ var Graph = function (options) {
                         .call(utils.wrap, chart.xRange())
                         .style({"text-anchor": "end"});
 
-                    enableMouseCallbacks(chartDiv, chart, authors);
-
+                    enableBarChartMouseCallbacks(chartDiv, chart, authors);
                 });
 
                 return chart;
             }, function () {
-                enableMouseCallbacks(chartDiv, chart, authors);
+                enableBarChartMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -430,12 +433,12 @@ var Graph = function (options) {
 
                 nv.utils.windowResize(function(){
                     chart.update();
-                    enableMouseCallbacks(chartDiv, chart, authors);
+                    enableBarChartMouseCallbacks(chartDiv, chart, authors);
                 });
 
                 return chart;
             }, function () {
-                enableMouseCallbacks(chartDiv, chart, authors);
+                enableBarChartMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
@@ -487,12 +490,12 @@ var Graph = function (options) {
 
                 nv.utils.windowResize(function(){
                     chart.update();
-                    enableMouseCallbacks(chartDiv, chart, authors);
+                    enableBarChartMouseCallbacks(chartDiv, chart, authors);
                 });
 
                 return chart;
             }, function () {
-                enableMouseCallbacks(chartDiv, chart, authors);
+                enableBarChartMouseCallbacks(chartDiv, chart, authors);
             }
         );
     };
