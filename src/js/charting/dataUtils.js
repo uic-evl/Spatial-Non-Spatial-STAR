@@ -404,6 +404,7 @@ var Parser = function(options) {
                     "Non-Spatial Nesting"   : _.cloneDeep(taskTemplate)
                 },
                 {
+                    "2004": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2005": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2006": {"Domain Experts" : 0, "Visualization Experts" : 0},
                     "2007": {"Domain Experts" : 0, "Visualization Experts" : 0},
