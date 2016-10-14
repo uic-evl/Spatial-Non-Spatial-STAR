@@ -151,7 +151,7 @@
                                     <ul class="submenu">
                                         <li>
                                             <div class="container-fluid" data-bind="foreach: fields">
-                                                <div data-bind="if: name != 'Tasks' ">
+                                                <div>
                                                     <div class="row" data-bind="css: { row: $index%4 >= 0 }">
                                                         <!-- Multiple Checkboxes -->
                                                         <div class="form-group col-md-3">
@@ -164,19 +164,18 @@
                                                                     <br>
                                                                 </div>
                                                             </div>
-                                                                <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
-                                                                    <div class="col-md-12">
-                                                                        <div class="checkbox">
-                                                                            <input type="checkbox"
-                                                                                   data-bind="attr: {name: el.category,
+                                                            <div class="row" data-bind="foreach: {data: elements, as: 'el'}">
+                                                                <div class="col-md-12">
+                                                                    <div class="checkbox">
+                                                                        <input type="checkbox"
+                                                                               data-bind="attr: {name: el.category,
                                                                                     id: String(el.text)}, value: String(el.text)">
-                                                                            <label data-bind="attr: {for: el.category},
+                                                                        <label data-bind="attr: {for: el.category},
                                                                                     text: String(el.text)"></label>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                        </div>
-                                                    </div>
+                                                            </div>
+                                                        </div> </div>
                                                 </div>
                                             </div>
                                         </li>
@@ -205,11 +204,11 @@
                                 <h3>Spatial and Non-Spatial Encoding Pairings</h3>
                             </div>
                             <!--<div class="col-md-1 settings">-->
-                                <!--<div id='cogEnc' class="container cog">-->
-                                    <!--<a>-->
-                                        <!--<i class="fa fa-cog"></i>-->
-                                    <!--</a>-->
-                                <!--</div>-->
+                            <!--<div id='cogEnc' class="container cog">-->
+                            <!--<a>-->
+                            <!--<i class="fa fa-cog"></i>-->
+                            <!--</a>-->
+                            <!--</div>-->
                             <!--</div>-->
                         </div>
                         <div class="clearfix"></div>
@@ -229,11 +228,11 @@
                                         <h3>DataSet</h3>
                                     </div>
                                     <!--<div class="col-md-1 settings">-->
-                                        <!--<div id='cogType'>-->
-                                            <!--<a>-->
-                                                <!--<i class="fa fa-cog cog"></i>-->
-                                            <!--</a>-->
-                                        <!--</div>-->
+                                    <!--<div id='cogType'>-->
+                                    <!--<a>-->
+                                    <!--<i class="fa fa-cog cog"></i>-->
+                                    <!--</a>-->
+                                    <!--</div>-->
                                     <!--</div>-->
                                 </div>
                                 <div class="clearfix"></div>
@@ -251,119 +250,120 @@
                                 <div class="row">
                                     <div class="col-md-11">
                                         <h3>Paradigms</h3>
-                                    <!--</div>-->
-                                    <!--<div class="col-md-1 settings">-->
-                                        <!--<div id='cogPara' class="container cog">-->
-                                            <!--<a>-->
-                                                <!--<i class="fa fa-cog"></i>-->
-                                            <!--</a>-->
                                         <!--</div>-->
-                                    <!--</div>-->
+                                        <!--<div class="col-md-1 settings">-->
+                                        <!--<div id='cogPara' class="container cog">-->
+                                        <!--<a>-->
+                                        <!--<i class="fa fa-cog"></i>-->
+                                        <!--</a>-->
+                                        <!--</div>-->
+                                        <!--</div>-->
+                                    </div>
+                                    <div class="clearfix"></div>
                                 </div>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content" id="paradigms">
+                                <div class="x_content" id="paradigms">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
 
                 </div>
 
             </div>
 
-        <div class="row resultCharts">
+            <div class="row resultCharts">
 
-            <div class="taskDiv col-md-12">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <div class="row">
-                            <div class="col-md-11">
-                                <h3>Task</h3>
-                            </div>
-                            <!--<div class="col-md-1 settings">-->
+                <div class="taskDiv col-md-12">
+                    <div class="x_panel tile">
+                        <div class="x_title">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <h3>Task</h3>
+                                </div>
+                                <!--<div class="col-md-1 settings">-->
                                 <!--<div id='cogTask' class="container cog">-->
-                                    <!--<a>-->
-                                        <!--<i class="fa fa-cog"></i>-->
-                                    <!--</a>-->
+                                <!--<a>-->
+                                <!--<i class="fa fa-cog"></i>-->
+                                <!--</a>-->
                                 <!--</div>-->
-                            <!--</div>-->
+                                <!--</div>-->
+                            </div>
+                            <div class="clearfix"></div>
                         </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content" id="tasks">
+                        <div class="x_content" id="tasks">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row resultCharts">
+            <div class="row resultCharts">
 
-            <div class="evalDiv col-md-6">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <div class="row">
-                            <div class="col-md-11">
-                                <h3>Evaluation</h3>
-                            </div>
-                            <!--<div class="col-md-1 settings">-->
+                <div class="evalDiv col-md-6">
+                    <div class="x_panel tile">
+                        <div class="x_title">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <h3>Evaluation</h3>
+                                </div>
+                                <!--<div class="col-md-1 settings">-->
                                 <!--<div id='cogEval' class="container cog">-->
-                                    <!--<a>-->
-                                        <!--<i class="fa fa-cog"></i>-->
-                                    <!--</a>-->
+                                <!--<a>-->
+                                <!--<i class="fa fa-cog"></i>-->
+                                <!--</a>-->
                                 <!--</div>-->
-                            <!--</div>-->
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content" id="evaluation">
-                    </div>
-                </div>
-            </div>
-
-            <div class="evalDiv col-md-6">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <div class="row">
-                            <div class="col-md-11">
-                                <h3>Evaluator</h3>
+                                <!--</div>-->
                             </div>
-                            <!--<div class="col-md-1 settings">-->
-                                <!--<div id='cogEvalu' class="container cog">-->
-                                    <!--<a>-->
-                                        <!--<i class="fa fa-cog"></i>-->
-                                    <!--</a>-->
-                                <!--</div>-->
-                            <!--</div>-->
+                            <div class="clearfix"></div>
                         </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content" id="evaluators">
+                        <div class="x_content" id="evaluation">
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <!--End Evaluator Row-->
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h3>Results</h3>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>
+                <div class="evalDiv col-md-6">
+                    <div class="x_panel tile">
+                        <div class="x_title">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <h3>Evaluator</h3>
+                                </div>
+                                <!--<div class="col-md-1 settings">-->
+                                <!--<div id='cogEvalu' class="container cog">-->
+                                <!--<a>-->
+                                <!--<i class="fa fa-cog"></i>-->
+                                <!--</a>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content" id="evaluators">
+                        </div>
                     </div>
                 </div>
             </div>
+            <!--End Evaluator Row-->
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="x_panel tile">
+                        <div class="x_title">
+                            <h3>Results</h3>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <table id="papers" class="stripe row-border cell-border order-column" width="95%"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
 </div>
-
 </body>
 
 </html>

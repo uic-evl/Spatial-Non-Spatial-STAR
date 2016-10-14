@@ -306,7 +306,8 @@ var App = App || {};
                 dataTypes: [],
                 paradigms: [],
                 encodings: [],
-                evaluators: []
+                evaluators: [],
+                tasks: []
             };
 
         /** Check to see if a previous search was performed. If so,

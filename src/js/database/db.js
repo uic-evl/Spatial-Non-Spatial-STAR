@@ -23,68 +23,6 @@ var DB = DB || {};
                     papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, *subDomain, evaluators, *evaluation'
                 });
 
-                // // version 2 with the modified data
-                // self.db.version(2).stores({
-                //     papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, *subDomain, evaluators'
-                // }).upgrade(function(t)
-                // {
-                //     var incomingRecords = _.cloneDeep(records);
-                //
-                //     // update the records that exist
-                //    return t.papers.toCollection().modify(function(paper) {
-                //
-                //        /** select the paper and remove it from the temporary list **/
-                //        var updatedRecord = _.find(incomingRecords, {Paper: paper.title});
-                //        incomingRecords = _.without(incomingRecords, updatedRecord);
-                //
-                //         // update the records
-                //         paper.title =      updatedRecord["Paper"] ;
-                //         paper.author  =    updatedRecord["Author"] ;
-                //         paper.dataTypes =  updatedRecord["Data Types"] ;
-                //         paper.encodings =  updatedRecord["Encodings"] ;
-                //         paper.tasks =      updatedRecord["Tasks"] ;
-                //         paper.paradigms =  updatedRecord["Paradigm"] ;
-                //         paper.domain =     updatedRecord["Domain"] ;
-                //         paper.subDomain =  updatedRecord["SubDomain"] ;
-                //         paper.evaluators = updatedRecord["Evaluators"] ;
-                //         paper.evaluation = updatedRecord["Evaluation Type"] ;
-                //         paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
-                //         paper.year =       updatedRecord["Year"] ;
-                //         paper.url =        updatedRecord["URL"];
-                //     });
-                // });
-                //
-                // // version 2 with the modified data
-                // self.db.version(4).stores({
-                //     papers: '++id, &title, author, *dataTypes, *encodings, *tasks, *paradigms, domain, *subDomain, evaluators, *evaluation'
-                // }).upgrade(function(t)
-                // {
-                //     var incomingRecords = _.cloneDeep(records);
-                //
-                //     // update the records that exist
-                //     return t.papers.toCollection().modify(function(paper) {
-                //
-                //         /** select the paper and remove it from the temporary list **/
-                //         var updatedRecord = _.find(incomingRecords, {Paper: paper.title});
-                //         incomingRecords = _.without(incomingRecords, updatedRecord);
-                //
-                //         // update the records
-                //         paper.title =      updatedRecord["Paper"] ;
-                //         paper.author  =    updatedRecord["Author"] ;
-                //         paper.dataTypes =  updatedRecord["Data Types"] ;
-                //         paper.encodings =  updatedRecord["Encodings"] ;
-                //         paper.tasks =      updatedRecord["Tasks"] ;
-                //         paper.paradigms =  updatedRecord["Paradigm"] ;
-                //         paper.domain =     updatedRecord["Domain"] ;
-                //         paper.subDomain =  updatedRecord["SubDomain"] ;
-                //         paper.evaluators = updatedRecord["Evaluators"] ;
-                //         paper.evaluation = updatedRecord["Evaluation Type"] ;
-                //         paper.expertise =  updatedRecord["Single/Mixed Expertise"] ;
-                //         paper.year =       updatedRecord["Year"] ;
-                //         paper.url =        updatedRecord["URL"];
-                //     });
-                // });
-
                 // Open the DB
                 self.db.open()
                     .then(function(e) {
