@@ -29,7 +29,8 @@ function Papers() {
                     {text: "Cartography", category: "subDomain"},
                     {text: "Uncertainty", category: "subDomain"},
                     {text: "Sports", category: "subDomain"},
-                    {text: "Astronomy", category: "subDomain"}
+                    {text: "Astronomy", category: "subDomain"},
+                    {text: "Engineering", category: "subDomain"}
                 ]
             },
             {
@@ -78,7 +79,7 @@ function Papers() {
                 property: 'spatial',
                 elements: [
                     {text:"Simple Map", category: "encodings"},
-                    {text:"Choropheth / Heatmap", category: "encodings"},
+                    {text:"Choropleth / Heatmap", category: "encodings"},
                     {text:"Ball and Stick / Mesh", category: "encodings"},
                     {text:"Isosurface / Streamlines", category: "encodings"},
                     {text:"Volume / Images", category: "encodings"},

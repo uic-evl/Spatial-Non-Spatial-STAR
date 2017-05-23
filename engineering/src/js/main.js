@@ -89,6 +89,7 @@ var App = App || {};
 
         // get the parsed encodings and paradigms
         var encodingData = App.dataParser.parseEncodings(data);
+
         //var hybridData = App.dataParser.parseHybridParadigms(data);
 
         // get the task, data set, and evaluations fields

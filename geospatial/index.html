@@ -76,38 +76,37 @@
 
 <div class="main">
 
-    <section class="buttonset" style="position: relative;">
+    <section class="buttonset2" style="position: relative;">
 
         <div class="container-fluid">
             <div class="row">
 
-                <div class="col-md-2">
-                    <div id="header_logo">
+                <div class="col-md-1">
                         <a href="https://www.evl.uic.edu">
                             <img src="../lib/css/logo.png" onmouseover="this.src='../lib/css/logo_on.png';"
-                                 onmouseout="this.src='../lib/css/logo.png'" alt="evl" title="evl" height="104" width="254">
+                                 onmouseout="this.src='../lib/css/logo.png'" alt="evl" title="evl" height="50" width="150">
                         </a>
-                    </div>
                 </div>
 
-                <div class="col-md-offset-1 col-md-8">
+                <div class="col-md-11">
                     <div class="row">
-                        <div class="col-md-12">
-                            <h2 class="main_title">Visual Integration of Spatial and Nonspatial Data</h2>
-                            <h3 class="main_title">Geospatial and Trajectories</h3>
+                        <div class="col-md-6">
+                            <h3 class="main_title">Visual Integration of Spatial and Nonspatial Data</h3>
+                        </div>
+
+                        <div class="col-md-6 navmenuGeo">
+                            <ul id="nav">
+                                <li><a class="active" href="#started"><h4 class="nav-text">Getting Started</h4></a></li>
+                                <li><a href="#search"><h4 class="nav-text">Search</h4></a></li>
+                                <li><a href="#contact"><h4 class="nav-text">Contact</h4></a></li>
+                                <li><a href="#about"><h4 class="nav-text">About Us</h4></a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
-
-        <ul id="nav">
-            <li><a class="active" href="#started"><h3 class="nav-text">Getting Started</h3></a></li>
-            <li><a href="#search"><h3 class="nav-text">Search</h3></a></li>
-            <li><a href="#contact"><h3 class="nav-text">Contact</h3></a></li>
-            <li><a href="#about"><h3 class="nav-text">About Us</h3></a></li>
-        </ul>
-
     </section>
 
     <div id="search" class="vcenter">
@@ -117,7 +116,10 @@
                 <div class="col-md-12">
 
                     <div class="row" style="padding-bottom: 10px;">
-                        <div class="col-md-offset-3 col-md-7">
+                        <div class="col-md-2">
+                            <h4 class="subtitle">Geospatial and Trajectories</h4>
+                        </div>
+                        <div class="col-md-7">
                             <!--Set class "wowsearchform" to start wowsearchform plugin-->
                             <form id="myform" class="wowsearchform form-inline" method="post" onsubmit="event.preventDefault(); App.getResults(event);">
 

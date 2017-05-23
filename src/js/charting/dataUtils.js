@@ -332,6 +332,7 @@ var Parser = function(options) {
 
                         if(subDomain.length === 0 ) return;
 
+                        console.log(subDomain + " " + type);
                         // increment the data type count
                         result[2][type][subDomain] += 1;
 

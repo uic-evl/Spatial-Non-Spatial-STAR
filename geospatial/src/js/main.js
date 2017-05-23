@@ -44,7 +44,7 @@ var App = App || {};
 
         });
         /** create the new database for the session **/
-        App.db = DB.initializeDB('BioMed', App.rows);
+        App.db = DB.initializeDB('Geospatial', App.rows);
     }
 
     App.initDB = function() {
@@ -102,6 +102,7 @@ var App = App || {};
 
         // get the parsed encodings
         var encodingData = App.dataParser.parseEncodings(data);
+        console.log(encodingData);
         var taskData = App.dataParser.parseFields(data);
 
         //var testParsing = App.dataParser.parseArbFields(data, "paradigms", "dataTypes");
@@ -126,9 +127,7 @@ var App = App || {};
         // plot the data type analysis
         App.geoGraph.graphParadigmsNVD3Chart(taskData.paradigms, "#paradigms",  taskData.authors[3]);
 
-        // plot the data type analysis
-        App.geoGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators",
-            ["Table", "Field", "Network", "Geometry"], taskData.authors[4]);
+        App.geoGraph.graphEvaluatorsNVD3Chart(taskData.evaluators, "#evaluators", taskData.authors[4]);
     }
 
     function setupTable(data) {

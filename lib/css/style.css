@@ -142,3 +142,18 @@ section.content {
     width: 100%;
 }
 
+/* temporary added for geospatial */
+.buttonset2 {
+    background: #404040;
+    height: 50px;
+    padding: 0px 0px 20px;
+}
+
+.navmenuGeo {
+    min-height: 50px !important;
+}
+
+.subtitle{
+    color: black;
+    padding-left: 20px;
+}
